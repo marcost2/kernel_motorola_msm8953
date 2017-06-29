@@ -6499,6 +6499,27 @@ v_BOOL_t hdd_update_config_dat( hdd_context_t *pHddCtx )
    return fStatus;
 }
 
+/**
+ * hdd_to_csr_wmm_mode() - Utility function to convert HDD to CSR WMM mode
+ *
+ * @enum hdd_wmm_user_mode - hdd WMM user mode
+ *
+ * Return: CSR WMM mode
+ */
+static eCsrRoamWmmUserModeType
+hdd_to_csr_wmm_mode(hdd_wmm_user_mode_t mode)
+{
+	switch (mode) {
+	case HDD_WMM_USER_MODE_QBSS_ONLY:
+		return eCsrRoamWmmQbssOnly;
+	case HDD_WMM_USER_MODE_NO_QOS:
+		return eCsrRoamWmmNoQos;
+	case HDD_WMM_USER_MODE_AUTO:
+	default:
+		return eCsrRoamWmmAuto;
+	}
+}
+
 /**---------------------------------------------------------------------------
 
   \brief hdd_init_set_sme_config() -
@@ -6597,7 +6618,7 @@ VOS_STATUS hdd_set_sme_config( hdd_context_t *pHddCtx )
 
 #endif
    smeConfig->csrConfig.Is11eSupportEnabled      = pConfig->b80211eIsEnabled;
-   smeConfig->csrConfig.WMMSupportMode           = pConfig->WmmMode;
+   smeConfig->csrConfig.WMMSupportMode           =	hdd_to_csr_wmm_mode(pConfig->WmmMode);
 
 #if defined WLAN_FEATURE_VOWIFI
    smeConfig->rrmConfig.rrmEnabled = pConfig->fRrmEnable;
