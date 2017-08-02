@@ -59,7 +59,7 @@ static u16 ieee80211_get_tdls_sta_capab(struct ieee80211_sub_if_data *sdata,
 		return 0;
 
 	capab = 0;
-	if (ieee80211_get_sdata_band(sdata) != IEEE80211_BAND_2GHZ)
+	if (ieee80211_get_sdata_band(sdata) != NL80211_BAND_2GHZ)
 		return capab;
 
 	if (!(local->hw.flags & IEEE80211_HW_2GHZ_SHORT_SLOT_INCAPABLE))
@@ -169,7 +169,7 @@ ieee80211_tdls_add_setup_start_ies(struct ieee80211_sub_if_data *sdata,
 				   u8 action_code, bool initiator,
 				   const u8 *extra_ies, size_t extra_ies_len)
 {
-	enum ieee80211_band band = ieee80211_get_sdata_band(sdata);
+	enum nl80211_band band = ieee80211_get_sdata_band(sdata);
 	struct ieee80211_local *local = sdata->local;
 	struct ieee80211_supported_band *sband;
 	struct ieee80211_sta_ht_cap ht_cap;

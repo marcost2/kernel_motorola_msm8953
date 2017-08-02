@@ -1171,7 +1171,7 @@ static void ath_buf_set_rate(struct ath_softc *sc, struct ath_buf *bf,
 
 		/* legacy rates */
 		rate = &common->sbands[tx_info->band].bitrates[rates[i].idx];
-		if ((tx_info->band == IEEE80211_BAND_2GHZ) &&
+		if ((tx_info->band == NL80211_BAND_2GHZ) &&
 		    !(rate->flags & IEEE80211_RATE_ERP_G))
 			phy = WLAN_RC_PHY_CCK;
 		else

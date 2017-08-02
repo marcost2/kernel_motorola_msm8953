@@ -682,7 +682,7 @@ static const u8 rx_legacy_rate_idx[] = {
 };
 
 static void ath10k_htt_rx_h_rates(struct ath10k *ar,
-				  enum ieee80211_band band,
+				  enum nl80211_band band,
 				  u8 info0, u32 info1, u32 info2,
 				  struct ieee80211_rx_status *status)
 {
@@ -705,12 +705,12 @@ static void ath10k_htt_rx_h_rates(struct ath10k *ar,
 			break;
 
 		switch (band) {
-		case IEEE80211_BAND_2GHZ:
+		case NL80211_BAND_2GHZ:
 			if (cck)
 				rate &= ~BIT(3);
 			rate_idx = rx_legacy_rate_idx[rate];
 			break;
-		case IEEE80211_BAND_5GHZ:
+		case NL80211_BAND_5GHZ:
 			rate_idx = rx_legacy_rate_idx[rate];
 			/* We are using same rate table registering
 			   HW - ath10k_rates[]. In case of 5GHz skip

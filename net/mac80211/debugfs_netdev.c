@@ -178,14 +178,14 @@ static ssize_t ieee80211_if_write_##name(struct file *file,		\
 
 /* common attributes */
 IEEE80211_IF_FILE(drop_unencrypted, drop_unencrypted, DEC);
-IEEE80211_IF_FILE(rc_rateidx_mask_2ghz, rc_rateidx_mask[IEEE80211_BAND_2GHZ],
+IEEE80211_IF_FILE(rc_rateidx_mask_2ghz, rc_rateidx_mask[NL80211_BAND_2GHZ],
 		  HEX);
-IEEE80211_IF_FILE(rc_rateidx_mask_5ghz, rc_rateidx_mask[IEEE80211_BAND_5GHZ],
+IEEE80211_IF_FILE(rc_rateidx_mask_5ghz, rc_rateidx_mask[NL80211_BAND_5GHZ],
 		  HEX);
 IEEE80211_IF_FILE(rc_rateidx_mcs_mask_2ghz,
-		  rc_rateidx_mcs_mask[IEEE80211_BAND_2GHZ], HEXARRAY);
+		  rc_rateidx_mcs_mask[NL80211_BAND_2GHZ], HEXARRAY);
 IEEE80211_IF_FILE(rc_rateidx_mcs_mask_5ghz,
-		  rc_rateidx_mcs_mask[IEEE80211_BAND_5GHZ], HEXARRAY);
+		  rc_rateidx_mcs_mask[NL80211_BAND_5GHZ], HEXARRAY);
 
 IEEE80211_IF_FILE(flags, flags, HEX);
 IEEE80211_IF_FILE(state, state, LHEX);

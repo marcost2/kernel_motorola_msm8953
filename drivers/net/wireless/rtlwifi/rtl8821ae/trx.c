@@ -50,7 +50,7 @@ static u8 _rtl8821ae_map_hwqueue_to_fwqueue(struct sk_buff *skb, u8 hw_queue)
 
 /* mac80211's rate_idx is like this:
  *
- * 2.4G band:rx_status->band == IEEE80211_BAND_2GHZ
+ * 2.4G band:rx_status->band == NL80211_BAND_2GHZ
  *
  * B/G rate:
  * (rx_status->flag & RX_FLAG_HT) = 0,
@@ -60,7 +60,7 @@ static u8 _rtl8821ae_map_hwqueue_to_fwqueue(struct sk_buff *skb, u8 hw_queue)
  * (rx_status->flag & RX_FLAG_HT) = 1,
  * DESC_RATEMCS0-->DESC_RATEMCS15 ==> idx is 0-->15
  *
- * 5G band:rx_status->band == IEEE80211_BAND_5GHZ
+ * 5G band:rx_status->band == NL80211_BAND_5GHZ
  * A rate:
  * (rx_status->flag & RX_FLAG_HT) = 0,
  * DESC_RATE6M-->DESC_RATE54M ==> idx is 0-->7,
@@ -75,7 +75,7 @@ static int _rtl8821ae_rate_mapping(struct ieee80211_hw *hw,
 	int rate_idx;
 
 	if (!isht) {
-		if (IEEE80211_BAND_2GHZ == hw->conf.chandef.chan->band) {
+		if (NL80211_BAND_2GHZ == hw->conf.chandef.chan->band) {
 			switch (desc_rate) {
 			case DESC_RATE1M:
 				rate_idx = 0;

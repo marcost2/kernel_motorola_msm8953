@@ -235,7 +235,7 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
 	enum wmi_phy_mode phymode = MODE_UNKNOWN;
 
 	switch (chandef->chan->band) {
-	case IEEE80211_BAND_2GHZ:
+	case NL80211_BAND_2GHZ:
 		switch (chandef->width) {
 		case NL80211_CHAN_WIDTH_20_NOHT:
 			phymode = MODE_11G;
@@ -255,7 +255,7 @@ chan_to_phymode(const struct cfg80211_chan_def *chandef)
 			break;
 		}
 		break;
-	case IEEE80211_BAND_5GHZ:
+	case NL80211_BAND_5GHZ:
 		switch (chandef->width) {
 		case NL80211_CHAN_WIDTH_20_NOHT:
 			phymode = MODE_11A;
@@ -1376,7 +1376,7 @@ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
 	enum wmi_phy_mode phymode = MODE_UNKNOWN;
 
 	switch (ar->hw->conf.chandef.chan->band) {
-	case IEEE80211_BAND_2GHZ:
+	case NL80211_BAND_2GHZ:
 		if (sta->ht_cap.ht_supported) {
 			if (sta->bandwidth == IEEE80211_STA_RX_BW_40)
 				phymode = MODE_11NG_HT40;
@@ -1387,7 +1387,7 @@ static void ath10k_peer_assoc_h_phymode(struct ath10k *ar,
 		}
 
 		break;
-	case IEEE80211_BAND_5GHZ:
+	case NL80211_BAND_5GHZ:
 		/*
 		 * Check VHT first.
 		 */
@@ -1671,7 +1671,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
 {
 	struct ieee80211_hw *hw = ar->hw;
 	struct ieee80211_supported_band **bands;
-	enum ieee80211_band band;
+	enum nl80211_band band;
 	struct ieee80211_channel *channel;
 	struct wmi_scan_chan_list_arg arg = {0};
 	struct wmi_channel_arg *ch;
@@ -1683,7 +1683,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
 	lockdep_assert_held(&ar->conf_mutex);
 
 	bands = hw->wiphy->bands;
-	for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
+	for (band = 0; band < NUM_NL80211_BANDS; band++) {
 		if (!bands[band])
 			continue;
 
@@ -1702,7 +1702,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
 		return -ENOMEM;
 
 	ch = arg.channels;
-	for (band = 0; band < IEEE80211_NUM_BANDS; band++) {
+	for (band = 0; band < NUM_NL80211_BANDS; band++) {
 		if (!bands[band])
 			continue;
 
@@ -1746,7 +1746,7 @@ static int ath10k_update_channel_list(struct ath10k *ar)
 			/* FIXME: why use only legacy modes, why not any
 			 * HT/VHT modes? Would that even make any
 			 * difference? */
-			if (channel->band == IEEE80211_BAND_2GHZ)
+			if (channel->band == NL80211_BAND_2GHZ)
 				ch->mode = MODE_11G;
 			else
 				ch->mode = MODE_11A;
@@ -3963,14 +3963,14 @@ static int ath10k_get_survey(struct ieee80211_hw *hw, int idx,
 
 	mutex_lock(&ar->conf_mutex);
 
-	sband = hw->wiphy->bands[IEEE80211_BAND_2GHZ];
+	sband = hw->wiphy->bands[NL80211_BAND_2GHZ];
 	if (sband && idx >= sband->n_channels) {
 		idx -= sband->n_channels;
 		sband = NULL;
 	}
 
 	if (!sband)
-		sband = hw->wiphy->bands[IEEE80211_BAND_5GHZ];
+		sband = hw->wiphy->bands[NL80211_BAND_5GHZ];
 
 	if (!sband || idx >= sband->n_channels) {
 		ret = -ENOENT;
@@ -4024,7 +4024,7 @@ static int ath10k_check_single_mask(u32 mask)
 
 static bool
 ath10k_default_bitrate_mask(struct ath10k *ar,
-			    enum ieee80211_band band,
+			    enum nl80211_band band,
 			    const struct cfg80211_bitrate_mask *mask)
 {
 	u32 legacy = 0x00ff;
@@ -4032,11 +4032,11 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
 	u16 vht = 0x3ff;
 
 	switch (band) {
-	case IEEE80211_BAND_2GHZ:
+	case NL80211_BAND_2GHZ:
 		legacy = 0x00fff;
 		vht = 0;
 		break;
-	case IEEE80211_BAND_5GHZ:
+	case NL80211_BAND_5GHZ:
 		break;
 	default:
 		return false;
@@ -4058,7 +4058,7 @@ ath10k_default_bitrate_mask(struct ath10k *ar,
 
 static bool
 ath10k_bitrate_mask_nss(const struct cfg80211_bitrate_mask *mask,
-			enum ieee80211_band band,
+			enum nl80211_band band,
 			u8 *fixed_nss)
 {
 	int ht_nss = 0, vht_nss = 0, i;
@@ -4106,7 +4106,7 @@ ath10k_bitrate_mask_nss(const struct cfg80211_bitrate_mask *mask,
 
 static bool
 ath10k_bitrate_mask_correct(const struct cfg80211_bitrate_mask *mask,
-			    enum ieee80211_band band,
+			    enum nl80211_band band,
 			    enum wmi_rate_preamble *preamble)
 {
 	int legacy = 0, ht = 0, vht = 0, i;
@@ -4145,7 +4145,7 @@ ath10k_bitrate_mask_correct(const struct cfg80211_bitrate_mask *mask,
 static bool
 ath10k_bitrate_mask_rate(struct ath10k *ar,
 			 const struct cfg80211_bitrate_mask *mask,
-			 enum ieee80211_band band,
+			 enum nl80211_band band,
 			 u8 *fixed_rate,
 			 u8 *fixed_nss)
 {
@@ -4163,10 +4163,10 @@ ath10k_bitrate_mask_rate(struct ath10k *ar,
 	case WMI_RATE_PREAMBLE_OFDM:
 		i = ffs(mask->control[band].legacy) - 1;
 
-		if (band == IEEE80211_BAND_2GHZ && i < 4)
+		if (band == NL80211_BAND_2GHZ && i < 4)
 			pream = WMI_RATE_PREAMBLE_CCK;
 
-		if (band == IEEE80211_BAND_5GHZ)
+		if (band == NL80211_BAND_5GHZ)
 			i += 4;
 
 		if (i >= ARRAY_SIZE(cck_ofdm_rate))
@@ -4212,7 +4212,7 @@ ath10k_bitrate_mask_rate(struct ath10k *ar,
 
 static bool ath10k_get_fixed_rate_nss(struct ath10k *ar,
 				      const struct cfg80211_bitrate_mask *mask,
-				      enum ieee80211_band band,
+				      enum nl80211_band band,
 				      u8 *fixed_rate,
 				      u8 *fixed_nss)
 {
@@ -4295,7 +4295,7 @@ static int ath10k_set_bitrate_mask(struct ieee80211_hw *hw,
 {
 	struct ath10k_vif *arvif = ath10k_vif_to_arvif(vif);
 	struct ath10k *ar = arvif->ar;
-	enum ieee80211_band band = ar->hw->conf.chandef.chan->band;
+	enum nl80211_band band = ar->hw->conf.chandef.chan->band;
 	u8 fixed_rate = WMI_FIXED_RATE_NONE;
 	u8 fixed_nss = ar->num_rf_chains;
 	u8 force_sgi;
@@ -4490,7 +4490,7 @@ static const struct ieee80211_ops ath10k_ops = {
 }
 
 #define CHAN2G(_channel, _freq, _flags) { \
-	.band			= IEEE80211_BAND_2GHZ, \
+	.band			= NL80211_BAND_2GHZ, \
 	.hw_value		= (_channel), \
 	.center_freq		= (_freq), \
 	.flags			= (_flags), \
@@ -4499,7 +4499,7 @@ static const struct ieee80211_ops ath10k_ops = {
 }
 
 #define CHAN5G(_channel, _freq, _flags) { \
-	.band			= IEEE80211_BAND_5GHZ, \
+	.band			= NL80211_BAND_5GHZ, \
 	.hw_value		= (_channel), \
 	.center_freq		= (_freq), \
 	.flags			= (_flags), \
@@ -4783,7 +4783,7 @@ int ath10k_mac_register(struct ath10k *ar)
 			goto err_free;
 		}
 
-		band = &ar->mac.sbands[IEEE80211_BAND_2GHZ];
+		band = &ar->mac.sbands[NL80211_BAND_2GHZ];
 		band->n_channels = ARRAY_SIZE(ath10k_2ghz_channels);
 		band->channels = channels;
 		band->n_bitrates = ath10k_g_rates_size;
@@ -4792,7 +4792,7 @@ int ath10k_mac_register(struct ath10k *ar)
 
 		/* vht is not supported in 2.4 GHz */
 
-		ar->hw->wiphy->bands[IEEE80211_BAND_2GHZ] = band;
+		ar->hw->wiphy->bands[NL80211_BAND_2GHZ] = band;
 	}
 
 	if (ar->phy_capability & WHAL_WLAN_11A_CAPABILITY) {
@@ -4804,14 +4804,14 @@ int ath10k_mac_register(struct ath10k *ar)
 			goto err_free;
 		}
 
-		band = &ar->mac.sbands[IEEE80211_BAND_5GHZ];
+		band = &ar->mac.sbands[NL80211_BAND_5GHZ];
 		band->n_channels = ARRAY_SIZE(ath10k_5ghz_channels);
 		band->channels = channels;
 		band->n_bitrates = ath10k_a_rates_size;
 		band->bitrates = ath10k_a_rates;
 		band->ht_cap = ht_cap;
 		band->vht_cap = vht_cap;
-		ar->hw->wiphy->bands[IEEE80211_BAND_5GHZ] = band;
+		ar->hw->wiphy->bands[NL80211_BAND_5GHZ] = band;
 	}
 
 	ar->hw->wiphy->interface_modes =
@@ -4927,8 +4927,8 @@ int ath10k_mac_register(struct ath10k *ar)
 err_unregister:
 	ieee80211_unregister_hw(ar->hw);
 err_free:
-	kfree(ar->mac.sbands[IEEE80211_BAND_2GHZ].channels);
-	kfree(ar->mac.sbands[IEEE80211_BAND_5GHZ].channels);
+	kfree(ar->mac.sbands[NL80211_BAND_2GHZ].channels);
+	kfree(ar->mac.sbands[NL80211_BAND_5GHZ].channels);
 
 	return ret;
 }
@@ -4940,8 +4940,8 @@ void ath10k_mac_unregister(struct ath10k *ar)
 	if (config_enabled(CONFIG_ATH10K_DFS_CERTIFIED) && ar->dfs_detector)
 		ar->dfs_detector->exit(ar->dfs_detector);
 
-	kfree(ar->mac.sbands[IEEE80211_BAND_2GHZ].channels);
-	kfree(ar->mac.sbands[IEEE80211_BAND_5GHZ].channels);
+	kfree(ar->mac.sbands[NL80211_BAND_2GHZ].channels);
+	kfree(ar->mac.sbands[NL80211_BAND_5GHZ].channels);
 
 	SET_IEEE80211_DEV(ar->hw, NULL);
 }

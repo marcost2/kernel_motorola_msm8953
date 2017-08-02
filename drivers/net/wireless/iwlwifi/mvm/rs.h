@@ -331,7 +331,7 @@ struct iwl_lq_sta {
 	u64 last_tx;
 	bool is_vht;
 	bool ldpc;              /* LDPC Rx is supported by the STA */
-	enum ieee80211_band band;
+	enum nl80211_band band;
 
 	/* The following are bitmaps of rates; IWL_RATE_6M_MASK, etc. */
 	unsigned long active_legacy_rate;
@@ -374,7 +374,7 @@ struct iwl_lq_sta {
 
 /* Initialize station's rate scaling information after adding station */
 void iwl_mvm_rs_rate_init(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
-			  enum ieee80211_band band, bool init);
+			  enum nl80211_band band, bool init);
 
 /* Notify RS about Tx status */
 void iwl_mvm_rs_tx_status(struct iwl_mvm *mvm, struct ieee80211_sta *sta,

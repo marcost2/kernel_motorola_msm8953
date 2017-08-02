@@ -752,7 +752,7 @@ static u32 ucode_rate_from_rs_rate(struct iwl_mvm *mvm,
 
 /* Convert a ucode rate into an rs_rate object */
 static int rs_rate_from_ucode_rate(const u32 ucode_rate,
-				   enum ieee80211_band band,
+				   enum nl80211_band band,
 				   struct rs_rate *rate)
 {
 	u32 ant_msk = ucode_rate & RATE_MCS_ANT_ABC_MSK;
@@ -771,7 +771,7 @@ static int rs_rate_from_ucode_rate(const u32 ucode_rate,
 	if (!(ucode_rate & RATE_MCS_HT_MSK) &&
 	    !(ucode_rate & RATE_MCS_VHT_MSK)) {
 		if (num_of_ant == 1) {
-			if (band == IEEE80211_BAND_5GHZ)
+			if (band == NL80211_BAND_5GHZ)
 				rate->type = LQ_LEGACY_A;
 			else
 				rate->type = LQ_LEGACY_G;
@@ -960,7 +960,7 @@ static void rs_get_lower_rate_down_column(struct iwl_lq_sta *lq_sta,
 		return;
 	} else if (is_siso(rate)) {
 		/* Downgrade to Legacy if we were in SISO */
-		if (lq_sta->band == IEEE80211_BAND_5GHZ)
+		if (lq_sta->band == NL80211_BAND_5GHZ)
 			rate->type = LQ_LEGACY_A;
 		else
 			rate->type = LQ_LEGACY_G;
@@ -1069,7 +1069,7 @@ void iwl_mvm_rs_tx_status(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
 	table = &lq_sta->lq;
 	ucode_rate = le32_to_cpu(table->rs_table[0]);
 	rs_rate_from_ucode_rate(ucode_rate, info->band, &rate);
-	if (info->band == IEEE80211_BAND_5GHZ)
+	if (info->band == NL80211_BAND_5GHZ)
 		rate.index -= IWL_FIRST_OFDM_RATE;
 	mac_flags = info->status.rates[0].flags;
 	mac_index = info->status.rates[0].idx;
@@ -1083,7 +1083,7 @@ void iwl_mvm_rs_tx_status(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
 		 * mac80211 HT index is always zero-indexed; we need to move
 		 * HT OFDM rates after CCK rates in 2.4 GHz band
 		 */
-		if (info->band == IEEE80211_BAND_2GHZ)
+		if (info->band == NL80211_BAND_2GHZ)
 			mac_index += IWL_FIRST_OFDM_RATE;
 	} else if (mac_flags & IEEE80211_TX_RC_VHT_MCS) {
 		mac_index &= RATE_VHT_MCS_RATE_CODE_MSK;
@@ -1618,7 +1618,7 @@ static int rs_switch_to_column(struct iwl_mvm *mvm,
 	rate->ant = column->ant;
 
 	if (column->mode == RS_LEGACY) {
-		if (lq_sta->band == IEEE80211_BAND_5GHZ)
+		if (lq_sta->band == NL80211_BAND_5GHZ)
 			rate->type = LQ_LEGACY_A;
 		else
 			rate->type = LQ_LEGACY_G;
@@ -1767,7 +1767,7 @@ static void rs_get_adjacent_txp(struct iwl_mvm *mvm, int index,
 }
 
 static bool rs_tpc_allowed(struct iwl_mvm *mvm, struct ieee80211_vif *vif,
-			   struct rs_rate *rate, enum ieee80211_band band)
+			   struct rs_rate *rate, enum nl80211_band band)
 {
 	int index = rate->index;
 	bool cam = (iwlmvm_mod_params.power_scheme == IWL_POWER_SCHEME_CAM);
@@ -1870,7 +1870,7 @@ static bool rs_tpc_perform(struct iwl_mvm *mvm,
 	struct iwl_mvm_sta *mvm_sta = (void *)sta->drv_priv;
 	struct ieee80211_vif *vif = mvm_sta->vif;
 	struct ieee80211_chanctx_conf *chanctx_conf;
-	enum ieee80211_band band;
+	enum nl80211_band band;
 	struct iwl_rate_scale_data *window;
 	struct rs_rate *rate = &tbl->rate;
 	enum tpc_action action;
@@ -1892,7 +1892,7 @@ static bool rs_tpc_perform(struct iwl_mvm *mvm,
 	rcu_read_lock();
 	chanctx_conf = rcu_dereference(vif->chanctx_conf);
 	if (WARN_ON(!chanctx_conf))
-		band = IEEE80211_NUM_BANDS;
+		band = NUM_NL80211_BANDS;
 	else
 		band = chanctx_conf->def.chan->band;
 	rcu_read_unlock();
@@ -2311,7 +2311,7 @@ static const struct rs_init_rate_info rs_init_rates_5ghz[] = {
  */
 static void rs_get_initial_rate(struct iwl_mvm *mvm,
 				struct iwl_lq_sta *lq_sta,
-				enum ieee80211_band band,
+				enum nl80211_band band,
 				struct rs_rate *rate)
 {
 	int i, nentries;
@@ -2345,7 +2345,7 @@ static void rs_get_initial_rate(struct iwl_mvm *mvm,
 	rate->index = find_first_bit(&lq_sta->active_legacy_rate,
 				     BITS_PER_LONG);
 
-	if (band == IEEE80211_BAND_5GHZ) {
+	if (band == NL80211_BAND_5GHZ) {
 		rate->type = LQ_LEGACY_A;
 		initial_rates = rs_init_rates_5ghz;
 		nentries = ARRAY_SIZE(rs_init_rates_5ghz);
@@ -2398,7 +2398,7 @@ void rs_update_last_rssi(struct iwl_mvm *mvm,
 static void rs_initialize_lq(struct iwl_mvm *mvm,
 			     struct ieee80211_sta *sta,
 			     struct iwl_lq_sta *lq_sta,
-			     enum ieee80211_band band,
+			     enum nl80211_band band,
 			     bool init)
 {
 	struct iwl_scale_tbl_info *tbl;
@@ -2609,7 +2609,7 @@ void iwl_mvm_update_frame_stats(struct iwl_mvm *mvm,
  * Called after adding a new station to initialize rate scaling
  */
 void iwl_mvm_rs_rate_init(struct iwl_mvm *mvm, struct ieee80211_sta *sta,
-			  enum ieee80211_band band, bool init)
+			  enum nl80211_band band, bool init)
 {
 	int i, j;
 	struct ieee80211_hw *hw = mvm->hw;
@@ -2737,7 +2737,7 @@ static void rs_rate_update(void *mvm_r,
 #ifdef CONFIG_MAC80211_DEBUGFS
 static void rs_build_rates_table_from_fixed(struct iwl_mvm *mvm,
 					    struct iwl_lq_cmd *lq_cmd,
-					    enum ieee80211_band band,
+					    enum nl80211_band band,
 					    u32 ucode_rate)
 {
 	struct rs_rate rate;

@@ -994,9 +994,9 @@ static int ath10k_wmi_event_scan(struct ath10k *ar, struct sk_buff *skb)
 	return 0;
 }
 
-static inline enum ieee80211_band phy_mode_to_band(u32 phy_mode)
+static inline enum nl80211_band phy_mode_to_band(u32 phy_mode)
 {
-	enum ieee80211_band band;
+	enum nl80211_band band;
 
 	switch (phy_mode) {
 	case MODE_11A:
@@ -1005,7 +1005,7 @@ static inline enum ieee80211_band phy_mode_to_band(u32 phy_mode)
 	case MODE_11AC_VHT20:
 	case MODE_11AC_VHT40:
 	case MODE_11AC_VHT80:
-		band = IEEE80211_BAND_5GHZ;
+		band = NL80211_BAND_5GHZ;
 		break;
 	case MODE_11G:
 	case MODE_11B:
@@ -1016,13 +1016,13 @@ static inline enum ieee80211_band phy_mode_to_band(u32 phy_mode)
 	case MODE_11AC_VHT40_2G:
 	case MODE_11AC_VHT80_2G:
 	default:
-		band = IEEE80211_BAND_2GHZ;
+		band = NL80211_BAND_2GHZ;
 	}
 
 	return band;
 }
 
-static inline u8 get_rate_idx(u32 rate, enum ieee80211_band band)
+static inline u8 get_rate_idx(u32 rate, enum nl80211_band band)
 {
 	u8 rate_idx = 0;
 
@@ -1068,7 +1068,7 @@ static inline u8 get_rate_idx(u32 rate, enum ieee80211_band band)
 		break;
 	}
 
-	if (band == IEEE80211_BAND_5GHZ) {
+	if (band == NL80211_BAND_5GHZ) {
 		if (rate_idx > 3)
 			/* Omit CCK rates */
 			rate_idx -= 4;
@@ -1150,7 +1150,7 @@ static int ath10k_wmi_event_mgmt_rx(struct ath10k *ar, struct sk_buff *skb)
 		status->band = ch->band;
 
 		if (phy_mode == MODE_11B &&
-		    status->band == IEEE80211_BAND_5GHZ)
+		    status->band == NL80211_BAND_5GHZ)
 			ath10k_dbg(ar, ATH10K_DBG_MGMT, "wmi mgmt rx 11b (CCK) on 5GHz\n");
 	} else {
 		ath10k_warn(ar, "using (unreliable) phy_mode to extract band for mgmt rx\n");
@@ -1208,7 +1208,7 @@ static int freq_to_idx(struct ath10k *ar, int freq)
 	struct ieee80211_supported_band *sband;
 	int band, ch, idx = 0;
 
-	for (band = IEEE80211_BAND_2GHZ; band < IEEE80211_NUM_BANDS; band++) {
+	for (band = NL80211_BAND_2GHZ; band < NUM_NL80211_BANDS; band++) {
 		sband = ar->hw->wiphy->bands[band];
 		if (!sband)
 			continue;

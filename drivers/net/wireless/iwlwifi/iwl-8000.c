@@ -105,7 +105,7 @@ static const struct iwl_base_params iwl8000_base_params = {
 
 static const struct iwl_ht_params iwl8000_ht_params = {
 	.ldpc = true,
-	.ht40_bands = BIT(IEEE80211_BAND_2GHZ) | BIT(IEEE80211_BAND_5GHZ),
+	.ht40_bands = BIT(NL80211_BAND_2GHZ) | BIT(NL80211_BAND_5GHZ),
 };
 
 #define IWL_DEVICE_8000						\

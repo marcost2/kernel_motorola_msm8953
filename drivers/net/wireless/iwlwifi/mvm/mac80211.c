@@ -375,12 +375,12 @@ int iwl_mvm_mac_setup_register(struct iwl_mvm *mvm)
 
 	hw->wiphy->max_scan_ssids = PROBE_OPTION_MAX;
 
-	if (mvm->nvm_data->bands[IEEE80211_BAND_2GHZ].n_channels)
-		hw->wiphy->bands[IEEE80211_BAND_2GHZ] =
-			&mvm->nvm_data->bands[IEEE80211_BAND_2GHZ];
-	if (mvm->nvm_data->bands[IEEE80211_BAND_5GHZ].n_channels)
-		hw->wiphy->bands[IEEE80211_BAND_5GHZ] =
-			&mvm->nvm_data->bands[IEEE80211_BAND_5GHZ];
+	if (mvm->nvm_data->bands[NL80211_BAND_2GHZ].n_channels)
+		hw->wiphy->bands[NL80211_BAND_2GHZ] =
+			&mvm->nvm_data->bands[NL80211_BAND_2GHZ];
+	if (mvm->nvm_data->bands[NL80211_BAND_5GHZ].n_channels)
+		hw->wiphy->bands[NL80211_BAND_5GHZ] =
+			&mvm->nvm_data->bands[NL80211_BAND_5GHZ];
 
 	hw->wiphy->hw_version = mvm->trans->hw_id;
 
@@ -2363,7 +2363,7 @@ static int iwl_mvm_send_aux_roc_cmd(struct iwl_mvm *mvm,
 			cpu_to_le32(FW_CMD_ID_AND_COLOR(MAC_INDEX_AUX, 0)),
 		.sta_id_and_color = cpu_to_le32(mvm->aux_sta.sta_id),
 		/* Set the channel info data */
-		.channel_info.band = (channel->band == IEEE80211_BAND_2GHZ) ?
+		.channel_info.band = (channel->band == NL80211_BAND_2GHZ) ?
 			PHY_BAND_24 : PHY_BAND_5,
 		.channel_info.channel = channel->hw_value,
 		.channel_info.width = PHY_VHT_CHANNEL_MODE20,

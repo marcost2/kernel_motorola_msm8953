@@ -245,7 +245,7 @@ static int iwl_init_channel_map(struct device *dev, const struct iwl_cfg *cfg,
 
 		channel->hw_value = nvm_chan[ch_idx];
 		channel->band = (ch_idx < num_2ghz_channels) ?
-				IEEE80211_BAND_2GHZ : IEEE80211_BAND_5GHZ;
+				NL80211_BAND_2GHZ : NL80211_BAND_5GHZ;
 		channel->center_freq =
 			ieee80211_channel_to_frequency(
 				channel->hw_value, channel->band);
@@ -296,7 +296,7 @@ static int iwl_init_channel_map(struct device *dev, const struct iwl_cfg *cfg,
 		 * is not used in mvm, and is used for backwards compatibility
 		 */
 		channel->max_power = IWL_DEFAULT_MAX_TX_POWER;
-		is_5ghz = channel->band == IEEE80211_BAND_5GHZ;
+		is_5ghz = channel->band == NL80211_BAND_5GHZ;
 		IWL_DEBUG_EEPROM(dev,
 				 "Ch. %d [%sGHz] %s%s%s%s%s%s%s(0x%02x %ddBm): Ad-Hoc %ssupported\n",
 				 channel->hw_value,
@@ -383,22 +383,22 @@ static void iwl_init_sbands(struct device *dev, const struct iwl_cfg *cfg,
 				dev, cfg, data,
 				&ch_section[NVM_CHANNELS_FAMILY_8000]);
 
-	sband = &data->bands[IEEE80211_BAND_2GHZ];
-	sband->band = IEEE80211_BAND_2GHZ;
+	sband = &data->bands[NL80211_BAND_2GHZ];
+	sband->band = NL80211_BAND_2GHZ;
 	sband->bitrates = &iwl_cfg80211_rates[RATES_24_OFFS];
 	sband->n_bitrates = N_RATES_24;
 	n_used += iwl_init_sband_channels(data, sband, n_channels,
-					  IEEE80211_BAND_2GHZ);
-	iwl_init_ht_hw_capab(cfg, data, &sband->ht_cap, IEEE80211_BAND_2GHZ,
+					  NL80211_BAND_2GHZ);
+	iwl_init_ht_hw_capab(cfg, data, &sband->ht_cap, NL80211_BAND_2GHZ,
 			     tx_chains, rx_chains);
 
-	sband = &data->bands[IEEE80211_BAND_5GHZ];
-	sband->band = IEEE80211_BAND_5GHZ;
+	sband = &data->bands[NL80211_BAND_5GHZ];
+	sband->band = NL80211_BAND_5GHZ;
 	sband->bitrates = &iwl_cfg80211_rates[RATES_52_OFFS];
 	sband->n_bitrates = N_RATES_52;
 	n_used += iwl_init_sband_channels(data, sband, n_channels,
-					  IEEE80211_BAND_5GHZ);
-	iwl_init_ht_hw_capab(cfg, data, &sband->ht_cap, IEEE80211_BAND_5GHZ,
+					  NL80211_BAND_5GHZ);
+	iwl_init_ht_hw_capab(cfg, data, &sband->ht_cap, NL80211_BAND_5GHZ,
 			     tx_chains, rx_chains);
 	if (enable_vht)
 		iwl_init_vht_hw_capab(cfg, data, &sband->vht_cap,
