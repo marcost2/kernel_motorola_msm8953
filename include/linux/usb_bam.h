@@ -1,4 +1,4 @@
-/* Copyright (c) 2011-2016, The Linux Foundation. All rights reserved.
+/* Copyright (c) 2011-2017, The Linux Foundation. All rights reserved.
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 and
@@ -191,7 +191,7 @@ struct usb_bam_pipe_connect {
 };
 
 /**
- * struct msm_usb_bam_platform_data: pipe connection information
+ * struct msm_usb_bam_data: pipe connection information
  * between USB/HSIC BAM and another BAM. USB/HSIC BAM can be
  * either src BAM or dst BAM
  * @usb_bam_num_pipes: max number of pipes to use.
@@ -210,7 +210,7 @@ struct usb_bam_pipe_connect {
  * @max_mbps_superspeed: Maximum Mbits per seconds that the USB core
  *		can work at in bam2bam mode when connected to SS host.
  */
-struct msm_usb_bam_platform_data {
+struct msm_usb_bam_data {
 	u8 max_connections;
 	int usb_bam_num_pipes;
 	phys_addr_t usb_bam_fifo_baseaddr;
