@@ -780,7 +780,7 @@ void oem_process_data_req_msg(int oemDataLen, char *oemData)
    hdd_adapter_t *pAdapter = NULL;
 
    /* for now, STA interface only */
-   pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_INFRA_STATION);
+   pAdapter = hdd_get_adapter(pHddCtx, VOS_STA_MODE);
    if (!pAdapter)
    {
       VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,

@@ -1260,7 +1260,7 @@ static void hdd_SendAssociationEvent(struct net_device *dev,tCsrRoamInfo *pCsrRo
         type = WLAN_STA_ASSOC_DONE_IND;
 
 #ifdef WLAN_FEATURE_P2P_DEBUG
-        if(pAdapter->device_mode == WLAN_HDD_P2P_CLIENT)
+        if(pAdapter->device_mode == VOS_P2P_CLIENT_MODE)
         {
              if(globalP2PConnectionStatus == P2P_CLIENT_CONNECTING_STATE_1)
              {
@@ -1663,7 +1663,7 @@ static void hdd_check_and_move_if_sap_is_on_dfs_chan(hdd_context_t *hdd_ctx,
     eNVChannelEnabledType chan_state;
 
     if (hdd_is_sta_sap_scc_allowed_on_dfs_chan(hdd_ctx)) {
-        sap_adapter = hdd_get_adapter(hdd_ctx, WLAN_HDD_SOFTAP);
+        sap_adapter = hdd_get_adapter(hdd_ctx, VOS_STA_SAP_MODE);
 
         if (!sap_adapter) {
             hddLog(LOG1, FL("SAP not exists, nothing to do"));
@@ -1734,7 +1734,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
     INIT_COMPLETION(pAdapter->disconnect_comp_var);
     /* If only STA mode is on */
     if((pHddCtx->concurrency_mode <= 1) &&
-       (pHddCtx->no_of_open_sessions[WLAN_HDD_INFRA_STATION] <= 1))
+       (pHddCtx->no_of_open_sessions[VOS_STA_MODE] <= 1))
     {
         pHddCtx->isAmpAllowed = VOS_TRUE;
     }
@@ -1788,7 +1788,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
                        "%s: sent disconnected event to nl80211",
                        __func__);
 #ifdef WLAN_FEATURE_P2P_DEBUG
-            if(pAdapter->device_mode == WLAN_HDD_P2P_CLIENT)
+            if(pAdapter->device_mode == VOS_P2P_CLIENT_MODE)
             {
                 if(globalP2PConnectionStatus == P2P_CLIENT_CONNECTED_STATE_1)
                 {
@@ -1824,7 +1824,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
                }
             }
 
-            if (pAdapter->device_mode == WLAN_HDD_P2P_CLIENT)
+            if (pAdapter->device_mode == VOS_P2P_CLIENT_MODE)
             {
                 hddLog(LOG1,
                        FL("P2P client is getting removed and we are tryig to re-enable TDLS"));
@@ -1869,7 +1869,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
      /* Clear PER based roam stats */
 #ifdef WLAN_FEATURE_ROAM_SCAN_OFFLOAD
      if (sme_IsFeatureSupportedByFW(PER_BASED_ROAMING) &&
-         (WLAN_HDD_INFRA_STATION == pAdapter->device_mode) &&
+         (VOS_STA_MODE == pAdapter->device_mode) &&
          pHddCtx->cfg_ini && pHddCtx->cfg_ini->isPERRoamEnabled &&
          pHddCtx->cfg_ini->isPERRoamRxPathEnabled)
          sme_unset_per_roam_rxconfig(pHddCtx->hHal);
@@ -1994,8 +1994,8 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
          hdd_connSetConnectionState(pHddStaCtx, eConnectionState_NotConnected);
     }
 #ifdef WLAN_FEATURE_GTK_OFFLOAD
-    if ((WLAN_HDD_INFRA_STATION == pAdapter->device_mode) ||
-        (WLAN_HDD_P2P_CLIENT == pAdapter->device_mode))
+    if ((VOS_STA_MODE == pAdapter->device_mode) ||
+        (VOS_P2P_CLIENT_MODE == pAdapter->device_mode))
     {
         memset(&pHddStaCtx->gtkOffloadReqParams, 0,
               sizeof (tSirGtkOffloadParams));
@@ -2027,9 +2027,9 @@ static void hdd_postTLPacketPendingInd(hdd_adapter_t *pAdapter,
     VOS_STATUS status;
     v_BOOL_t granted = VOS_FALSE;
 
-    if ((pAdapter->device_mode == WLAN_HDD_INFRA_STATION) ||
-        (pAdapter->device_mode == WLAN_HDD_P2P_CLIENT) ||
-        (pAdapter->device_mode == WLAN_HDD_P2P_DEVICE))
+    if ((pAdapter->device_mode == VOS_STA_MODE) ||
+        (pAdapter->device_mode == VOS_P2P_CLIENT_MODE) ||
+        (pAdapter->device_mode == VOS_P2P_DEVICE))
     {
         //Indicate to TL that there is pending data if a queue is non empty
         for (i = WLANTL_AC_HIGH_PRIO; i>=0; --i)
@@ -2388,7 +2388,7 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
 
 #ifdef WLAN_FEATURE_ROAM_SCAN_OFFLOAD
         if (sme_IsFeatureSupportedByFW(PER_BASED_ROAMING) &&
-            (WLAN_HDD_INFRA_STATION == pAdapter->device_mode) &&
+            (VOS_STA_MODE == pAdapter->device_mode) &&
             !hddDisconInProgress &&
             pHddCtx->cfg_ini && pHddCtx->cfg_ini->isPERRoamEnabled &&
             pHddCtx->cfg_ini->isPERRoamRxPathEnabled)
@@ -2769,7 +2769,7 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
             hdd_connSetConnectionState( pHddStaCtx, eConnectionState_NotConnected);
         }
         if((pHddCtx->concurrency_mode <= 1) &&
-           (pHddCtx->no_of_open_sessions[WLAN_HDD_INFRA_STATION] <=1))
+           (pHddCtx->no_of_open_sessions[VOS_STA_MODE] <=1))
         {
             pHddCtx->isAmpAllowed = VOS_TRUE;
         }
@@ -2780,8 +2780,8 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
 
         // In case of JB, as Change-Iface may or maynot be called for p2p0
         // Enable BMPS/IMPS in case P2P_CLIENT disconnected
-        if(((WLAN_HDD_INFRA_STATION == pAdapter->device_mode) ||
-            (WLAN_HDD_P2P_CLIENT == pAdapter->device_mode)) &&
+        if(((VOS_STA_MODE == pAdapter->device_mode) ||
+            (VOS_P2P_CLIENT_MODE == pAdapter->device_mode)) &&
             (vos_concurrent_open_sessions_running()))
         {
            //Enable BMPS only of other Session is P2P Client
@@ -2813,7 +2813,7 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
         if ( eCSR_ROAM_ASSOCIATION_FAILURE == roamStatus &&  !hddDisconInProgress )
         {
 
-            if (pAdapter->device_mode == WLAN_HDD_P2P_CLIENT)
+            if (pAdapter->device_mode == VOS_P2P_CLIENT_MODE)
             {
                 hddLog(LOG1,
                        FL("Assoication Failure for P2P client and we are trying to re-enable TDLS"));
@@ -2886,7 +2886,7 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
 
     if (eCSR_ROAM_RESULT_ASSOCIATED == roamResult)
     {
-        pHostapdAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_SOFTAP);
+        pHostapdAdapter = hdd_get_adapter(pHddCtx, VOS_STA_SAP_MODE);
         if (pHostapdAdapter != NULL)
         {
              /* Restart SAP if its operating channel is different
@@ -3279,7 +3279,7 @@ static eHalStatus hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter, tCsrRo
    fConnected = hdd_connGetConnectedCipherAlgo( pHddStaCtx, &connectedCipherAlgo );
    if( fConnected )
    {
-      if ( WLAN_HDD_IBSS == pAdapter->device_mode )
+      if ( VOS_IBSS_MODE == pAdapter->device_mode )
       {
          v_U8_t staId;
 
@@ -4429,7 +4429,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
              pHddStaCtx->conn_info.operationChannel =
                  pRoamInfo->chan_info.chan_id;
 
-             pHostapdAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_SOFTAP);
+             pHostapdAdapter = hdd_get_adapter(pHddCtx, VOS_STA_SAP_MODE);
              if (pHostapdAdapter &&
                     (test_bit(SOFTAP_BSS_STARTED,
                     &pHostapdAdapter->event_flags)))
@@ -4875,7 +4875,7 @@ int hdd_SetGENIEToCsr( hdd_adapter_t *pAdapter, eCsrAuthType *RSNAuthType)
         pWextState->roamProfile.EncryptionType.encryptionType[0] = RSNEncryptType; // Use the cipher type in the RSN IE
         pWextState->roamProfile.mcEncryptionType.encryptionType[0] = mcRSNEncryptType;
 
-        if ( (WLAN_HDD_IBSS == pAdapter->device_mode) &&
+        if ( (VOS_IBSS_MODE == pAdapter->device_mode) &&
              ((eCSR_ENCRYPT_TYPE_AES == mcRSNEncryptType) ||
              (eCSR_ENCRYPT_TYPE_TKIP == mcRSNEncryptType)))
         {
@@ -5282,8 +5282,8 @@ int __iw_set_essid(struct net_device *dev,
     * If "hddDisconInProgress" is set to true then cfg80211 layer is not
     * informed of connect result indication which is an issue.
     */
-    if (WLAN_HDD_INFRA_STATION == pAdapter->device_mode ||
-            WLAN_HDD_P2P_CLIENT == pAdapter->device_mode)
+    if (VOS_STA_MODE == pAdapter->device_mode ||
+            VOS_P2P_CLIENT_MODE == pAdapter->device_mode)
     {
         VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
                    FL("Set HDD connState to eConnectionState_Connecting"));
@@ -5294,8 +5294,8 @@ int __iw_set_essid(struct net_device *dev,
                          &(pWextState->roamProfile), &roamId);
 
     if ((eHAL_STATUS_SUCCESS != status) &&
-        (WLAN_HDD_INFRA_STATION == pAdapter->device_mode ||
-        WLAN_HDD_P2P_CLIENT == pAdapter->device_mode))
+        (VOS_STA_MODE == pAdapter->device_mode ||
+        VOS_P2P_CLIENT_MODE == pAdapter->device_mode))
     {
         hddLog(VOS_TRACE_LEVEL_ERROR,
                FL("sme_RoamConnect (session %d) failed with status %d. -> NotConnected"),
@@ -6333,9 +6333,9 @@ hdd_adapter_t *hdd_get_sta_connection_in_progress(hdd_context_t *hdd_ctx)
         if (!adapter)
             goto end;
 
-        if ((WLAN_HDD_INFRA_STATION == adapter->device_mode) ||
-            (WLAN_HDD_P2P_CLIENT == adapter->device_mode) ||
-            (WLAN_HDD_P2P_DEVICE == adapter->device_mode)) {
+        if ((VOS_STA_MODE == adapter->device_mode) ||
+            (VOS_P2P_CLIENT_MODE == adapter->device_mode) ||
+            (VOS_P2P_DEVICE == adapter->device_mode)) {
             hdd_sta_ctx = WLAN_HDD_GET_STATION_CTX_PTR(adapter);
             if (eConnectionState_Connecting ==
                 hdd_sta_ctx->conn_info.connState) {

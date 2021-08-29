@@ -174,8 +174,8 @@ static void hdd_state_info_dump(void)
        if (adapter->dev)
            hddLog(LOG1, FL("device name: %s"), adapter->dev->name);
        switch (adapter->device_mode) {
-       case WLAN_HDD_INFRA_STATION:
-       case WLAN_HDD_P2P_CLIENT:
+       case VOS_STA_MODE:
+       case VOS_P2P_CLIENT_MODE:
            hdd_sta_ctx = WLAN_HDD_GET_STATION_CTX_PTR(adapter);
            hddLog(LOG1, FL("connState: %d device_mode: %d"),
                   hdd_sta_ctx->conn_info.connState, adapter->device_mode);

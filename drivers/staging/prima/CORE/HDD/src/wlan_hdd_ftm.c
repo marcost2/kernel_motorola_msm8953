@@ -1514,7 +1514,7 @@ int wlan_hdd_ftm_open(hdd_context_t *pHddCtx)
        goto err_ftm_vos_close;
     }
 
-    pAdapter = hdd_open_adapter( pHddCtx, WLAN_HDD_FTM, "wlan%d",
+    pAdapter = hdd_open_adapter( pHddCtx, VOS_FTM_MODE, "wlan%d",
                 wlan_hdd_get_intf_addr(pHddCtx), FALSE);
     if( NULL == pAdapter )
     {
@@ -1606,7 +1606,7 @@ int wlan_hdd_ftm_close(hdd_context_t *pHddCtx)
     VOS_STATUS vosStatus;
     v_CONTEXT_t vosContext = pHddCtx->pvosContext;
 
-    hdd_adapter_t *pAdapter = hdd_get_adapter(pHddCtx,WLAN_HDD_FTM);
+    hdd_adapter_t *pAdapter = hdd_get_adapter(pHddCtx,VOS_FTM_MODE);
     ENTER();
     if(pAdapter == NULL)
     {

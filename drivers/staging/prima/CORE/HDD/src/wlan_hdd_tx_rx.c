@@ -398,7 +398,7 @@ void hdd_mon_tx_mgmt_pkt(hdd_adapter_t* pAdapter)
    {
        return;
    }
-   pMonAdapter = hdd_get_adapter( pAdapter->pHddCtx, WLAN_HDD_MONITOR );
+   pMonAdapter = hdd_get_adapter( pAdapter->pHddCtx, VOS_MONITOR_MODE );
    if (pMonAdapter == NULL)
    {
        hddLog(VOS_TRACE_LEVEL_ERROR,
@@ -1696,7 +1696,7 @@ VOS_STATUS hdd_tx_complete_cbk( v_VOID_t *vosContext,
    //Get the HDD context.
    pHddCtx = (hdd_context_t *)vos_get_context( VOS_MODULE_ID_HDD, vosContext );
    //Get the Adapter context.
-   pAdapter = hdd_get_adapter(pHddCtx,WLAN_HDD_INFRA_STATION);
+   pAdapter = hdd_get_adapter(pHddCtx,VOS_STA_MODE);
    if (pAdapter == NULL || WLAN_HDD_ADAPTER_MAGIC != pAdapter->magic)
    {
       VOS_TRACE(VOS_MODULE_ID_HDD_DATA, VOS_TRACE_LEVEL_INFO,
@@ -2336,7 +2336,7 @@ VOS_STATUS hdd_tx_fetch_packet_cbk( v_VOID_t *vosContext,
    pAdapter->hdd_stats.hddTxRxStats.continuousTxTimeoutCount = 0;
 
    if((pHddCtx->cfg_ini->thermalMitigationEnable) &&
-      (WLAN_HDD_INFRA_STATION == pAdapter->device_mode))
+      (VOS_STA_MODE == pAdapter->device_mode))
    {
       if(mutex_lock_interruptible(&pHddCtx->tmInfo.tmOperationLock))
       {
@@ -2570,7 +2570,7 @@ VOS_STATUS  hdd_rx_packet_monitor_cbk(v_VOID_t *vosContext,vos_pkt_t *pVosPacket
       return VOS_STATUS_E_FAILURE;
    }
 
-   pAdapter = hdd_get_adapter(pHddCtx,WLAN_HDD_MONITOR);
+   pAdapter = hdd_get_adapter(pHddCtx,VOS_MONITOR_MODE);
    if ((NULL == pAdapter)  || (WLAN_HDD_ADAPTER_MAGIC != pAdapter->magic) )
    {
       VOS_TRACE(VOS_MODULE_ID_HDD_DATA, VOS_TRACE_LEVEL_ERROR,
@@ -2963,8 +2963,8 @@ void hdd_tx_rx_pkt_cnt_stat_timer_handler( void *phddctx)
                     "%s: Adapter with device mode %d exists",
                     __func__, pAdapter->device_mode);
 
-            if ((WLAN_HDD_INFRA_STATION == pAdapter->device_mode) ||
-                    (WLAN_HDD_P2P_CLIENT == pAdapter->device_mode))
+            if ((VOS_STA_MODE == pAdapter->device_mode) ||
+                    (VOS_P2P_CLIENT_MODE == pAdapter->device_mode))
             {
                 pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
                 if ((eConnectionState_Associated ==
@@ -2974,8 +2974,8 @@ void hdd_tx_rx_pkt_cnt_stat_timer_handler( void *phddctx)
                     fconnected = TRUE;
                 }
             }
-            else if ((WLAN_HDD_SOFTAP == pAdapter->device_mode) ||
-                     (WLAN_HDD_P2P_GO == pAdapter->device_mode))
+            else if ((VOS_STA_SAP_MODE == pAdapter->device_mode) ||
+                     (VOS_P2P_GO_MODE == pAdapter->device_mode))
             {
                 v_CONTEXT_t pVosContext = ( WLAN_HDD_GET_CTX(pAdapter))->pvosContext;
                 ptSapContext pSapCtx = VOS_GET_SAP_CB(pVosContext);
@@ -3014,7 +3014,7 @@ void hdd_tx_rx_pkt_cnt_stat_timer_handler( void *phddctx)
                     (pAdapter->hdd_stats.hddTxRxStats.pkt_rx_count >
                                        cfg_param->txRxThresholdForSplitScan) ||
                         pHddCtx->drvr_miracast || pHddCtx->is_vowifi_enabled ||
-                    (WLAN_HDD_P2P_GO == pAdapter->device_mode))
+                    (VOS_P2P_GO_MODE == pAdapter->device_mode))
                 {
                     pAdapter->hdd_stats.hddTxRxStats.pkt_tx_count = 0;
                     pAdapter->hdd_stats.hddTxRxStats.pkt_rx_count = 0;
@@ -3097,7 +3097,7 @@ void hdd_rx_fwd_eapol(v_VOID_t *vosContext, vos_pkt_t *pVosPacket)
    {
       pAdapter = pAdapterNode->pAdapter;
 
-      if (pAdapter->device_mode == WLAN_HDD_INFRA_STATION)
+      if (pAdapter->device_mode == VOS_STA_MODE)
          break;
 
       status = hdd_get_next_adapter (pHddCtx, pAdapterNode, &pNext);

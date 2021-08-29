@@ -178,7 +178,7 @@ void wlan_hdd_tdls_disable_offchan_and_teardown_links(hdd_context_t *hddctx)
         return ;
     }
 
-    adapter = hdd_get_adapter(hddctx, WLAN_HDD_INFRA_STATION);
+    adapter = hdd_get_adapter(hddctx, VOS_STA_MODE);
 
     if (adapter == NULL) {
         hddLog(LOGE, FL("Station Adapter Not Found"));
@@ -926,8 +926,8 @@ void wlan_hdd_tdls_btCoex_cb(void *data, int indType)
         return;
     }
 
-    /* get pAdapter context, do we need WLAN_HDD_P2P_CLIENT */
-    pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_INFRA_STATION);
+    /* get pAdapter context, do we need VOS_P2P_CLIENT_MODE */
+    pAdapter = hdd_get_adapter(pHddCtx, VOS_STA_MODE);
     if (NULL == pAdapter)
     {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
@@ -2683,7 +2683,7 @@ void wlan_hdd_tdls_check_bmps(hdd_adapter_t *pAdapter)
         {
             VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
                        "%s: TDLS peer connected. Disable BMPS", __func__);
-            status = hdd_disable_bmps_imps(pHddCtx, WLAN_HDD_INFRA_STATION);
+            status = hdd_disable_bmps_imps(pHddCtx, VOS_STA_MODE);
 
             if (status == VOS_STATUS_SUCCESS)
                 pHddTdlsCtx->is_tdls_disabled_bmps = true;

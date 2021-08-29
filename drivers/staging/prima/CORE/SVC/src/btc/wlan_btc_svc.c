@@ -41,7 +41,7 @@ static struct hdd_context_s *pHddCtx;
 
 static int gWiFiChannel;  /* WiFi associated channel 1-13, or 0 (none) */
 static int gAmpChannel;   /* AMP associated channel 1-13, or 0 (none) */
-static int gBtcDriverMode = WLAN_HDD_INFRA_STATION;  /* Driver mode in BTC */
+static int gBtcDriverMode = VOS_STA_MODE;  /* Driver mode in BTC */
 
 
 // Forward declrarion
@@ -76,12 +76,12 @@ void send_btc_nlink_msg (int type, int dest_pid)
   if(type == WLAN_BTC_SOFTAP_BSS_START)
   {
      /* Event is SoftAP BSS Start set BTC driver mode to SoftAP */
-     gBtcDriverMode = WLAN_HDD_SOFTAP;
+     gBtcDriverMode = VOS_STA_SAP_MODE;
   }
   if(type == WLAN_STA_ASSOC_DONE_IND)
   {
      /* Event is STA Assoc done set BTC driver mode to INFRA STA*/
-     gBtcDriverMode = WLAN_HDD_INFRA_STATION;
+     gBtcDriverMode = VOS_STA_MODE;
   }
 
    switch( type )

@@ -3893,7 +3893,7 @@ void vos_update_arp_fw_tx_delivered(void)
    while (NULL != pAdapterNode && 0 == status)
    {
       pAdapter = pAdapterNode->pAdapter;
-      if (pAdapter->device_mode == WLAN_HDD_INFRA_STATION)
+      if (pAdapter->device_mode == VOS_STA_MODE)
          break;
 
       status = hdd_get_next_adapter (pHddCtx, pAdapterNode, &pNext);
@@ -3934,7 +3934,7 @@ void vos_update_arp_rx_drop_reorder(void)
    while (NULL != pAdapterNode && 0 == status)
    {
       pAdapter = pAdapterNode->pAdapter;
-      if (pAdapter->device_mode == WLAN_HDD_INFRA_STATION)
+      if (pAdapter->device_mode == VOS_STA_MODE)
          break;
 
       status = hdd_get_next_adapter (pHddCtx, pAdapterNode, &pNext);

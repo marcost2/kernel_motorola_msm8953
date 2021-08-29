@@ -563,8 +563,8 @@ int __wlan_hdd_ipv6_changed(struct notifier_block *nb,
     while (NULL != pAdapterNode && VOS_STATUS_SUCCESS == vos_status)
     {
         if (pAdapterNode->pAdapter && pAdapterNode->pAdapter->dev == ndev &&
-             (pAdapterNode->pAdapter->device_mode == WLAN_HDD_INFRA_STATION ||
-              pAdapterNode->pAdapter->device_mode == WLAN_HDD_P2P_CLIENT))
+             (pAdapterNode->pAdapter->device_mode == VOS_STA_MODE ||
+              pAdapterNode->pAdapter->device_mode == VOS_P2P_CLIENT_MODE))
         {
 
             if (eConnectionState_Associated ==
@@ -632,17 +632,17 @@ void hdd_conf_hostoffload(hdd_adapter_t *pAdapter, v_BOOL_t fenable)
         return;
     }
 
-    if ((WLAN_HDD_INFRA_STATION == pAdapter->device_mode) ||
-       (WLAN_HDD_P2P_CLIENT == pAdapter->device_mode) ||
-       ((WLAN_HDD_SOFTAP == pAdapter->device_mode) &&
+    if ((VOS_STA_MODE == pAdapter->device_mode) ||
+       (VOS_P2P_CLIENT_MODE == pAdapter->device_mode) ||
+       ((VOS_STA_SAP_MODE == pAdapter->device_mode) &&
        (pHddCtx->is_ap_mode_wow_supported)))
     {
         if (fenable)
         {
-            if (((WLAN_HDD_INFRA_STATION == pAdapter->device_mode) &&
+            if (((VOS_STA_MODE == pAdapter->device_mode) &&
                 (eConnectionState_Associated ==
                 (WLAN_HDD_GET_STATION_CTX_PTR(pAdapter))->conn_info.connState))
-                || (WLAN_HDD_SOFTAP == pAdapter->device_mode))
+                || (VOS_STA_SAP_MODE == pAdapter->device_mode))
             {
                 if ((pHddCtx->cfg_ini->fhostArpOffload))
                 {
@@ -1076,8 +1076,8 @@ int __wlan_hdd_ipv4_changed(struct notifier_block *nb,
     while (NULL != pAdapterNode && VOS_STATUS_SUCCESS == vos_status)
     {
         if (pAdapterNode->pAdapter && pAdapterNode->pAdapter->dev == ndev &&
-             (pAdapterNode->pAdapter->device_mode == WLAN_HDD_INFRA_STATION ||
-              pAdapterNode->pAdapter->device_mode == WLAN_HDD_P2P_CLIENT))
+             (pAdapterNode->pAdapter->device_mode == VOS_STA_MODE ||
+              pAdapterNode->pAdapter->device_mode == VOS_P2P_CLIENT_MODE))
         {
 
             if (eConnectionState_Associated ==
@@ -1651,9 +1651,9 @@ void hdd_suspend_wlan(void)
    while ( NULL != pAdapterNode && VOS_STATUS_SUCCESS == status )
    {
        pAdapter = pAdapterNode->pAdapter;
-       if ( (WLAN_HDD_INFRA_STATION != pAdapter->device_mode)
-         && (WLAN_HDD_SOFTAP != pAdapter->device_mode)
-         && (WLAN_HDD_P2P_CLIENT != pAdapter->device_mode) )
+       if ( (VOS_STA_MODE != pAdapter->device_mode)
+         && (VOS_STA_SAP_MODE != pAdapter->device_mode)
+         && (VOS_P2P_CLIENT_MODE != pAdapter->device_mode) )
 
        {  // we skip this registration for modes other than STA, SAP and P2P client modes.
            status = hdd_get_next_adapter ( pHddCtx, pAdapterNode, &pNext );
@@ -1748,8 +1748,8 @@ void hdd_ReConfigSuspendDataClearedDuringRoaming(hdd_context_t *pHddCtx)
     {
         pAdapter = pAdapterNode->pAdapter;
         if( pAdapter &&
-        (( pAdapter->device_mode == WLAN_HDD_INFRA_STATION)  ||
-          (pAdapter->device_mode == WLAN_HDD_P2P_CLIENT)))
+        (( pAdapter->device_mode == VOS_STA_MODE)  ||
+          (pAdapter->device_mode == VOS_P2P_CLIENT_MODE)))
         {
             if (pHddCtx->cfg_ini->fhostArpOffload)
             {
@@ -2037,9 +2037,9 @@ void hdd_resume_wlan(void)
    while ( NULL != pAdapterNode && VOS_STATUS_SUCCESS == status )
    {
        pAdapter = pAdapterNode->pAdapter;
-       if ( (WLAN_HDD_INFRA_STATION != pAdapter->device_mode)
-         && (WLAN_HDD_SOFTAP != pAdapter->device_mode)
-         && (WLAN_HDD_P2P_CLIENT != pAdapter->device_mode) )
+       if ( (VOS_STA_MODE != pAdapter->device_mode)
+         && (VOS_STA_SAP_MODE != pAdapter->device_mode)
+         && (VOS_P2P_CLIENT_MODE != pAdapter->device_mode) )
        {  // we skip this registration for modes other than STA, SAP and P2P client modes.
             status = hdd_get_next_adapter ( pHddCtx, pAdapterNode, &pNext );
             pAdapterNode = pNext;
@@ -2510,7 +2510,7 @@ static void hdd_ssr_restart_sap(hdd_context_t *hdd_ctx)
 	status =  hdd_get_front_adapter (hdd_ctx, &adapter_node);
 	while (NULL != adapter_node && VOS_STATUS_SUCCESS == status) {
 		adapter = adapter_node->pAdapter;
-		if (adapter && adapter->device_mode == WLAN_HDD_SOFTAP) {
+		if (adapter && adapter->device_mode == VOS_STA_SAP_MODE) {
 			if (test_bit(SOFTAP_INIT_DONE, &adapter->event_flags)) {
 				hostapd_state =
 					WLAN_HDD_GET_HOSTAP_STATE_PTR(adapter);

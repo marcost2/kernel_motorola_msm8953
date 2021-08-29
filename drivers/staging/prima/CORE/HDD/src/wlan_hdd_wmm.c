@@ -2309,7 +2309,7 @@ v_U16_t hdd_wmm_select_queue(struct net_device * dev, struct sk_buff *skb)
    }
 
    /*Get the Station ID*/
-   if (WLAN_HDD_IBSS == pAdapter->device_mode)
+   if (VOS_IBSS_MODE == pAdapter->device_mode)
    {
        v_MACADDR_t *pDestMacAddress = (v_MACADDR_t*)skb->data;
        v_U8_t STAId;
@@ -2335,7 +2335,7 @@ v_U16_t hdd_wmm_select_queue(struct net_device * dev, struct sk_buff *skb)
     * Doing this for IBSS alone, since for STA interface
     * types, these packets will be queued to the new queue.
     */
-   if ((WLAN_HDD_IBSS == pAdapter->device_mode) &&
+   if ((VOS_IBSS_MODE == pAdapter->device_mode) &&
        pAdapter->isVosLowResource && hdd_is_dhcp_packet(skb))
    {
       VOS_TRACE(VOS_MODULE_ID_HDD, WMM_TRACE_LEVEL_WARN,
@@ -2356,7 +2356,7 @@ done:
       queueIndex = hddLinuxUpToAcMap[SME_QOS_WMM_UP_BE];
    }
 
-   if ((WLAN_HDD_IBSS != pAdapter->device_mode) &&
+   if ((VOS_IBSS_MODE != pAdapter->device_mode) &&
        (hdd_is_dhcp_packet(skb) ||
         hdd_skb_is_eapol_or_wai_packet(skb)))
    {

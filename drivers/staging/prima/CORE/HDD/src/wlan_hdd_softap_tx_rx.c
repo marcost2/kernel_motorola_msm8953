@@ -2131,12 +2131,12 @@ VOS_STATUS hdd_softap_stop_bss( hdd_adapter_t *pAdapter)
        }
     }
 
-    if (pAdapter->device_mode == WLAN_HDD_SOFTAP)
+    if (pAdapter->device_mode == VOS_STA_SAP_MODE)
         wlan_hdd_restore_channels(pHddCtx);
 
     /* Mark the indoor channel (passive) to enable */
     if (pHddCtx->cfg_ini->disable_indoor_channel &&
-                      pAdapter->device_mode == WLAN_HDD_SOFTAP) {
+                      pAdapter->device_mode == VOS_STA_SAP_MODE) {
         hdd_update_indoor_channel(pHddCtx, false);
         sme_update_channel_list((tpAniSirGlobal)pHddCtx->hHal);
     }

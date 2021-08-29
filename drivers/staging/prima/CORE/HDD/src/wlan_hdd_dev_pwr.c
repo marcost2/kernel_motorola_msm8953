@@ -645,7 +645,7 @@ void hddDevTmTxBlockTimeoutHandler(void *usrData)
        return;
    }
 
-   staAdapater = hdd_get_adapter(pHddCtx, WLAN_HDD_INFRA_STATION);
+   staAdapater = hdd_get_adapter(pHddCtx, VOS_STA_MODE);
 
    if ((NULL == staAdapater) || (WLAN_HDD_ADAPTER_MAGIC != staAdapater->magic))
    {
@@ -742,7 +742,7 @@ void hddDevTmLevelChangedHandler(struct device *dev, int changedTmLevel)
 
    if (pHddCtx->tmInfo.tmAction.enterImps)
    {
-      staAdapater = hdd_get_adapter(pHddCtx, WLAN_HDD_INFRA_STATION);
+      staAdapater = hdd_get_adapter(pHddCtx, VOS_STA_MODE);
       if (staAdapater)
       {
          if (hdd_connIsConnected(WLAN_HDD_GET_STATION_CTX_PTR(staAdapater)))

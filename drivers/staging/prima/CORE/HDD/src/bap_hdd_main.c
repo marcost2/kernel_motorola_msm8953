@@ -3708,18 +3708,18 @@ int BSL_Init ( v_PVOID_t  pvosGCtx )
         status = hdd_get_front_adapter ( pHddCtx, &pAdapterNode );
         if ( NULL != pAdapterNode && VOS_STATUS_SUCCESS == status )
         {
-            if ( WLAN_HDD_SOFTAP == pAdapterNode->pAdapter->device_mode)
+            if ( VOS_STA_SAP_MODE == pAdapterNode->pAdapter->device_mode)
             {
-                pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_SOFTAP);
+                pAdapter = hdd_get_adapter(pHddCtx, VOS_STA_SAP_MODE);
             }
-            else if (WLAN_HDD_P2P_GO == pAdapterNode->pAdapter->device_mode)
+            else if (VOS_P2P_GO_MODE == pAdapterNode->pAdapter->device_mode)
             {
-                pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_P2P_GO);
+                pAdapter = hdd_get_adapter(pHddCtx, VOS_P2P_GO_MODE);
             }
         }
      }
     else
-        pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_INFRA_STATION);
+        pAdapter = hdd_get_adapter(pHddCtx, VOS_STA_MODE);
 
 
     if ( NULL == pAdapter )

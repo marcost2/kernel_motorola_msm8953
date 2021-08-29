@@ -639,18 +639,6 @@ typedef struct beacon_data_s {
     int dtim_period;
 } beacon_data_t;
 
-typedef enum device_mode
-{  /* MAINTAIN 1 - 1 CORRESPONDENCE WITH tVOS_CON_MODE*/
-   WLAN_HDD_INFRA_STATION,
-   WLAN_HDD_SOFTAP,
-   WLAN_HDD_P2P_CLIENT,
-   WLAN_HDD_P2P_GO,
-   WLAN_HDD_MONITOR,
-   WLAN_HDD_FTM,
-   WLAN_HDD_IBSS,
-   WLAN_HDD_P2P_DEVICE
-}device_mode_t;
-
 typedef enum rem_on_channel_request_type
 {
    REMAIN_ON_CHANNEL_REQUEST,
@@ -1156,7 +1144,7 @@ struct hdd_adapter_s
 {
    void *pHddCtx;
 
-   device_mode_t device_mode; 
+   tVOS_CON_MODE device_mode; 
 
    /** Handle to the network device */
    struct net_device *dev;
@@ -1412,7 +1400,7 @@ struct hdd_adapter_s
 #define WLAN_HDD_GET_CFG_STATE_PTR(pAdapter)  (&(pAdapter)->cfg80211State)
 #ifdef FEATURE_WLAN_TDLS
 #define WLAN_HDD_IS_TDLS_SUPPORTED_ADAPTER(pAdapter) \
-        ((WLAN_HDD_INFRA_STATION == pAdapter->device_mode) ? 1 : 0)
+        ((VOS_STA_MODE == pAdapter->device_mode) ? 1 : 0)
 #define WLAN_HDD_GET_TDLS_CTX_PTR(pAdapter) \
         ((WLAN_HDD_IS_TDLS_SUPPORTED_ADAPTER(pAdapter)) ? \
         (tdlsCtx_t*)(pAdapter)->sessionCtx.station.pHddTdlsCtx : NULL)
@@ -1984,14 +1972,14 @@ hdd_adapter_t *hdd_get_adapter_by_sme_session_id( hdd_context_t *pHddCtx,
                                         tANI_U32 sme_session_id );
 hdd_adapter_t * hdd_get_mon_adapter( hdd_context_t *pHddCtx );
 VOS_STATUS hdd_init_station_mode( hdd_adapter_t *pAdapter );
-hdd_adapter_t * hdd_get_adapter( hdd_context_t *pHddCtx, device_mode_t mode );
+hdd_adapter_t * hdd_get_adapter( hdd_context_t *pHddCtx, tVOS_CON_MODE mode );
 void hdd_deinit_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter, tANI_U8 rtnl_held );
 VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
                              const v_BOOL_t bCloseSession );
 void hdd_set_station_ops( struct net_device *pWlanDev );
 tANI_U8* wlan_hdd_get_intf_addr(hdd_context_t* pHddCtx);
 void wlan_hdd_release_intf_addr(hdd_context_t* pHddCtx, tANI_U8* releaseAddr);
-v_U8_t hdd_get_operating_channel( hdd_context_t *pHddCtx, device_mode_t mode );
+v_U8_t hdd_get_operating_channel( hdd_context_t *pHddCtx, tVOS_CON_MODE mode );
 void wlan_hdd_mon_set_typesubtype( hdd_mon_ctx_t *pMonCtx,int type);
 void hdd_mon_post_msg_cb(void *context);
 VOS_STATUS wlan_hdd_mon_postMsg(void *cookie, hdd_mon_ctx_t *pMonCtx,

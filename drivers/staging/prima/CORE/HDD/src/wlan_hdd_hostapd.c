@@ -1341,7 +1341,7 @@ VOS_STATUS hdd_hostapd_SAPEventCB( tpSap_Event pSapEvent, v_PVOID_t usrDataForCa
             }
             else
             {
-                if (pHostapdAdapter->device_mode == WLAN_HDD_P2P_GO)
+                if (pHostapdAdapter->device_mode == VOS_P2P_GO_MODE)
                 {
                     if ((cfg_param->dynSplitscan) &&
                             (!pHddCtx->issplitscan_enabled))
@@ -1839,8 +1839,8 @@ stopbss :
         wireless_send_event(dev, we_event, &wrqu, (char *)we_custom_event_generic);
         hdd_dump_concurrency_info(pHddCtx);
     }
-        if (pHostapdAdapter->device_mode == WLAN_HDD_P2P_GO ||
-            pHostapdAdapter->device_mode == WLAN_HDD_SOFTAP)
+        if (pHostapdAdapter->device_mode == VOS_P2P_GO_MODE ||
+            pHostapdAdapter->device_mode == VOS_STA_SAP_MODE)
         {
             hddLog(LOG1,
                    FL("SAP or Go is getting removed and we are trying to re-enable TDLS"));
@@ -2061,7 +2061,7 @@ static void hdd_unsafe_channel_restart_sap(hdd_adapter_t *adapter,
                                            hdd_context_t *hdd_ctx)
 {
 
-   if (!(adapter && (WLAN_HDD_SOFTAP == adapter->device_mode))) {
+   if (!(adapter && (VOS_STA_SAP_MODE == adapter->device_mode))) {
       return;
    }
 
@@ -2165,7 +2165,7 @@ void hdd_check_for_unsafe_ch(hdd_adapter_t *phostapd_adapter,
     /* Get unsafe channel list */
     vos_get_wlan_unsafe_channel(unsafeChannelList, sizeof(unsafeChannelList),
                                 &unsafeChannelCount);
-    sta_chan = hdd_get_operating_channel(hdd_ctxt, WLAN_HDD_INFRA_STATION);
+    sta_chan = hdd_get_operating_channel(hdd_ctxt, VOS_STA_MODE);
 
     if (sta_chan) {
         hddLog(LOG1, FL("Only SCC supported for STA+SAP"));
@@ -2178,7 +2178,7 @@ void hdd_check_for_unsafe_ch(hdd_adapter_t *phostapd_adapter,
              phostapd_adapter->sessionCtx.ap.operatingChannel) {
             if ((AUTO_CHANNEL_SELECT ==
                 phostapd_adapter->sessionCtx.ap.sapConfig.channel)
-                && (WLAN_HDD_SOFTAP == phostapd_adapter->device_mode)) {
+                && (VOS_STA_SAP_MODE == phostapd_adapter->device_mode)) {
                /*
                 * current operating channel is un-safe channel
                 * restart driver
@@ -2369,11 +2369,11 @@ void hdd_hostapd_ch_avoid_cb
 
    /* Get SAP context first
     * SAP and P2PGO would not concurrent */
-   pHostapdAdapter = hdd_get_adapter(hddCtxt, WLAN_HDD_SOFTAP);
+   pHostapdAdapter = hdd_get_adapter(hddCtxt, VOS_STA_SAP_MODE);
 #ifdef WLAN_FEATURE_AP_HT40_24G
    if (NULL == pHostapdAdapter)
    {
-       pHostapdAdapter = hdd_get_adapter(hddCtxt, WLAN_HDD_P2P_GO);
+       pHostapdAdapter = hdd_get_adapter(hddCtxt, VOS_P2P_GO_MODE);
    }
 #endif
    if ((pHostapdAdapter) &&
@@ -2736,7 +2736,7 @@ static __iw_softap_setparam(struct net_device *dev,
                 break;
             }
         case QCSAP_PARAM_SET_CHANNEL_CHANGE:
-            if (WLAN_HDD_SOFTAP == pHostapdAdapter->device_mode) {
+            if (VOS_STA_SAP_MODE == pHostapdAdapter->device_mode) {
                 ptSapContext sap_ctx;
 
                 sap_ctx = VOS_GET_SAP_CB(pVosContext);
@@ -5967,7 +5967,7 @@ void hdd_sap_destroy_timers(hdd_adapter_t *adapter)
 void hdd_force_scc_restart_sap(hdd_adapter_t *adapter,
    hdd_context_t *hdd_ctx, tANI_U8  channelId)
 {
-  if (!(adapter && (WLAN_HDD_SOFTAP == adapter->device_mode))) {
+  if (!(adapter && (VOS_STA_SAP_MODE == adapter->device_mode))) {
     return;
   }
 

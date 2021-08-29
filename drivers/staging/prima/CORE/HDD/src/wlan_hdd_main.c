@@ -183,7 +183,7 @@ DEFINE_SPINLOCK(hdd_context_lock);
  * size  = sizeof(oui) + sizeof(oui_data) + 1(Element ID) + 1(EID Length)
  * OUI_DATA should be at least 3 bytes long
  */
-#define WLAN_HDD_IBSS_MIN_OUI_DATA_LENGTH (3)
+#define VOS_IBSS_MODE_MIN_OUI_DATA_LENGTH (3)
 #endif
 
 #if defined(FEATURE_WLAN_ESE) && defined(FEATURE_WLAN_ESE_UPLOAD)
@@ -291,14 +291,14 @@ const char * hdd_device_modetoString(v_U8_t device_mode)
 {
    switch(device_mode)
    {
-       CASE_RETURN_STRING( WLAN_HDD_INFRA_STATION );
-       CASE_RETURN_STRING( WLAN_HDD_SOFTAP );
-       CASE_RETURN_STRING( WLAN_HDD_P2P_CLIENT );
-       CASE_RETURN_STRING( WLAN_HDD_P2P_GO );
-       CASE_RETURN_STRING( WLAN_HDD_MONITOR);
-       CASE_RETURN_STRING( WLAN_HDD_FTM );
-       CASE_RETURN_STRING( WLAN_HDD_IBSS );
-       CASE_RETURN_STRING( WLAN_HDD_P2P_DEVICE );
+       CASE_RETURN_STRING( VOS_STA_MODE );
+       CASE_RETURN_STRING( VOS_STA_SAP_MODE );
+       CASE_RETURN_STRING( VOS_P2P_CLIENT_MODE );
+       CASE_RETURN_STRING( VOS_P2P_GO_MODE );
+       CASE_RETURN_STRING( VOS_MONITOR_MODE);
+       CASE_RETURN_STRING( VOS_FTM_MODE );
+       CASE_RETURN_STRING( VOS_IBSS_MODE );
+       CASE_RETURN_STRING( VOS_P2P_DEVICE );
        default:
            return "device_mode Unknown";
    }
@@ -596,7 +596,7 @@ void hdd_checkandupdate_phymode( hdd_context_t *pHddCtx)
        return ;
    }
 
-   pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_INFRA_STATION);
+   pAdapter = hdd_get_adapter(pHddCtx, VOS_STA_MODE);
    if (NULL == pAdapter)
    {
        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_FATAL,
@@ -912,7 +912,7 @@ void hdd_set_vowifi_mode(hdd_context_t *hdd_ctx, bool enable)
         return;
     }
 
-    sta_chan = hdd_get_operating_channel(hdd_ctx, WLAN_HDD_INFRA_STATION);
+    sta_chan = hdd_get_operating_channel(hdd_ctx, VOS_STA_MODE);
 
     if (CSR_IS_CHANNEL_24GHZ(sta_chan))
         sme_set_vowifi_mode(hdd_ctx->hHal, enable);
@@ -2356,10 +2356,10 @@ int hdd_handle_batch_scan_ioctl
               goto exit;
          }
 
-         if ((WLAN_HDD_INFRA_STATION != pAdapter->device_mode) &&
-             (WLAN_HDD_P2P_CLIENT != pAdapter->device_mode) &&
-             (WLAN_HDD_P2P_GO != pAdapter->device_mode) &&
-             (WLAN_HDD_P2P_DEVICE != pAdapter->device_mode))
+         if ((VOS_STA_MODE != pAdapter->device_mode) &&
+             (VOS_P2P_CLIENT_MODE != pAdapter->device_mode) &&
+             (VOS_P2P_GO_MODE != pAdapter->device_mode) &&
+             (VOS_P2P_DEVICE != pAdapter->device_mode))
          {
              VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                 "Received WLS_BATCHING SET command in invalid mode %s (%d) "
@@ -5793,7 +5793,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
                goto exit;
 
            /* Only valid for SAP mode */
-           if (WLAN_HDD_SOFTAP != pAdapter->device_mode)
+           if (VOS_STA_SAP_MODE != pAdapter->device_mode)
            {
                VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                   "%s: SAP mode is not running", __func__);
@@ -5878,7 +5878,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
 #endif
 #ifdef WLAN_FEATURE_RMC
        else if ((strncasecmp(command, "SETIBSSBEACONOUIDATA", 20) == 0) &&
-                (WLAN_HDD_IBSS == pAdapter->device_mode))
+                (VOS_IBSS_MODE == pAdapter->device_mode))
        {
            int i = 0;
            tANI_U8 *ibss_ie;
@@ -5907,7 +5907,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
            command_len = strlen(value);
 
            /* oui_data can't be less than 3 bytes */
-           if (command_len <= (2 * WLAN_HDD_IBSS_MIN_OUI_DATA_LENGTH))
+           if (command_len <= (2 * VOS_IBSS_MODE_MIN_OUI_DATA_LENGTH))
            {
                hddLog(LOGE,
                      FL("Invalid SETIBSSBEACONOUIDATA command length %d"),
@@ -5927,7 +5927,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
 
            ibss_ie_length = hdd_parse_set_ibss_oui_data_command(value, ibss_ie,
                                                                   command_len);
-           if (ibss_ie_length < (2 * WLAN_HDD_IBSS_MIN_OUI_DATA_LENGTH)) {
+           if (ibss_ie_length < (2 * VOS_IBSS_MODE_MIN_OUI_DATA_LENGTH)) {
                hddLog(LOGE, FL("Could not parse command %s return length %d"),
                      value, ibss_ie_length);
                  ret = -EFAULT;
@@ -6145,8 +6145,8 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
           tANI_U8 ucRmcEnable = 0;
           int  status;
 
-          if ((WLAN_HDD_IBSS != pAdapter->device_mode) &&
-              (WLAN_HDD_SOFTAP != pAdapter->device_mode))
+          if ((VOS_IBSS_MODE != pAdapter->device_mode) &&
+              (VOS_STA_SAP_MODE != pAdapter->device_mode))
           {
              VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                 "Received SETRMCENABLE command in invalid mode %d "
@@ -6201,8 +6201,8 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
           tANI_U32 uActionPeriod = 0;
           int  status;
 
-          if ((WLAN_HDD_IBSS != pAdapter->device_mode) &&
-              (WLAN_HDD_SOFTAP != pAdapter->device_mode))
+          if ((VOS_IBSS_MODE != pAdapter->device_mode) &&
+              (VOS_STA_SAP_MODE != pAdapter->device_mode))
           {
              VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                 "Received SETRMC command in invalid mode %d "
@@ -6244,7 +6244,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
          v_MACADDR_t *macAddr;
          v_U32_t txRateMbps = 0, numOfBytestoPrint = 0;
 
-         if (WLAN_HDD_IBSS == pAdapter->device_mode)
+         if (VOS_IBSS_MODE == pAdapter->device_mode)
          {
             pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
          }
@@ -6380,7 +6380,7 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
          v_U32_t txRateMbps = 0;
          v_MACADDR_t peerMacAddr;
 
-         if (WLAN_HDD_IBSS == pAdapter->device_mode)
+         if (VOS_IBSS_MODE == pAdapter->device_mode)
          {
             pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
          }
@@ -6469,8 +6469,8 @@ static int hdd_driver_command(hdd_adapter_t *pAdapter,
           tSirRateUpdateInd *rateUpdateParams;
           int  status;
 
-          if ((WLAN_HDD_IBSS != pAdapter->device_mode) &&
-              (WLAN_HDD_SOFTAP != pAdapter->device_mode))
+          if ((VOS_IBSS_MODE != pAdapter->device_mode) &&
+              (VOS_STA_SAP_MODE != pAdapter->device_mode))
            {
               VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                 "Received SETRMCTXRATE command in invalid mode %d "
@@ -8180,7 +8180,7 @@ int __hdd_mon_open (struct net_device *dev)
    if (wlan_hdd_validate_context(hdd_ctx))
        return -EINVAL;
 
-   sta_adapter = hdd_get_adapter(hdd_ctx, WLAN_HDD_INFRA_STATION);
+   sta_adapter = hdd_get_adapter(hdd_ctx, VOS_STA_MODE);
    if (!sta_adapter) {
        hddLog(LOGE, FL("No valid STA interface"));
        return -EINVAL;
@@ -8335,8 +8335,8 @@ int __hdd_stop (struct net_device *dev)
 #endif
    /* SoftAP ifaces should never go in power save mode
       making sure same here. */
-   if ( (WLAN_HDD_SOFTAP == pAdapter->device_mode )
-                 || (WLAN_HDD_P2P_GO == pAdapter->device_mode )
+   if ( (VOS_STA_SAP_MODE == pAdapter->device_mode )
+                 || (VOS_P2P_GO_MODE == pAdapter->device_mode )
       )
    {
       /* SoftAP mode, so return from here */
@@ -9433,7 +9433,7 @@ void hdd_deinit_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter, tANI_U
    ENTER();
    switch ( pAdapter->device_mode )
    {
-      case WLAN_HDD_IBSS:
+      case VOS_IBSS_MODE:
       {
          if(test_bit(INIT_TX_RX_SUCCESS, &pAdapter->event_flags))
          {
@@ -9441,9 +9441,9 @@ void hdd_deinit_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter, tANI_U
             clear_bit(INIT_TX_RX_SUCCESS, &pAdapter->event_flags);
          }
       }
-      case WLAN_HDD_INFRA_STATION:
-      case WLAN_HDD_P2P_CLIENT:
-      case WLAN_HDD_P2P_DEVICE:
+      case VOS_STA_MODE:
+      case VOS_P2P_CLIENT_MODE:
+      case VOS_P2P_DEVICE:
       {
          if(test_bit(INIT_TX_RX_SUCCESS, &pAdapter->event_flags))
          {
@@ -9461,8 +9461,8 @@ void hdd_deinit_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter, tANI_U
          break;
       }
 
-      case WLAN_HDD_SOFTAP:
-      case WLAN_HDD_P2P_GO:
+      case VOS_STA_SAP_MODE:
+      case VOS_P2P_GO_MODE:
       {
 
          if (test_bit(WMM_INIT_DONE, &pAdapter->event_flags))
@@ -9480,7 +9480,7 @@ void hdd_deinit_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter, tANI_U
          break;
       }
 
-      case WLAN_HDD_MONITOR:
+      case VOS_MONITOR_MODE:
       {
          if(test_bit(INIT_TX_RX_SUCCESS, &pAdapter->event_flags))
          {
@@ -9513,10 +9513,10 @@ void hdd_cleanup_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter, tANI_
    pWlanDev = pAdapter->dev;
 
 #ifdef FEATURE_WLAN_BATCH_SCAN
-   if ((pAdapter->device_mode == WLAN_HDD_INFRA_STATION)
-     || (pAdapter->device_mode == WLAN_HDD_P2P_CLIENT)
-     || (pAdapter->device_mode == WLAN_HDD_P2P_GO)
-     || (pAdapter->device_mode == WLAN_HDD_P2P_DEVICE)
+   if ((pAdapter->device_mode == VOS_STA_MODE)
+     || (pAdapter->device_mode == VOS_P2P_CLIENT_MODE)
+     || (pAdapter->device_mode == VOS_P2P_GO_MODE)
+     || (pAdapter->device_mode == VOS_P2P_DEVICE)
      )
    {
       if (pAdapter)
@@ -9557,8 +9557,8 @@ void hdd_set_pwrparams(hdd_context_t *pHddCtx)
    while ( NULL != pAdapterNode && VOS_STATUS_SUCCESS == status )
    {
        pAdapter = pAdapterNode->pAdapter;
-       if ( (WLAN_HDD_INFRA_STATION != pAdapter->device_mode)
-         && (WLAN_HDD_P2P_CLIENT != pAdapter->device_mode) )
+       if ( (VOS_STA_MODE != pAdapter->device_mode)
+         && (VOS_P2P_CLIENT_MODE != pAdapter->device_mode) )
 
        {  // we skip this registration for modes other than STA and P2P client modes.
            status = hdd_get_next_adapter ( pHddCtx, pAdapterNode, &pNext );
@@ -9570,8 +9570,8 @@ void hdd_set_pwrparams(hdd_context_t *pHddCtx)
        //Only if ignoreDynamicDtimInP2pMode is not set in ini
       if ((pHddCtx->cfg_ini->enableDynamicDTIM ||
            pHddCtx->cfg_ini->enableModulatedDTIM) &&
-          ((WLAN_HDD_INFRA_STATION == pAdapter->device_mode) ||
-          ((WLAN_HDD_P2P_CLIENT == pAdapter->device_mode) &&
+          ((VOS_STA_MODE == pAdapter->device_mode) ||
+          ((VOS_P2P_CLIENT_MODE == pAdapter->device_mode) &&
           !(pHddCtx->cfg_ini->ignoreDynamicDtimInP2pMode))) &&
           (eANI_BOOLEAN_TRUE == pAdapter->higherDtimTransition) &&
           (eConnectionState_Associated ==
@@ -9678,19 +9678,19 @@ VOS_STATUS hdd_disable_bmps_imps(hdd_context_t *pHddCtx, tANI_U8 session_type)
    
    switch(session_type)
    {
-       case WLAN_HDD_INFRA_STATION:
-       case WLAN_HDD_SOFTAP:
-       case WLAN_HDD_P2P_CLIENT:
-       case WLAN_HDD_P2P_GO:
+       case VOS_STA_MODE:
+       case VOS_STA_SAP_MODE:
+       case VOS_P2P_CLIENT_MODE:
+       case VOS_P2P_GO_MODE:
           //Exit BMPS -> Is Sta/P2P Client is already connected
-          pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_INFRA_STATION);
+          pAdapter = hdd_get_adapter(pHddCtx, VOS_STA_MODE);
           if((NULL != pAdapter)&&
               hdd_connIsConnected( WLAN_HDD_GET_STATION_CTX_PTR(pAdapter)))
           {
              disableBmps = TRUE;
           }
 
-          pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_P2P_CLIENT);
+          pAdapter = hdd_get_adapter(pHddCtx, VOS_P2P_CLIENT_MODE);
           if((NULL != pAdapter)&&
               hdd_connIsConnected( WLAN_HDD_GET_STATION_CTX_PTR(pAdapter)))
           {
@@ -9698,8 +9698,8 @@ VOS_STATUS hdd_disable_bmps_imps(hdd_context_t *pHddCtx, tANI_U8 session_type)
           }
 
           //Exit both Bmps and Imps incase of Go/SAP Mode
-          if((WLAN_HDD_SOFTAP == session_type) ||
-              (WLAN_HDD_P2P_GO == session_type))
+          if((VOS_STA_SAP_MODE == session_type) ||
+              (VOS_P2P_GO_MODE == session_type))
           {
              disableBmps = TRUE;
              disableImps = TRUE;
@@ -9855,9 +9855,9 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
 
    switch(session_type)
    {
-      case WLAN_HDD_INFRA_STATION:
-      case WLAN_HDD_P2P_CLIENT:
-      case WLAN_HDD_P2P_DEVICE:
+      case VOS_STA_MODE:
+      case VOS_P2P_CLIENT_MODE:
+      case VOS_P2P_DEVICE:
       {
          pAdapter = hdd_alloc_station_adapter( pHddCtx, macAddr, iface_name );
 
@@ -9875,7 +9875,7 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
           mutex_lock(&pHddCtx->tdls_lock);
 #endif
 
-         pAdapter->wdev.iftype = (session_type == WLAN_HDD_P2P_CLIENT) ?
+         pAdapter->wdev.iftype = (session_type == VOS_P2P_CLIENT_MODE) ?
                                   NL80211_IFTYPE_P2P_CLIENT:
                                   NL80211_IFTYPE_STATION;
 
@@ -9912,8 +9912,8 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
          //netif_tx_disable(pWlanDev);
          netif_carrier_off(pAdapter->dev);
 
-         if (WLAN_HDD_P2P_CLIENT == session_type ||
-                 WLAN_HDD_P2P_DEVICE == session_type)
+         if (VOS_P2P_CLIENT_MODE == session_type ||
+                 VOS_P2P_DEVICE == session_type)
          {
              /* Initialize the work queue to defer the
               * back to back RoC request */
@@ -9924,8 +9924,8 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
          break;
       }
 
-      case WLAN_HDD_P2P_GO:
-      case WLAN_HDD_SOFTAP:
+      case VOS_P2P_GO_MODE:
+      case VOS_STA_SAP_MODE:
       {
          pAdapter = hdd_wlan_create_ap_dev( pHddCtx, macAddr, (tANI_U8 *)iface_name );
          if( NULL == pAdapter )
@@ -9935,7 +9935,7 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
             return NULL;
          }
 
-         pAdapter->wdev.iftype = (session_type == WLAN_HDD_SOFTAP) ?
+         pAdapter->wdev.iftype = (session_type == VOS_STA_SAP_MODE) ?
                                   NL80211_IFTYPE_AP:
                                   NL80211_IFTYPE_P2P_GO;
          pAdapter->device_mode = session_type;
@@ -9972,7 +9972,7 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
                        hdd_ipv6_notifier_work_queue);
 #endif
 
-         if (WLAN_HDD_P2P_GO == session_type)
+         if (VOS_P2P_GO_MODE == session_type)
          {
              /* Initialize the work queue to
               * defer the back to back RoC request */
@@ -9982,7 +9982,7 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
 
          break;
       }
-      case WLAN_HDD_MONITOR:
+      case VOS_MONITOR_MODE:
       {
          pAdapter = hdd_alloc_station_adapter( pHddCtx, macAddr, iface_name );
          if( NULL == pAdapter )
@@ -10026,7 +10026,7 @@ hdd_adapter_t* hdd_open_adapter( hdd_context_t *pHddCtx, tANI_U8 session_type,
          netif_carrier_off(pAdapter->dev);
       }
          break;
-      case WLAN_HDD_FTM:
+      case VOS_FTM_MODE:
       {
          pAdapter = hdd_alloc_station_adapter( pHddCtx, macAddr, iface_name );
 
@@ -10262,7 +10262,7 @@ int wlan_hdd_stop_mon(hdd_context_t *hdd_ctx, bool wait)
 		.timeout_ms = MON_MODE_MSG_TIMEOUT,
 	};
 
-	adapter = hdd_get_adapter(hdd_ctx, WLAN_HDD_MONITOR);
+	adapter = hdd_get_adapter(hdd_ctx, VOS_MONITOR_MODE);
 	if (!adapter) {
 		hddLog(LOGE, FL("Invalid STA + MON mode"));
 		return -EINVAL;
@@ -10327,7 +10327,7 @@ bool wlan_hdd_check_monitor_state(hdd_context_t *hdd_ctx)
 	if (hdd_ctx->concurrency_mode != VOS_STA_MON)
 		return false;
 
-	mon_adapter = hdd_get_adapter(hdd_ctx, WLAN_HDD_MONITOR);
+	mon_adapter = hdd_get_adapter(hdd_ctx, VOS_MONITOR_MODE);
 	if (!mon_adapter) {
 		hddLog(LOGE, FL("Invalid concurrency mode"));
 		return false;
@@ -10344,7 +10344,7 @@ int wlan_hdd_check_and_stop_mon(hdd_adapter_t *sta_adapter, bool wait)
 {
 	hdd_context_t *hdd_ctx = WLAN_HDD_GET_CTX(sta_adapter);
 
-	if ((sta_adapter->device_mode != WLAN_HDD_INFRA_STATION) ||
+	if ((sta_adapter->device_mode != VOS_STA_MODE) ||
 	    !wlan_hdd_check_monitor_state(hdd_ctx))
 		return 0;
 
@@ -10415,7 +10415,7 @@ VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
    pScanInfo =  &pHddCtx->scan_info;
    switch(pAdapter->device_mode)
    {
-      case WLAN_HDD_IBSS:
+      case VOS_IBSS_MODE:
           if ( VOS_TRUE == bCloseSession )
           {
               status = hdd_sta_id_hash_detach(pAdapter);
@@ -10424,9 +10424,9 @@ VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
                   FL("sta id hash detach failed"));
           }
 
-      case WLAN_HDD_INFRA_STATION:
-      case WLAN_HDD_P2P_CLIENT:
-      case WLAN_HDD_P2P_DEVICE:
+      case VOS_STA_MODE:
+      case VOS_P2P_CLIENT_MODE:
+      case VOS_P2P_DEVICE:
       {
          hdd_station_ctx_t *pstation = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
 #ifdef FEATURE_WLAN_TDLS
@@ -10491,8 +10491,8 @@ VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
          {
             wlan_hdd_scan_abort(pAdapter);
          }
-       if ((pAdapter->device_mode != WLAN_HDD_INFRA_STATION) &&
-                   (pAdapter->device_mode != WLAN_HDD_IBSS))
+       if ((pAdapter->device_mode != VOS_STA_MODE) &&
+                   (pAdapter->device_mode != VOS_IBSS_MODE))
        {
           while (pAdapter->is_roc_inprogress)
           {
@@ -10555,7 +10555,7 @@ VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
       }
          break;
 
-      case WLAN_HDD_SOFTAP:
+      case VOS_STA_SAP_MODE:
           /* Delete all associated STAs before stopping AP */
           if (test_bit(SOFTAP_BSS_STARTED, &pAdapter->event_flags))
                hdd_del_all_sta(pAdapter);
@@ -10565,7 +10565,7 @@ VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
                                                pAdapter->sessionId, NULL, TRUE))
                hddLog(VOS_TRACE_LEVEL_ERROR, FL("Cannot flush PMKIDCache"));
           /* Fall through */
-      case WLAN_HDD_P2P_GO:
+      case VOS_P2P_GO_MODE:
 
           if ( VOS_TRUE == bCloseSession )
           {
@@ -10577,7 +10577,7 @@ VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
 
          //Any softap specific cleanup here...
          hdd_cleanup_ap_events(pAdapter);
-         if (pAdapter->device_mode == WLAN_HDD_P2P_GO) {
+         if (pAdapter->device_mode == VOS_P2P_GO_MODE) {
             while (pAdapter->is_roc_inprogress) {
                VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                          "%s: ROC in progress for session %d!!!",
@@ -10660,7 +10660,7 @@ VOS_STATUS hdd_stop_adapter( hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter,
 
          break;
 
-      case WLAN_HDD_MONITOR:
+      case VOS_MONITOR_MODE:
           if (VOS_MONITOR_MODE != hdd_get_conparam())
               wlan_hdd_stop_mon(pHddCtx, true);
           break;
@@ -10785,7 +10785,7 @@ static void __hdd_sap_restart_handle(struct work_struct *work)
         return;
     }
     sap_adapter = hdd_get_adapter(hdd_ctx,
-                                  WLAN_HDD_SOFTAP);
+                                  VOS_STA_SAP_MODE);
     if (sap_adapter == NULL) {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                   FL("sap_adapter is NULL"));
@@ -10848,7 +10848,7 @@ __hdd_force_scc_with_ecsa_handle(struct work_struct *work)
         return;
 
     sap_adapter = hdd_get_adapter(hdd_ctx,
-                                  WLAN_HDD_SOFTAP);
+                                  VOS_STA_SAP_MODE);
     if (!sap_adapter) {
         hddLog(LOGE, FL("sap_adapter is NULL"));
         return;
@@ -10871,7 +10871,7 @@ __hdd_force_scc_with_ecsa_handle(struct work_struct *work)
     sta_sap_scc_on_dfs_chan = hdd_is_sta_sap_scc_allowed_on_dfs_chan(hdd_ctx);
 
     sta_adapter = hdd_get_adapter(hdd_ctx,
-                                  WLAN_HDD_INFRA_STATION);
+                                  VOS_STA_MODE);
     if (!sta_adapter) {
         hddLog(LOGE, FL("sta_adapter is NULL"));
         return;
@@ -11068,7 +11068,7 @@ VOS_STATUS hdd_reset_all_adapters( hdd_context_t *pHddCtx )
       netif_tx_disable(pAdapter->dev);
 
       if (pHddCtx->cfg_ini->sap_internal_restart &&
-              pAdapter->device_mode == WLAN_HDD_SOFTAP) {
+              pAdapter->device_mode == VOS_STA_SAP_MODE) {
           hddLog(LOG1, FL("driver supports sap restart"));
           vos_flush_work(&pHddCtx->sap_start_work);
           hdd_sap_indicate_disconnect_for_sta(pAdapter);
@@ -11081,13 +11081,13 @@ VOS_STATUS hdd_reset_all_adapters( hdd_context_t *pHddCtx )
 
       pAdapter->sessionCtx.station.hdd_ReassocScenario = VOS_FALSE;
 
-      if (pAdapter->device_mode == WLAN_HDD_MONITOR)
+      if (pAdapter->device_mode == VOS_MONITOR_MODE)
           pAdapter->sessionCtx.monitor.state = MON_MODE_STOP;
 
       if (test_bit(DEVICE_IFACE_OPENED, &pAdapterNode->pAdapter->event_flags))
           hdd_deinit_tx_rx(pAdapter);
 
-      if(pAdapter->device_mode == WLAN_HDD_IBSS )
+      if(pAdapter->device_mode == VOS_IBSS_MODE )
          hdd_ibss_deinit_tx_rx(pAdapter);
 
       if (test_bit(DEVICE_IFACE_OPENED, &pAdapterNode->pAdapter->event_flags)) {
@@ -11342,9 +11342,9 @@ VOS_STATUS hdd_start_all_adapters( hdd_context_t *pHddCtx )
 
       switch(pAdapter->device_mode)
       {
-         case WLAN_HDD_INFRA_STATION:
-         case WLAN_HDD_P2P_CLIENT:
-         case WLAN_HDD_P2P_DEVICE:
+         case VOS_STA_MODE:
+         case VOS_P2P_CLIENT_MODE:
+         case VOS_P2P_DEVICE:
 
             connState = (WLAN_HDD_GET_STATION_CTX_PTR(pAdapter))->conn_info.connState;
 
@@ -11386,7 +11386,7 @@ VOS_STATUS hdd_start_all_adapters( hdd_context_t *pHddCtx )
             }
             break;
 
-         case WLAN_HDD_SOFTAP:
+         case VOS_STA_SAP_MODE:
             if (pHddCtx->cfg_ini->sap_internal_restart) {
                 hdd_init_ap_mode(pAdapter, true);
                 status = hdd_sta_id_hash_attach(pAdapter);
@@ -11398,13 +11398,13 @@ VOS_STATUS hdd_start_all_adapters( hdd_context_t *pHddCtx )
             }
             break;
 
-         case WLAN_HDD_P2P_GO:
+         case VOS_P2P_GO_MODE:
             hddLog(VOS_TRACE_LEVEL_ERROR, "%s [SSR] send stop ap to supplicant",
                                                        __func__);
             cfg80211_ap_stopped(pAdapter->dev, GFP_KERNEL);
             break;
 
-         case WLAN_HDD_MONITOR:
+         case VOS_MONITOR_MODE:
             pVosContext = vos_get_global_context(VOS_MODULE_ID_SYS, NULL);
 
             hddLog(VOS_TRACE_LEVEL_INFO, FL("[SSR] monitor mode"));
@@ -11446,8 +11446,8 @@ VOS_STATUS hdd_reconnect_all_adapters( hdd_context_t *pHddCtx )
    {
       pAdapter = pAdapterNode->pAdapter;
 
-      if( (WLAN_HDD_INFRA_STATION == pAdapter->device_mode) ||
-             (WLAN_HDD_P2P_CLIENT == pAdapter->device_mode) )
+      if( (VOS_STA_MODE == pAdapter->device_mode) ||
+             (VOS_P2P_CLIENT_MODE == pAdapter->device_mode) )
       {
          hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
          hdd_wext_state_t *pWextState = WLAN_HDD_GET_WEXT_STATE_PTR(pAdapter);
@@ -11507,14 +11507,14 @@ void hdd_dump_concurrency_info(hdd_context_t *pHddCtx)
    {
       pAdapter = pAdapterNode->pAdapter;
       switch (pAdapter->device_mode) {
-      case WLAN_HDD_INFRA_STATION:
+      case VOS_STA_MODE:
           pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
           if (eConnectionState_Associated == pHddStaCtx->conn_info.connState) {
               staChannel = pHddStaCtx->conn_info.operationChannel;
               memcpy(staBssid, pHddStaCtx->conn_info.bssId, sizeof(staBssid));
           }
           break;
-      case WLAN_HDD_P2P_CLIENT:
+      case VOS_P2P_CLIENT_MODE:
           pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
           if (eConnectionState_Associated == pHddStaCtx->conn_info.connState) {
               p2pChannel = pHddStaCtx->conn_info.operationChannel;
@@ -11522,7 +11522,7 @@ void hdd_dump_concurrency_info(hdd_context_t *pHddCtx)
               p2pMode = "CLI";
           }
           break;
-      case WLAN_HDD_P2P_GO:
+      case VOS_P2P_GO_MODE:
           pHddApCtx = WLAN_HDD_GET_AP_CTX_PTR(pAdapter);
           pHostapdState = WLAN_HDD_GET_HOSTAP_STATE_PTR(pAdapter);
           if (pHostapdState->bssState == BSS_START && pHostapdState->vosStatus==VOS_STATUS_SUCCESS) {
@@ -11531,7 +11531,7 @@ void hdd_dump_concurrency_info(hdd_context_t *pHddCtx)
           }
           p2pMode = "GO";
           break;
-      case WLAN_HDD_SOFTAP:
+      case VOS_STA_SAP_MODE:
           pHddApCtx = WLAN_HDD_GET_AP_CTX_PTR(pAdapter);
           pHostapdState = WLAN_HDD_GET_HOSTAP_STATE_PTR(pAdapter);
           if (pHostapdState->bssState == BSS_START && pHostapdState->vosStatus==VOS_STATUS_SUCCESS) {
@@ -11731,7 +11731,7 @@ hdd_adapter_t *hdd_get_adapter_by_sme_session_id( hdd_context_t *pHddCtx,
     return NULL;
 }
 
-hdd_adapter_t * hdd_get_adapter( hdd_context_t *pHddCtx, device_mode_t mode )
+hdd_adapter_t * hdd_get_adapter( hdd_context_t *pHddCtx, tVOS_CON_MODE mode )
 {
    hdd_adapter_list_node_t *pAdapterNode = NULL, *pNext = NULL;
    hdd_adapter_t *pAdapter;
@@ -11768,7 +11768,7 @@ hdd_adapter_t * hdd_get_mon_adapter( hdd_context_t *pHddCtx )
    {
       pAdapter = pAdapterNode->pAdapter;
 
-      if( pAdapter && WLAN_HDD_MONITOR == pAdapter->device_mode )
+      if( pAdapter && VOS_MONITOR_MODE == pAdapter->device_mode )
       {
          return pAdapter;
       }
@@ -11789,11 +11789,11 @@ hdd_adapter_t * hdd_get_mon_adapter( hdd_context_t *pHddCtx )
    
   \param  - pHddCtx - Pointer to the HDD context.
               - mode - Device mode for which operating channel is required
-                suported modes - WLAN_HDD_INFRA_STATION, WLAN_HDD_P2P_CLIENT
-                                 WLAN_HDD_SOFTAP, WLAN_HDD_P2P_GO.
+                suported modes - VOS_STA_MODE, VOS_P2P_CLIENT_MODE
+                                 VOS_STA_SAP_MODE, VOS_P2P_GO_MODE.
   \return - channel number. "0" id the requested device is not found OR it is not connected. 
   --------------------------------------------------------------------------*/
-v_U8_t hdd_get_operating_channel( hdd_context_t *pHddCtx, device_mode_t mode )
+v_U8_t hdd_get_operating_channel( hdd_context_t *pHddCtx, tVOS_CON_MODE mode )
 {
    hdd_adapter_list_node_t *pAdapterNode = NULL, *pNext = NULL;
    VOS_STATUS status;
@@ -11810,13 +11810,13 @@ v_U8_t hdd_get_operating_channel( hdd_context_t *pHddCtx, device_mode_t mode )
       {
         switch(pAdapter->device_mode)
         {
-          case WLAN_HDD_INFRA_STATION:
-          case WLAN_HDD_P2P_CLIENT: 
+          case VOS_STA_MODE:
+          case VOS_P2P_CLIENT_MODE: 
             if( hdd_connIsConnected( WLAN_HDD_GET_STATION_CTX_PTR( pAdapter )) )
               operatingChannel = (WLAN_HDD_GET_STATION_CTX_PTR(pAdapter))->conn_info.operationChannel;
             break;
-          case WLAN_HDD_SOFTAP:
-          case WLAN_HDD_P2P_GO:
+          case VOS_STA_SAP_MODE:
+          case VOS_P2P_GO_MODE:
             /*softap connection info */
             if(test_bit(SOFTAP_BSS_STARTED, &pAdapter->event_flags)) 
               operatingChannel = (WLAN_HDD_GET_AP_CTX_PTR(pAdapter))->operatingChannel;
@@ -12134,7 +12134,7 @@ void wlan_hdd_mon_close(hdd_context_t *pHddCtx)
         .timeout_ms = MON_MODE_MSG_TIMEOUT,
     };
 
-    hdd_adapter_t *pAdapter = hdd_get_adapter(pHddCtx,WLAN_HDD_MONITOR);
+    hdd_adapter_t *pAdapter = hdd_get_adapter(pHddCtx,VOS_MONITOR_MODE);
     if(pAdapter == NULL || pVosContext == NULL)
     {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_FATAL, "%s:pAdapter is NULL",__func__);
@@ -12297,12 +12297,12 @@ void hdd_wlan_exit(hdd_context_t *pHddCtx)
 
             wlan_hdd_init_deinit_defer_scan_context(&pHddCtx->scan_ctxt);
 
-            if (WLAN_HDD_INFRA_STATION ==  pAdapter->device_mode ||
-                WLAN_HDD_P2P_CLIENT == pAdapter->device_mode ||
-                WLAN_HDD_MONITOR == pAdapter->device_mode)
+            if (VOS_STA_MODE ==  pAdapter->device_mode ||
+                VOS_P2P_CLIENT_MODE == pAdapter->device_mode ||
+                VOS_MONITOR_MODE == pAdapter->device_mode)
             {
-                if (WLAN_HDD_INFRA_STATION ==  pAdapter->device_mode ||
-                    WLAN_HDD_P2P_CLIENT == pAdapter->device_mode)
+                if (VOS_STA_MODE ==  pAdapter->device_mode ||
+                    VOS_P2P_CLIENT_MODE == pAdapter->device_mode)
                     wlan_hdd_cfg80211_deregister_frames(pAdapter);
 
                 hdd_UnregisterWext(pAdapter->dev);
@@ -13239,7 +13239,7 @@ int wlan_hdd_mon_open(hdd_context_t *pHddCtx)
    sme_featureCapsExchange(NULL);
    wcnss_wlan_set_drvdata(pHddCtx->parent_dev, pHddCtx);
 
-   pAdapter = hdd_open_adapter( pHddCtx, WLAN_HDD_MONITOR, "wlan%d",
+   pAdapter = hdd_open_adapter( pHddCtx, VOS_MONITOR_MODE, "wlan%d",
          wlan_hdd_get_intf_addr(pHddCtx), FALSE );
    if( pAdapter == NULL )
    {
@@ -14082,12 +14082,12 @@ int hdd_wlan_startup(struct device *dev )
 
    if (VOS_STA_SAP_MODE == hdd_get_conparam())
    {
-     pAdapter = hdd_open_adapter( pHddCtx, WLAN_HDD_SOFTAP, "softap.%d", 
+     pAdapter = hdd_open_adapter( pHddCtx, VOS_STA_SAP_MODE, "softap.%d", 
          wlan_hdd_get_intf_addr(pHddCtx), FALSE );
    }
    else
    {
-     pAdapter = hdd_open_adapter( pHddCtx, WLAN_HDD_INFRA_STATION, "wlan%d",
+     pAdapter = hdd_open_adapter( pHddCtx, VOS_STA_MODE, "wlan%d",
          wlan_hdd_get_intf_addr(pHddCtx), FALSE );
      if (pAdapter != NULL)
      {
@@ -14119,7 +14119,7 @@ int hdd_wlan_startup(struct device *dev )
              }
          }
 
-         pP2pAdapter = hdd_open_adapter( pHddCtx, WLAN_HDD_P2P_DEVICE, "p2p%d",
+         pP2pAdapter = hdd_open_adapter( pHddCtx, VOS_P2P_DEVICE, "p2p%d",
                            &pHddCtx->p2pDeviceAddress.bytes[0], FALSE );
          if ( NULL == pP2pAdapter )
          {
@@ -14139,7 +14139,7 @@ int hdd_wlan_startup(struct device *dev )
 
    if ((strlen(pHddCtx->cfg_ini->enabledefaultSAP) != 0) &&
        (strcmp(pHddCtx->cfg_ini->enabledefaultSAP, "") != 0)) {
-       softapAdapter = hdd_open_adapter( pHddCtx, WLAN_HDD_SOFTAP,
+       softapAdapter = hdd_open_adapter( pHddCtx, VOS_STA_SAP_MODE,
                                        pHddCtx->cfg_ini->enabledefaultSAP,
                                        wlan_hdd_get_intf_addr(pHddCtx), FALSE);
        if (!softapAdapter) {
@@ -15090,8 +15090,8 @@ int hdd_del_all_sta(hdd_adapter_t *pAdapter)
 
     hddLog(VOS_TRACE_LEVEL_INFO,
            "%s: Delete all STAs associated.",__func__);
-    if ((pAdapter->device_mode == WLAN_HDD_SOFTAP)
-     || (pAdapter->device_mode == WLAN_HDD_P2P_GO)
+    if ((pAdapter->device_mode == VOS_STA_SAP_MODE)
+     || (pAdapter->device_mode == VOS_P2P_GO_MODE)
        )
     {
         for(i = 0; i < WLAN_MAX_STA_COUNT; i++)
@@ -15207,7 +15207,7 @@ wlan_hdd_is_GO_power_collapse_allowed (hdd_context_t* pHddCtx)
 {
      hdd_adapter_t *pAdapter = NULL;
 
-     pAdapter = hdd_get_adapter(pHddCtx, WLAN_HDD_P2P_GO);
+     pAdapter = hdd_get_adapter(pHddCtx, VOS_P2P_GO_MODE);
      if (pAdapter == NULL)
      {
          hddLog(VOS_TRACE_LEVEL_INFO,
@@ -15263,8 +15263,8 @@ v_BOOL_t hdd_is_apps_power_collapse_allowed(hdd_context_t* pHddCtx)
     while ( NULL != pAdapterNode && VOS_STATUS_SUCCESS == status )
     {
         pAdapter = pAdapterNode->pAdapter;
-        if ( (WLAN_HDD_INFRA_STATION == pAdapter->device_mode)
-          || (WLAN_HDD_P2P_CLIENT == pAdapter->device_mode) )
+        if ( (VOS_STA_MODE == pAdapter->device_mode)
+          || (VOS_P2P_CLIENT_MODE == pAdapter->device_mode) )
         {
             if (((pConfig->fIsImpsEnabled || pConfig->fIsBmpsEnabled)
                  && (pmcState != IMPS && pmcState != BMPS && pmcState != UAPSD
@@ -16013,9 +16013,9 @@ VOS_STATUS wlan_hdd_cancel_remain_on_channel(hdd_context_t *pHddCtx)
         pAdapter = pAdapterNode->pAdapter;
         if (NULL != pAdapter)
         {
-            if (WLAN_HDD_P2P_DEVICE == pAdapter->device_mode ||
-                WLAN_HDD_P2P_CLIENT == pAdapter->device_mode ||
-                WLAN_HDD_P2P_GO == pAdapter->device_mode)
+            if (VOS_P2P_DEVICE == pAdapter->device_mode ||
+                VOS_P2P_CLIENT_MODE == pAdapter->device_mode ||
+                VOS_P2P_GO_MODE == pAdapter->device_mode)
             {
                 hddLog(LOG1, FL("abort ROC deviceMode: %d"),
                                  pAdapter->device_mode);
@@ -16098,7 +16098,7 @@ VOS_STATUS wlan_hdd_handle_dfs_chan_scan(hdd_context_t *pHddCtx,
         {
             pAdapter = pAdapterNode->pAdapter;
 
-            if (WLAN_HDD_INFRA_STATION == pAdapter->device_mode)
+            if (VOS_STA_MODE == pAdapter->device_mode)
             {
                 pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
 
@@ -18098,8 +18098,8 @@ int hdd_capture_tsf(hdd_adapter_t *adapter, uint32_t *buf, int len)
                FL("invalid hdd ctx"));
         return -EINVAL;
     }
-    if (adapter->device_mode == WLAN_HDD_INFRA_STATION ||
-        adapter->device_mode == WLAN_HDD_P2P_CLIENT) {
+    if (adapter->device_mode == VOS_STA_MODE ||
+        adapter->device_mode == VOS_P2P_CLIENT_MODE) {
         hdd_sta_ctx = WLAN_HDD_GET_STATION_CTX_PTR(adapter);
         if (hdd_sta_ctx->conn_info.connState !=
             eConnectionState_Associated) {
@@ -18110,8 +18110,8 @@ int hdd_capture_tsf(hdd_adapter_t *adapter, uint32_t *buf, int len)
             return ret;
         }
     }
-    if ((adapter->device_mode == WLAN_HDD_SOFTAP ||
-         adapter->device_mode == WLAN_HDD_P2P_GO) &&
+    if ((adapter->device_mode == VOS_STA_SAP_MODE ||
+         adapter->device_mode == VOS_P2P_GO_MODE) &&
          !(test_bit(SOFTAP_BSS_STARTED, &adapter->event_flags))) {
          hddLog(VOS_TRACE_LEVEL_INFO,
                 FL("Soft AP / P2p GO not beaconing"));
@@ -18203,8 +18203,8 @@ int hdd_indicate_tsf(hdd_adapter_t *adapter, uint32_t *buf, int len)
                FL("invalid hdd ctx"));
         return -EINVAL;
     }
-    if (adapter->device_mode == WLAN_HDD_INFRA_STATION ||
-        adapter->device_mode == WLAN_HDD_P2P_CLIENT) {
+    if (adapter->device_mode == VOS_STA_MODE ||
+        adapter->device_mode == VOS_P2P_CLIENT_MODE) {
         hdd_sta_ctx = WLAN_HDD_GET_STATION_CTX_PTR(adapter);
         if (hdd_sta_ctx->conn_info.connState !=
             eConnectionState_Associated) {
@@ -18215,8 +18215,8 @@ int hdd_indicate_tsf(hdd_adapter_t *adapter, uint32_t *buf, int len)
             return ret;
         }
     }
-    if ((adapter->device_mode == WLAN_HDD_SOFTAP ||
-         adapter->device_mode == WLAN_HDD_P2P_GO) &&
+    if ((adapter->device_mode == VOS_STA_SAP_MODE ||
+         adapter->device_mode == VOS_P2P_GO_MODE) &&
          !(test_bit(SOFTAP_BSS_STARTED, &adapter->event_flags))) {
          hddLog(VOS_TRACE_LEVEL_INFO,
                 FL("Soft AP / P2p GO not beaconing"));
@@ -18300,8 +18300,8 @@ bool hdd_is_cli_iface_up(hdd_context_t *hdd_ctx)
 	status = hdd_get_front_adapter(hdd_ctx, &adapter_node);
 	while (NULL != adapter_node && VOS_STATUS_SUCCESS == status) {
 		adapter = adapter_node->pAdapter;
-		if ((adapter->device_mode == WLAN_HDD_INFRA_STATION ||
-		     adapter->device_mode == WLAN_HDD_P2P_CLIENT) &&
+		if ((adapter->device_mode == VOS_STA_MODE ||
+		     adapter->device_mode == VOS_P2P_CLIENT_MODE) &&
 		    test_bit(DEVICE_IFACE_OPENED,
 					&adapter->event_flags)){
 			return true;
