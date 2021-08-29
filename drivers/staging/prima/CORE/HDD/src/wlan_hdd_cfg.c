@@ -6524,7 +6524,7 @@ VOS_STATUS hdd_set_sme_config( hdd_context_t *pHddCtx )
     if (NULL == smeConfig)
    {
        VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR, "%s smeConfig allocation failed",__func__);
-       return eHAL_STATUS_FAILED_ALLOC;
+       return VOS_STATUS_E_NOMEM;
    }
    vos_mem_zero( smeConfig, sizeof( tSmeConfigParams ) );
 
