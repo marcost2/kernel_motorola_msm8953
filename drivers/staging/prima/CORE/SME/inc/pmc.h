@@ -77,7 +77,7 @@ typedef struct sDeviceStateUpdateIndEntry
 typedef struct sRequestFullPowerEntry
 {
     tListElem link;  /* list links */
-    void (*callbackRoutine) (void *callbackContext, eHalStatus status);  /* routine to call when full power is restored */
+    void (*callbackRoutine) (void *callbackContext, VOS_STATUS status);  /* routine to call when full power is restored */
     void *callbackContext;  /* value to be passed as parameter to routine specified above */
 } tRequestFullPowerEntry, *tpRequestFullPowerEntry;
 
@@ -88,7 +88,7 @@ typedef struct sRequestBmpsEntry
    tListElem link;  /* list links */
 
    /* routine to call when BMPS request succeeded/failed */
-   void (*callbackRoutine) (void *callbackContext, eHalStatus status);
+   void (*callbackRoutine) (void *callbackContext, VOS_STATUS status);
 
    /* value to be passed as parameter to routine specified above */
    void *callbackContext;  
@@ -102,7 +102,7 @@ typedef struct sStartUapsdEntry
    tListElem link;  /* list links */
 
    /* routine to call when Uapsd Start succeeded/failed*/
-   void (*callbackRoutine) (void *callbackContext, eHalStatus status);
+   void (*callbackRoutine) (void *callbackContext, VOS_STATUS status);
 
    /* value to be passed as parameter to routine specified above */
    void *callbackContext;  
@@ -150,7 +150,7 @@ typedef struct sPmcInfo
     bool full_power_till_set_key;
     tANI_U32 remainInPowerActiveThreshold;  /*Remain in Power active till DHCP threshold*/
     tANI_U32 impsPeriod;  /* amount of time to remain in IMPS */
-    void (*impsCallbackRoutine) (void *callbackContext, eHalStatus status);  /* routine to call when IMPS period
+    void (*impsCallbackRoutine) (void *callbackContext, VOS_STATUS status);  /* routine to call when IMPS period
                                                                                 has finished */ 
     void *impsCallbackContext;  /* value to be passed as parameter to routine specified above */
     vos_timer_t hImpsTimer;  /* timer to use with IMPS */
@@ -167,7 +167,7 @@ typedef struct sPmcInfo
     tDblLinkList requestBmpsList; /* request Bmps callback routine list */
     tDblLinkList requestStartUapsdList; /* request start Uapsd callback routine list */
     tANI_BOOLEAN standbyEnabled;  /* TRUE if Standby is enabled */
-    void (*standbyCallbackRoutine) (void *callbackContext, eHalStatus status); /* routine to call for standby request */ 
+    void (*standbyCallbackRoutine) (void *callbackContext, VOS_STATUS status); /* routine to call for standby request */ 
     void *standbyCallbackContext;/* value to be passed as parameter to routine specified above */
     tDblLinkList deviceStateUpdateIndList; /*update device state indication list */
     tANI_BOOLEAN pmcReady; /*whether eWNI_SME_SYS_READY_IND has been sent to PE or not */
@@ -175,7 +175,7 @@ typedef struct sPmcInfo
     tANI_BOOLEAN wowlModeRequired; /* TRUE if device should go to WOWL on entering BMPS */
     tWowlExitSource wowlExitSrc; /*WoWl exiting because of wakeup pkt or user explicitly disabling WoWL*/
     tANI_BOOLEAN isAPWOWExit; /* TRUE if last WOW exit is from soft ap */
-    void (*enterWowlCallbackRoutine) (void *callbackContext, eHalStatus status); /* routine to call for wowl request */ 
+    void (*enterWowlCallbackRoutine) (void *callbackContext, VOS_STATUS status); /* routine to call for wowl request */ 
     void *enterWowlCallbackContext;/* value to be passed as parameter to routine specified above */
     tSirSmeWowlEnterParams wowlEnterParams; /* WOWL mode configuration */
     tDblLinkList deferredMsgList;   //The message in here are deferred and DONOT expect response from PE
@@ -225,27 +225,27 @@ typedef struct sPmcInfo
 
 
 /* Routine definitions. */
-extern eHalStatus pmcEnterLowPowerState (tHalHandle hHal);
-extern eHalStatus pmcExitLowPowerState (tHalHandle hHal);
-extern eHalStatus pmcEnterFullPowerState (tHalHandle hHal);
-extern eHalStatus pmcEnterRequestFullPowerState (tHalHandle hHal, tRequestFullPowerReason fullPowerReason);
-extern eHalStatus pmcEnterRequestImpsState (tHalHandle hHal);
-extern eHalStatus pmcEnterImpsState (tHalHandle hHal);
-extern eHalStatus pmcEnterRequestBmpsState (tHalHandle hHal);
-extern eHalStatus pmcEnterBmpsState (tHalHandle hHal);
-extern eHalStatus pmcEnterRequestStartUapsdState (tHalHandle hHal);
-extern eHalStatus pmcEnterUapsdState (tHalHandle hHal);
-extern eHalStatus pmcEnterRequestStopUapsdState (tHalHandle hHal);
-extern eHalStatus pmcEnterRequestStandbyState (tHalHandle hHal);
-extern eHalStatus pmcEnterStandbyState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterLowPowerState (tHalHandle hHal);
+extern VOS_STATUS pmcExitLowPowerState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterFullPowerState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterRequestFullPowerState (tHalHandle hHal, tRequestFullPowerReason fullPowerReason);
+extern VOS_STATUS pmcEnterRequestImpsState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterImpsState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterRequestBmpsState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterBmpsState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterRequestStartUapsdState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterUapsdState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterRequestStopUapsdState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterRequestStandbyState (tHalHandle hHal);
+extern VOS_STATUS pmcEnterStandbyState (tHalHandle hHal);
 extern tANI_BOOLEAN pmcPowerSaveCheck (tHalHandle hHal);
-extern eHalStatus pmcSendPowerSaveConfigMessage (tHalHandle hHal);
-extern eHalStatus pmcSendMessage (tpAniSirGlobal pMac, tANI_U16 messageType, void *pMessageData, tANI_U32 messageSize);
-extern void pmcDoCallbacks (tHalHandle hHal, eHalStatus callbackStatus);
-extern void pmcDoBmpsCallbacks (tHalHandle hHal, eHalStatus callbackStatus);
-extern void pmcDoStartUapsdCallbacks (tHalHandle hHal, eHalStatus callbackStatus);
-extern void pmcDoStandbyCallbacks (tHalHandle hHal, eHalStatus callbackStatus);
-extern eHalStatus pmcStartTrafficTimer (tHalHandle hHal, tANI_U32 expirationTime);
+extern VOS_STATUS pmcSendPowerSaveConfigMessage (tHalHandle hHal);
+extern VOS_STATUS pmcSendMessage (tpAniSirGlobal pMac, tANI_U16 messageType, void *pMessageData, tANI_U32 messageSize);
+extern void pmcDoCallbacks (tHalHandle hHal, VOS_STATUS callbackStatus);
+extern void pmcDoBmpsCallbacks (tHalHandle hHal, VOS_STATUS callbackStatus);
+extern void pmcDoStartUapsdCallbacks (tHalHandle hHal, VOS_STATUS callbackStatus);
+extern void pmcDoStandbyCallbacks (tHalHandle hHal, VOS_STATUS callbackStatus);
+extern VOS_STATUS pmcStartTrafficTimer (tHalHandle hHal, tANI_U32 expirationTime);
 extern void pmcStopTrafficTimer (tHalHandle hHal);
 extern void pmcImpsTimerExpired (tHalHandle hHal);
 extern void pmcTrafficTimerExpired (tHalHandle hHal);
@@ -253,16 +253,16 @@ extern void pmcExitPowerSaveTimerExpired (tHalHandle hHal);
 extern tPmcState pmcGetPmcState (tHalHandle hHal);
 extern const char* pmcGetPmcStateStr(tPmcState state);
 extern void pmcDoDeviceStateUpdateCallbacks (tHalHandle hHal, tPmcState state);
-extern eHalStatus pmcRequestEnterWowlState(tHalHandle hHal, tpSirSmeWowlEnterParams wowlEnterParams);
-extern eHalStatus pmcEnterWowlState (tHalHandle hHal);
-extern eHalStatus pmcRequestExitWowlState(tHalHandle hHal);
-extern void pmcDoEnterWowlCallbacks (tHalHandle hHal, eHalStatus callbackStatus);
+extern VOS_STATUS pmcRequestEnterWowlState(tHalHandle hHal, tpSirSmeWowlEnterParams wowlEnterParams);
+extern VOS_STATUS pmcEnterWowlState (tHalHandle hHal);
+extern VOS_STATUS pmcRequestExitWowlState(tHalHandle hHal);
+extern void pmcDoEnterWowlCallbacks (tHalHandle hHal, VOS_STATUS callbackStatus);
 //The function will request for full power as well in addition to defer the message
-extern eHalStatus pmcDeferMsg( tpAniSirGlobal pMac, tANI_U16 messageType, 
+extern VOS_STATUS pmcDeferMsg( tpAniSirGlobal pMac, tANI_U16 messageType, 
                                                void *pData, tANI_U32 size);
-extern eHalStatus pmcIssueCommand( tpAniSirGlobal pMac, eSmeCommandType cmdType, void *pvParam, 
+extern VOS_STATUS pmcIssueCommand( tpAniSirGlobal pMac, eSmeCommandType cmdType, void *pvParam, 
                                    tANI_U32 size, tANI_BOOLEAN fPutToListHead );
-extern eHalStatus pmcEnterImpsCheck( tpAniSirGlobal pMac );
-extern eHalStatus pmcEnterBmpsCheck( tpAniSirGlobal pMac );
+extern VOS_STATUS pmcEnterImpsCheck( tpAniSirGlobal pMac );
+extern VOS_STATUS pmcEnterBmpsCheck( tpAniSirGlobal pMac );
 extern tANI_BOOLEAN pmcShouldBmpsTimerRun( tpAniSirGlobal pMac );
 #endif

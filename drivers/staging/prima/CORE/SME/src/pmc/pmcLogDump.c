@@ -45,7 +45,7 @@
 
 #if defined(ANI_LOGDUMP)
 
-void dump_pmc_callbackRoutine (void *callbackContext, eHalStatus status)
+void dump_pmc_callbackRoutine (void *callbackContext, VOS_STATUS status)
 {
     tpAniSirGlobal pMac = (tpAniSirGlobal)callbackContext;
     pmcLog(pMac, LOGW, "*********Received callback from PMC with status = %d\n*********",status);

@@ -2169,7 +2169,7 @@ tSirRetStatus ValidateAndRectifyIEs(tpAniSirGlobal pMac,
                 limLog(pMac, LOG1,
                        FL("Added RSN Capability to the RSNIE as 0x00 0x00"));
 
-                return eHAL_STATUS_SUCCESS;
+                return VOS_STATUS_SUCCESS;
             } else {
                 /* Workaround: Some APs may add extra 0x00 padding after IEs.
                  * Return true to allow these probe response frames proceed.
@@ -2186,7 +2186,7 @@ tSirRetStatus ValidateAndRectifyIEs(tpAniSirGlobal pMac,
                     }
 
                     if (zero_padding) {
-                        return eHAL_STATUS_SUCCESS;
+                        return VOS_STATUS_SUCCESS;
                     }
                 }
             }
@@ -2194,7 +2194,7 @@ tSirRetStatus ValidateAndRectifyIEs(tpAniSirGlobal pMac,
             return eSIR_FAILURE;
         }
     }
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 tSirRetStatus sirConvertProbeFrame2Struct(tpAniSirGlobal       pMac,
@@ -2210,9 +2210,9 @@ tSirRetStatus sirConvertProbeFrame2Struct(tpAniSirGlobal       pMac,
 
     pr = vos_mem_vmalloc(sizeof(tDot11fProbeResponse));
     if ( NULL == pr )
-        status = eHAL_STATUS_FAILURE;
+        status = VOS_STATUS_E_FAILURE;
     else
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
     if (!HAL_STATUS_SUCCESS(status))
     {
         limLog(pMac, LOGE, FL("Failed to allocate memory") );
@@ -2460,9 +2460,9 @@ sirConvertAssocReqFrame2Struct(tpAniSirGlobal pMac,
 
     ar = vos_mem_malloc(sizeof(tDot11fAssocRequest));
     if ( NULL == ar )
-        status = eHAL_STATUS_FAILURE;
+        status = VOS_STATUS_E_FAILURE;
     else
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
     if (!HAL_STATUS_SUCCESS(status))
     {
         limLog(pMac, LOGE, FL("Failed to allocate memory") );
@@ -3019,7 +3019,7 @@ sirFillBeaconMandatoryIEforEseBcnReport(tpAniSirGlobal   pMac,
                                         tANI_U32        *pOutIeLen)
 {
     tDot11fBeaconIEs            *pBies = NULL;
-    tANI_U32                    status = eHAL_STATUS_SUCCESS;
+    tANI_U32                    status = VOS_STATUS_SUCCESS;
     tSirRetStatus               retStatus = eSIR_SUCCESS;
     tSirEseBcnReportMandatoryIe eseBcnReportMandatoryIe;
 
@@ -3032,9 +3032,9 @@ sirFillBeaconMandatoryIEforEseBcnReport(tpAniSirGlobal   pMac,
     vos_mem_set( (tANI_U8*)&eseBcnReportMandatoryIe, sizeof(eseBcnReportMandatoryIe), 0 );
     pBies = vos_mem_malloc(sizeof(tDot11fBeaconIEs));
     if ( NULL == pBies )
-        status = eHAL_STATUS_FAILURE;
+        status = VOS_STATUS_E_FAILURE;
     else
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
     if (!HAL_STATUS_SUCCESS(status))
     {
         limLog(pMac, LOGE, FL("Failed to allocate memory") );
@@ -3333,9 +3333,9 @@ sirParseBeaconIE(tpAniSirGlobal        pMac,
 
     pBies = vos_mem_malloc(sizeof(tDot11fBeaconIEs));
     if ( NULL == pBies )
-        status = eHAL_STATUS_FAILURE;
+        status = VOS_STATUS_E_FAILURE;
     else
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
     if (!HAL_STATUS_SUCCESS(status))
     {
         limLog(pMac, LOGE, FL("Failed to allocate memory") );
@@ -3595,9 +3595,9 @@ sirConvertBeaconFrame2Struct(tpAniSirGlobal       pMac,
 
     pBeacon = vos_mem_vmalloc(sizeof(tDot11fBeacon));
     if ( NULL == pBeacon )
-        status = eHAL_STATUS_FAILURE;
+        status = VOS_STATUS_E_FAILURE;
     else
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
     if (!HAL_STATUS_SUCCESS(status))
     {
         limLog(pMac, LOGE, FL("Failed to allocate memory") );

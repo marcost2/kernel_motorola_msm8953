@@ -866,7 +866,7 @@ VOS_STATUS hdd_change_mcc_go_beacon_interval(hdd_adapter_t *pHostapdAdapter)
 {
     v_CONTEXT_t pVosContext = (WLAN_HDD_GET_CTX(pHostapdAdapter))->pvosContext;
     ptSapContext  pSapCtx = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
     v_PVOID_t hHal = NULL;
 
     VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
@@ -887,8 +887,8 @@ VOS_STATUS hdd_change_mcc_go_beacon_interval(hdd_adapter_t *pHostapdAdapter)
                        "%s: Invalid HAL pointer from pvosGCtx", __func__);
             return VOS_STATUS_E_FAULT;
         }
-        halStatus = sme_ChangeMCCBeaconInterval(hHal, pSapCtx->sessionId);
-        if(halStatus == eHAL_STATUS_FAILURE ){
+        vosStatus = sme_ChangeMCCBeaconInterval(hHal, pSapCtx->sessionId);
+        if(vosStatus == VOS_STATUS_E_FAILURE ){
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                        "%s: Failed to update Beacon Params", __func__);
             return VOS_STATUS_E_FAILURE;
@@ -986,7 +986,7 @@ bool hdd_set_sap_auth_offload(hdd_adapter_t *pHostapdAdapter,
                 pHddCtx->cfg_ini->sap_auth_offload_key,
                 sap_offload_info.key_len);
     }
-    if (eHAL_STATUS_SUCCESS !=
+    if (VOS_STATUS_SUCCESS !=
             sme_set_sap_auth_offload(pHddCtx->hHal, &sap_offload_info))
     {
         hddLog(VOS_TRACE_LEVEL_ERROR,
@@ -1307,14 +1307,14 @@ VOS_STATUS hdd_hostapd_SAPEventCB( tpSap_Event pSapEvent, v_PVOID_t usrDataForCa
     {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_FATAL,
                 "invalid adapter or adapter has invalid magic");
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     pVosContext = ( WLAN_HDD_GET_CTX(pHostapdAdapter))->pvosContext;
     pSapCtx = VOS_GET_SAP_CB(pVosContext);
     if(pSapCtx == NULL){
         VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                  FL("psapCtx is NULL"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     pHostapdState = WLAN_HDD_GET_HOSTAP_STATE_PTR(pHostapdAdapter); 
     pHddApCtx = WLAN_HDD_GET_AP_CTX_PTR(pHostapdAdapter);
@@ -2105,7 +2105,7 @@ static v_U16_t hdd_get_safe_channel_from_acs_range(hdd_context_t *hdd_ctx,
     v_U32_t    endChannelNum;
     v_U32_t    valid_channel_count = WNI_CFG_VALID_CHANNEL_LIST_LEN;
     v_U16_t    i, j;
-    eHalStatus status;
+    VOS_STATUS status;
     bool       found;
 
     status = sme_GetCfgValidChannels(hdd_ctx->hHal, valid_channels,
@@ -2423,7 +2423,7 @@ void hdd_hostapd_ch_avoid_cb
        if (cbMode && (pSapCtx->sap_sec_chan > 0))
        {
            int i;
-           eHalStatus halStatus;
+           VOS_STATUS vosStatus;
 
            for (i = 0; i < unsafeChannelCount; i++)
            {
@@ -2433,10 +2433,10 @@ void hdd_hostapd_ch_avoid_cb
                    VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                            FL("Move SAP from HT40 to HT20"));
 
-                   halStatus = sme_SetHT2040Mode(hHal, pSapCtx->sessionId,
+                   vosStatus = sme_SetHT2040Mode(hHal, pSapCtx->sessionId,
                            PHY_SINGLE_CHANNEL_CENTERED);
 
-                   if (halStatus == eHAL_STATUS_FAILURE)
+                   if (vosStatus == VOS_STATUS_E_FAILURE)
                    {
                        VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                                FL("Failed to change HT20/40 mode"));
@@ -2521,7 +2521,7 @@ static __iw_softap_setparam(struct net_device *dev,
     int sub_cmd;
     int set_value;
     //END IKSWO-9634
-    eHalStatus status;
+    VOS_STATUS status;
     int ret = 0; /* success */
     int enable_pattrn_byte_match, enable_magic_pkt;
     v_CONTEXT_t pVosContext;
@@ -2629,7 +2629,7 @@ static __iw_softap_setparam(struct net_device *dev,
                 }
                 status = ccmCfgSetInt(hHal, WNI_CFG_ASSOC_STA_LIMIT,
                                       set_value, NULL, eANI_BOOLEAN_FALSE);
-                if ( status != eHAL_STATUS_SUCCESS ) 
+                if ( status != VOS_STATUS_SUCCESS ) 
                 {
                     hddLog(LOGE, FL("setMaxAssoc failure, status %d"),
                             status);
@@ -2640,9 +2640,9 @@ static __iw_softap_setparam(struct net_device *dev,
 
         case QCSAP_PARAM_HIDE_SSID:
             {
-                eHalStatus status = eHAL_STATUS_SUCCESS;
+                VOS_STATUS status = VOS_STATUS_SUCCESS;
                 status = sme_HideSSID(hHal, pHostapdAdapter->sessionId, set_value);
-                if(eHAL_STATUS_SUCCESS != status)
+                if(VOS_STATUS_SUCCESS != status)
                 {
                     hddLog(VOS_TRACE_LEVEL_ERROR,
                             "%s: QCSAP_PARAM_HIDE_SSID failed",
@@ -2675,7 +2675,7 @@ static __iw_softap_setparam(struct net_device *dev,
                 rateUpdate->mcastDataRate24GHzTxFlag = 0;
                 rateUpdate->mcastDataRate5GHzTxFlag = 0;
                 status = sme_SendRateUpdateInd(hHal, rateUpdate);
-                if (eHAL_STATUS_SUCCESS != status)
+                if (VOS_STATUS_SUCCESS != status)
                 {
                     hddLog(VOS_TRACE_LEVEL_ERROR,
                             "%s: SET_MC_RATE failed", __func__);
@@ -2796,7 +2796,7 @@ static __iw_softap_getparam(struct net_device *dev,
     hdd_context_t *pHddCtx;
     int *value = (int *)extra;
     int sub_cmd = value[0];
-    eHalStatus status;
+    VOS_STATUS status;
     int ret = 0; /* success */
     v_CONTEXT_t pVosContext;
 
@@ -2833,7 +2833,7 @@ static __iw_softap_getparam(struct net_device *dev,
     {
     case QCSAP_PARAM_MAX_ASSOC:
         status = ccmCfgGetInt(hHal, WNI_CFG_ASSOC_STA_LIMIT, (tANI_U32 *)value);
-        if (eHAL_STATUS_SUCCESS != status)
+        if (VOS_STATUS_SUCCESS != status)
         {
             VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                 FL("failed to get WNI_CFG_ASSOC_STA_LIMIT from cfg %d"),status);
@@ -3206,7 +3206,7 @@ static __iw_softap_set_max_tx_power(struct net_device *dev,
                  VOS_MAC_ADDR_SIZE);
 
     set_value = value[0];
-    if (eHAL_STATUS_SUCCESS != sme_SetMaxTxPower(hHal, bssid, selfMac, set_value))
+    if (VOS_STATUS_SUCCESS != sme_SetMaxTxPower(hHal, bssid, selfMac, set_value))
     {
         hddLog(VOS_TRACE_LEVEL_ERROR, "%s: Setting maximum tx power failed",
                 __func__);
@@ -3337,7 +3337,7 @@ static __iw_softap_set_tx_power(struct net_device *dev,
     }
 
     set_value = value[0];
-    if (eHAL_STATUS_SUCCESS != sme_SetTxPower(hHal, pSapCtx->sessionId, set_value))
+    if (VOS_STATUS_SUCCESS != sme_SetTxPower(hHal, pSapCtx->sessionId, set_value))
     {
         hddLog(VOS_TRACE_LEVEL_ERROR, "%s: Setting tx power failed",
                 __func__);
@@ -4032,7 +4032,7 @@ int __iw_softap_get_channel_list(struct net_device *dev,
                   "%s: Hal Context is NULL",__func__);
         return -EINVAL;
     }
-    if (eHAL_STATUS_SUCCESS != sme_GetFreqBand(hHal, &curBand))
+    if (VOS_STATUS_SUCCESS != sme_GetFreqBand(hHal, &curBand))
     {
         hddLog(LOGE,FL("not able get the current frequency band"));
         return -EIO;
@@ -4069,7 +4069,7 @@ int __iw_softap_get_channel_list(struct net_device *dev,
 
     temp_num_channels = num_channels;
 
-    if(eHAL_STATUS_SUCCESS != sme_getSoftApDomain(hHal,(v_REGDOMAIN_t *) &domainIdCurrentSoftap))
+    if(VOS_STATUS_SUCCESS != sme_getSoftApDomain(hHal,(v_REGDOMAIN_t *) &domainIdCurrentSoftap))
     {
         hddLog(LOGE,FL("Failed to get Domain ID, %d"),domainIdCurrentSoftap);
         return -EIO;
@@ -4735,7 +4735,7 @@ static int __iw_get_ap_freq(struct net_device *dev,
    if(pHostapdState->bssState == BSS_STOP )
    {
        if (ccmCfgGetInt(hHal, WNI_CFG_CURRENT_CHANNEL, &channel)
-                                                  != eHAL_STATUS_SUCCESS)
+                                                  != VOS_STATUS_SUCCESS)
        {
             VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                 FL("failed to get WNI_CFG_CURRENT_CHANNEL from cfg"));
@@ -5001,7 +5001,7 @@ static int __iw_set_ap_genie(struct net_device *dev,
     hdd_adapter_t *pHostapdAdapter;
     hdd_context_t *pHddCtx;
     v_CONTEXT_t pVosContext;
-    eHalStatus halStatus= eHAL_STATUS_SUCCESS;
+    VOS_STATUS vosStatus= VOS_STATUS_SUCCESS;
     u_int8_t *genie = (u_int8_t *)extra;
     int ret = 0;
 
@@ -5050,16 +5050,16 @@ static int __iw_set_ap_genie(struct net_device *dev,
                 hdd_softap_Register_BC_STA(pHostapdAdapter, 1);
             }
             (WLAN_HDD_GET_AP_CTX_PTR(pHostapdAdapter))->uPrivacy = 1;
-            halStatus = WLANSAP_Set_WPARSNIes(pVosContext, genie, wrqu->data.length);
+            vosStatus = WLANSAP_Set_WPARSNIes(pVosContext, genie, wrqu->data.length);
             break;
 
         default:
             hddLog (LOGE, "%s Set UNKNOWN IE %X",__func__, genie[0]);
-            halStatus = 0;
+            vosStatus = 0;
     }
 
     EXIT();
-    return halStatus;
+    return vosStatus;
 }
 
 static int iw_set_ap_genie(struct net_device *dev,
@@ -5077,7 +5077,7 @@ static int iw_set_ap_genie(struct net_device *dev,
 
 static VOS_STATUS  wlan_hdd_get_classAstats_for_station(hdd_adapter_t *pAdapter, u8 staid)
 {
-   eHalStatus hstatus;
+   VOS_STATUS hstatus;
    int ret;
    void *cookie;
    struct hdd_request *request;
@@ -5109,7 +5109,7 @@ static VOS_STATUS  wlan_hdd_get_classAstats_for_station(hdd_adapter_t *pAdapter,
                                   FALSE, //non-cached results
                                   staid,
                                   cookie);
-   if (eHAL_STATUS_SUCCESS != hstatus)
+   if (VOS_STATUS_SUCCESS != hstatus)
    {
       hddLog(VOS_TRACE_LEVEL_ERROR,
             "%s: Unable to retrieve statistics for link speed",

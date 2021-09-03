@@ -56,15 +56,15 @@ static struct hdd_context_s *pHddCtx;
 
   This function also reports the results to the user space
 
-  \return - eHalStatus enumeration
+  \return - VOS_STATUS enumeration
 
 -----------------------------------------------------------------------------------------------*/
-static eHalStatus hdd_OemDataReqCallback(tHalHandle hHal, 
+static VOS_STATUS hdd_OemDataReqCallback(tHalHandle hHal, 
         void *pContext,
         tANI_U32 oemDataReqID,
         eOemDataReqStatus oemDataReqStatus)
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     struct net_device *dev = (struct net_device *) pContext;
     union iwreq_data wrqu;
     char buffer[IW_CUSTOM_MAX+1];
@@ -122,7 +122,7 @@ int __iw_get_oem_data_rsp(
         char *extra)
 {
     int                                   rc = 0;
-    eHalStatus                            status;
+    VOS_STATUS                            status;
     struct iw_oem_data_rsp*               pHddOemDataRsp;
     tOemDataRsp*                          pSmeOemDataRsp;
     hdd_adapter_t *pAdapter;
@@ -146,7 +146,7 @@ int __iw_get_oem_data_rsp(
     {
         //get the oem data response from sme
         status = sme_getOemDataRsp(WLAN_HDD_GET_HAL_CTX(pAdapter), &pSmeOemDataRsp);
-        if (status != eHAL_STATUS_SUCCESS)
+        if (status != VOS_STATUS_SUCCESS)
         {
             hddLog(LOGE, "%s: failed in sme_getOemDataRsp", __func__);
             rc = -EIO;
@@ -210,7 +210,7 @@ int __iw_set_oem_data_req(
         char *extra)
 {
     int rc = 0;
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     struct iw_oem_data_req *pOemDataReq = NULL;
     tOemDataReqConfig oemDataReqConfig;
     tANI_U32 oemDataReqID = 0;
@@ -287,7 +287,7 @@ int __iw_set_oem_data_req(
                                                 &oemDataReqID, 
                                                 &hdd_OemDataReqCallback, 
                                                 dev);
-        if (status != eHAL_STATUS_SUCCESS)
+        if (status != VOS_STATUS_SUCCESS)
         {
             VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                       "%s: sme_OemDataReq status %d", __func__, status);
@@ -340,7 +340,7 @@ int iw_get_oem_data_cap(
         union iwreq_data *wrqu,
         char *extra)
 {
-    eHalStatus status;
+    VOS_STATUS status;
     t_iw_oem_data_cap oemDataCap;
     t_iw_oem_data_cap *pHddOemDataCap;
     hdd_adapter_t *pAdapter = netdev_priv(dev);
@@ -391,7 +391,7 @@ int iw_get_oem_data_cap(
        status = sme_GetCfgValidChannels(pHddContext->hHal,
                                         &chanList[0],
                                         &numChannels);
-       if (eHAL_STATUS_SUCCESS != status)
+       if (VOS_STATUS_SUCCESS != status)
        {
          VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                    "%s:failed to get valid channel list", __func__);
@@ -660,7 +660,7 @@ static int oem_process_channel_info_req_msg(int numOfChannels, char *chanList)
    tANI_U8 chanId;
    tANI_U32 reg_info_1;
    tANI_U32 reg_info_2;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    int i;
    tANI_U8 *buf;
 
@@ -708,7 +708,7 @@ static int oem_process_channel_info_req_msg(int numOfChannels, char *chanList)
       chanId = chanList[i];
       status = sme_getRegInfo(pHddCtx->hHal, chanId,
                               &reg_info_1, &reg_info_2);
-      if (eHAL_STATUS_SUCCESS == status)
+      if (VOS_STATUS_SUCCESS == status)
       {
          /* band center freq1, and freq2 depends on peer's capability
                   * and at this time we might not be associated on the given
@@ -771,7 +771,7 @@ static int oem_process_channel_info_req_msg(int numOfChannels, char *chanList)
      - oemDataLen - Length to OEM Data buffer
      - oemData - Pointer to OEM Data buffer
 
-  \return - eHalStatus enumeration
+  \return - VOS_STATUS enumeration
 
   --------------------------------------------------------------------------*/
 void oem_process_data_req_msg(int oemDataLen, char *oemData)

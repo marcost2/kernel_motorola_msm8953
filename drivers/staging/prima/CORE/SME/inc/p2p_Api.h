@@ -53,8 +53,8 @@ typedef struct sP2pPsConfig{
   tANI_U8   sessionid;   
 }tP2pPsConfig,*tpP2pPsConfig;
 
-typedef eHalStatus (*remainOnChanCallback)( tHalHandle, void* context, 
-                                            eHalStatus status );
+typedef VOS_STATUS (*remainOnChanCallback)( tHalHandle, void* context, 
+                                            VOS_STATUS status );
 
 typedef struct sRemainOnChn{
     tANI_U8 chn;
@@ -159,7 +159,7 @@ typedef enum _eP2PDiscoverStatus {
    eP2P_DIRECTED_DISCOVER
 } eP2PDiscoverStatus;
 
-typedef eHalStatus (*p2pDiscoverCompleteCallback)(tHalHandle hHal, void *pContext, eP2PDiscoverStatus discoverStatus);
+typedef VOS_STATUS (*p2pDiscoverCompleteCallback)(tHalHandle hHal, void *pContext, eP2PDiscoverStatus discoverStatus);
 
 typedef struct sP2PGroupId {
     tANI_U8 present;
@@ -473,67 +473,67 @@ typedef struct sp2pContext
 #endif
 } tp2pContext, *tPp2pContext;
 
-eHalStatus sme_RemainOnChannel( tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS sme_RemainOnChannel( tHalHandle hHal, tANI_U8 sessionId,
                                 tANI_U8 channel, tANI_U32 duration,
                                 remainOnChanCallback callback,
                                 void *pContext,
                                 tANI_U8 isP2PProbeReqAllowed);
-eHalStatus sme_ReportProbeReq( tHalHandle hHal, tANI_U8 flag );
-eHalStatus sme_updateP2pIe( tHalHandle hHal, void *p2pIe, 
+VOS_STATUS sme_ReportProbeReq( tHalHandle hHal, tANI_U8 flag );
+VOS_STATUS sme_updateP2pIe( tHalHandle hHal, void *p2pIe, 
                             tANI_U32 p2pIeLength );
-eHalStatus sme_sendAction( tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS sme_sendAction( tHalHandle hHal, tANI_U8 sessionId,
                            const tANI_U8 *pBuf, tANI_U32 len,
                            tANI_U16 wait, tANI_BOOLEAN noack);
-eHalStatus sme_CancelRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId );
-eHalStatus sme_p2pOpen( tHalHandle hHal );
-eHalStatus p2pStop( tHalHandle hHal );
-eHalStatus sme_p2pClose( tHalHandle hHal );
-eHalStatus sme_p2pSetPs( tHalHandle hHal, tP2pPsConfig * data );
+VOS_STATUS sme_CancelRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId );
+VOS_STATUS sme_p2pOpen( tHalHandle hHal );
+VOS_STATUS p2pStop( tHalHandle hHal );
+VOS_STATUS sme_p2pClose( tHalHandle hHal );
+VOS_STATUS sme_p2pSetPs( tHalHandle hHal, tP2pPsConfig * data );
 #ifdef WLAN_FEATURE_P2P_INTERNAL
-eHalStatus p2pRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS p2pRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId,
                                tANI_U8 channel, tANI_U32 duration,
                                remainOnChanCallback callback, void *pContext,
                                tANI_U8 isP2PProbeReqAllowed,
                                eP2PRemainOnChnReason reason);
 #else
-eHalStatus p2pRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS p2pRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId,
                                tANI_U8 channel, tANI_U32 duration,
                                remainOnChanCallback callback,
                                void *pContext,
                                tANI_U8 isP2PProbeReqAllowed);
 #endif
-eHalStatus p2pSendAction( tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS p2pSendAction( tHalHandle hHal, tANI_U8 sessionId,
                           const tANI_U8 *pBuf, tANI_U32 len,
                            tANI_U16 wait, tANI_BOOLEAN noack);
-eHalStatus p2pCancelRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId );
-eHalStatus p2pSetPs( tHalHandle hHal, tP2pPsConfig *pNoA );
+VOS_STATUS p2pCancelRemainOnChannel( tHalHandle hHal, tANI_U8 sessionId );
+VOS_STATUS p2pSetPs( tHalHandle hHal, tP2pPsConfig *pNoA );
 tSirRFBand GetRFBand(tANI_U8 channel);
 #ifdef WLAN_FEATURE_P2P_INTERNAL
-eHalStatus p2pRemainOnChannelCallback(tHalHandle halHandle, void *pContext, eHalStatus scan_status);
-eHalStatus P2P_DiscoverRequest(tHalHandle hHal, tANI_U8 SessionID, tP2PDiscoverRequest *pDiscoverRequest, 
+VOS_STATUS p2pRemainOnChannelCallback(tHalHandle halHandle, void *pContext, VOS_STATUS scan_status);
+VOS_STATUS P2P_DiscoverRequest(tHalHandle hHal, tANI_U8 SessionID, tP2PDiscoverRequest *pDiscoverRequest, 
                                p2pDiscoverCompleteCallback callback, void *pContext);
 tANI_U8 p2pGetDialogToken(tHalHandle hHal, tANI_U8 SessionID, eP2PFrameType actionFrameType);
-eHalStatus P2P_ListenStateDiscoverable(tHalHandle hHal, tANI_U8 sessionId, ep2pListenStateDiscoverability listenState);
-eHalStatus p2pCreateSendActionFrame(tHalHandle hHal, tANI_U8 SessionID, 
+VOS_STATUS P2P_ListenStateDiscoverable(tHalHandle hHal, tANI_U8 sessionId, ep2pListenStateDiscoverability listenState);
+VOS_STATUS p2pCreateSendActionFrame(tHalHandle hHal, tANI_U8 SessionID, 
       void *p2pactionframe, eP2PFrameType actionFrameType, tANI_U32 timeout);
-eHalStatus p2pScanRequest(tp2pContext *p2pContext, p2pDiscoverCompleteCallback callback, void *pContext);
+VOS_STATUS p2pScanRequest(tp2pContext *p2pContext, p2pDiscoverCompleteCallback callback, void *pContext);
 void p2pActionFrameTimerHandler(void *pContext);
 void p2pListenDiscoverTimerHandler(void *pContext);
 void p2pDiscoverTimerHandler(void *pContext);
 void p2pRetryActionFrameTimerHandler(void *pContext);
-eHalStatus p2pGrpFormationRemainOnChanRspCallback(tHalHandle halHandle, void *pContext, tANI_U32 scanId, eCsrScanStatus scan_status);
-eHalStatus p2pChangeDefaultConfigParam(tHalHandle hHal, tP2PConfigParam *pParam);
-eHalStatus p2pGetConfigParam(tHalHandle hHal, tP2PConfigParam *pParam);
-eHalStatus p2pPS(tHalHandle hHal, tANI_U8 sessionId);
-eHalStatus p2pCloseSession(tHalHandle hHal, tANI_U8 SessionID);
-eHalStatus p2pSetSessionId(tHalHandle hHal, tANI_U8 SessionID, tANI_U8 SmeSessionId);
+VOS_STATUS p2pGrpFormationRemainOnChanRspCallback(tHalHandle halHandle, void *pContext, tANI_U32 scanId, eCsrScanStatus scan_status);
+VOS_STATUS p2pChangeDefaultConfigParam(tHalHandle hHal, tP2PConfigParam *pParam);
+VOS_STATUS p2pGetConfigParam(tHalHandle hHal, tP2PConfigParam *pParam);
+VOS_STATUS p2pPS(tHalHandle hHal, tANI_U8 sessionId);
+VOS_STATUS p2pCloseSession(tHalHandle hHal, tANI_U8 SessionID);
+VOS_STATUS p2pSetSessionId(tHalHandle hHal, tANI_U8 SessionID, tANI_U8 SmeSessionId);
 tANI_BOOLEAN p2pIsOperatingChannEqualListenChann(tHalHandle hHal, tANI_U8 SessionID);
-eHalStatus p2pGetListenChannel(tHalHandle hHal, tANI_U8 SessionID, tANI_U8 *channel);
-eHalStatus p2pSetListenChannel(tHalHandle hHal, tANI_U8 SessionID, tANI_U8 channel);
-eHalStatus p2pStopDiscovery(tHalHandle hHal, tANI_U8 SessionID);
+VOS_STATUS p2pGetListenChannel(tHalHandle hHal, tANI_U8 SessionID, tANI_U8 *channel);
+VOS_STATUS p2pSetListenChannel(tHalHandle hHal, tANI_U8 SessionID, tANI_U8 channel);
+VOS_STATUS p2pStopDiscovery(tHalHandle hHal, tANI_U8 SessionID);
 tANI_U8 getP2PSessionIdFromSMESessionId(tHalHandle hHal, tANI_U8 SessionID);
 void p2pCallDiscoverCallback(tp2pContext *p2pContext, eP2PDiscoverStatus statusCode);
-eHalStatus p2pGetResultFilter(tp2pContext *pP2pContext,
+VOS_STATUS p2pGetResultFilter(tp2pContext *pP2pContext,
                               tCsrScanResultFilter *pFilter);
 #endif//INTERNAL
 #endif //__P2P_API_H__

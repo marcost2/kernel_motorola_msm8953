@@ -1225,7 +1225,7 @@ VOS_STATUS vos_nv_open(void)
 
     if (NULL == pVosContext)
     {
-        return (eHAL_STATUS_FAILURE);
+        return (VOS_STATUS_E_FAILURE);
     }
 
     status = hdd_request_firmware(WLAN_NV_FILE,
@@ -1669,7 +1669,7 @@ error:
     vos_mem_vfree(pnvEFSTable);
     vos_mem_vfree(pEncodedBuf);
     vos_mem_vfree(pnvEncodedBuf);
-    return eHAL_STATUS_FAILURE ;
+    return VOS_STATUS_E_FAILURE ;
 }
 
 VOS_STATUS vos_nv_close(void)
@@ -4621,7 +4621,7 @@ int __wlan_hdd_crda_reg_notifier(struct wiphy *wiphy,
                                    pHddCtx->pvosContext,
                                    eSIR_FALSE,
                                    eSIR_FALSE);
-       if (eHAL_STATUS_SUCCESS == status)
+       if (VOS_STATUS_SUCCESS == status)
        {
           status = wait_for_completion_interruptible_timeout(
                                        &change_country_code,
@@ -4670,7 +4670,7 @@ int __wlan_hdd_crda_reg_notifier(struct wiphy *wiphy,
              (request->initiator == NL80211_REGDOM_SET_BY_CORE)||
                 (request->initiator == NL80211_REGDOM_SET_BY_USER))
     {
-         if ( eHAL_STATUS_SUCCESS !=  sme_GetCountryCode(pHddCtx->hHal, ccode, &uBufLen))
+         if ( VOS_STATUS_SUCCESS !=  sme_GetCountryCode(pHddCtx->hHal, ccode, &uBufLen))
          {
             wiphy_dbg(wiphy, "info: set by driver CCODE ERROR\n");
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0))
@@ -4679,7 +4679,7 @@ int __wlan_hdd_crda_reg_notifier(struct wiphy *wiphy,
             return 0;
 #endif
          }
-         if (eHAL_STATUS_SUCCESS != sme_GetRegulatoryDomainForCountry (pHddCtx->hHal,
+         if (VOS_STATUS_SUCCESS != sme_GetRegulatoryDomainForCountry (pHddCtx->hHal,
                                              ccode, (v_REGDOMAIN_t *) &domainIdCurrent))
          {
             wiphy_dbg(wiphy, "info: set by driver ERROR\n");

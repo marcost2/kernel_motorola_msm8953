@@ -301,119 +301,119 @@ typedef struct sPmcSmpsConfigParams
 
 
 /* Routine definitions. */
-extern eHalStatus pmcOpen (tHalHandle hHal);
+extern VOS_STATUS pmcOpen (tHalHandle hHal);
 
-extern eHalStatus pmcStart (tHalHandle hHal);
+extern VOS_STATUS pmcStart (tHalHandle hHal);
 
-extern eHalStatus pmcStop (tHalHandle hHal);
+extern VOS_STATUS pmcStop (tHalHandle hHal);
 
-extern eHalStatus pmcClose (tHalHandle hHal );
+extern VOS_STATUS pmcClose (tHalHandle hHal );
 
-extern eHalStatus pmcSignalPowerEvent (tHalHandle hHal, tPmcPowerEvent event);
+extern VOS_STATUS pmcSignalPowerEvent (tHalHandle hHal, tPmcPowerEvent event);
 
-extern eHalStatus pmcSetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams);
+extern VOS_STATUS pmcSetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams);
 
-extern eHalStatus pmcGetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams);
+extern VOS_STATUS pmcGetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams);
 
-extern eHalStatus pmcEnablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode);
+extern VOS_STATUS pmcEnablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode);
 
-extern eHalStatus pmcStartAutoBmpsTimer (tHalHandle hHal);
+extern VOS_STATUS pmcStartAutoBmpsTimer (tHalHandle hHal);
 
-extern eHalStatus pmcStopAutoBmpsTimer (tHalHandle hHal);
+extern VOS_STATUS pmcStopAutoBmpsTimer (tHalHandle hHal);
 
-extern eHalStatus pmcDisablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode);
+extern VOS_STATUS pmcDisablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode);
 
-extern eHalStatus pmcQueryPowerState (tHalHandle hHal, tPmcPowerState *pPowerState, tPmcSwitchState *pHwWlanSwitchState,
+extern VOS_STATUS pmcQueryPowerState (tHalHandle hHal, tPmcPowerState *pPowerState, tPmcSwitchState *pHwWlanSwitchState,
 
                                       tPmcSwitchState *pSwWlanSwitchState);
 
 extern tANI_BOOLEAN pmcIsPowerSaveEnabled (tHalHandle hHal, tPmcPowerSavingMode psMode);
 
-extern eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+extern VOS_STATUS pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
 
                                        void *callbackContext, tRequestFullPowerReason fullPowerReason);
 
-extern eHalStatus pmcRequestImps (tHalHandle hHal, tANI_U32 impsPeriod,
+extern VOS_STATUS pmcRequestImps (tHalHandle hHal, tANI_U32 impsPeriod,
 
-                                  void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+                                  void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
 
                                   void *callbackContext);
 
-extern eHalStatus pmcRegisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext),
+extern VOS_STATUS pmcRegisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext),
 
                                              void *checkContext);
 
-extern eHalStatus pmcDeregisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext));
+extern VOS_STATUS pmcDeregisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext));
 
 extern void pmcMessageProcessor (tHalHandle hHal, tSirSmeRsp *pMsg);
 extern void pmcResetImpsFailStatus (tHalHandle hHal);
 extern v_BOOL_t IsPmcImpsReqFailed (tHalHandle hHal);
 
-extern eHalStatus pmcRequestBmps (
+extern VOS_STATUS pmcRequestBmps (
 
    tHalHandle hHal,
 
-   void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+   void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
 
    void *callbackContext);
 
 
-extern eHalStatus pmcStartUapsd (
+extern VOS_STATUS pmcStartUapsd (
 
    tHalHandle hHal,
 
-   void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+   void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
 
    void *callbackContext);
 
 
-extern eHalStatus pmcStopUapsd (tHalHandle hHal);
+extern VOS_STATUS pmcStopUapsd (tHalHandle hHal);
 
 
-extern eHalStatus pmcRequestStandby (
+extern VOS_STATUS pmcRequestStandby (
 
    tHalHandle hHal,
 
-   void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+   void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
 
    void *callbackContext);
 
 
-extern eHalStatus pmcRegisterDeviceStateUpdateInd (tHalHandle hHal, 
+extern VOS_STATUS pmcRegisterDeviceStateUpdateInd (tHalHandle hHal, 
 
    void (*callbackRoutine) (void *callbackContext, tPmcState pmcState),
 
    void *callbackContext);
 
 
-extern eHalStatus pmcDeregisterDeviceStateUpdateInd (tHalHandle hHal, 
+extern VOS_STATUS pmcDeregisterDeviceStateUpdateInd (tHalHandle hHal, 
 
    void (*callbackRoutine) (void *callbackContext, tPmcState pmcState));
 
 
-extern eHalStatus pmcReady(tHalHandle hHal);
+extern VOS_STATUS pmcReady(tHalHandle hHal);
 
 
 void pmcDumpInit(tHalHandle hHal);
 
 
-extern eHalStatus pmcWowlAddBcastPattern (
+extern VOS_STATUS pmcWowlAddBcastPattern (
    tHalHandle hHal, 
    tpSirWowlAddBcastPtrn pattern, 
    tANI_U8  sessionId);
 
 
-extern eHalStatus pmcWowlDelBcastPattern (
+extern VOS_STATUS pmcWowlDelBcastPattern (
    tHalHandle hHal, 
    tpSirWowlDelBcastPtrn pattern,
    tANI_U8 sessionId);
 
 
-extern eHalStatus pmcEnterWowl ( 
+extern VOS_STATUS pmcEnterWowl ( 
 
     tHalHandle hHal, 
 
-    void (*enterWowlCallbackRoutine) (void *callbackContext, eHalStatus status),
+    void (*enterWowlCallbackRoutine) (void *callbackContext, VOS_STATUS status),
 
     void *enterWowlCallbackContext,
 #ifdef WLAN_WAKEUP_EVENTS
@@ -423,10 +423,10 @@ extern eHalStatus pmcEnterWowl (
 #endif // WLAN_WAKEUP_EVENTS
     tpSirSmeWowlEnterParams wowlEnterParams, tANI_U8 sessionId);
 
-extern eHalStatus pmcExitWowl (tHalHandle hHal, tWowlExitSource wowlExitSrc);
+extern VOS_STATUS pmcExitWowl (tHalHandle hHal, tWowlExitSource wowlExitSrc);
 
 
-extern eHalStatus pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
+extern VOS_STATUS pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
                                           tANI_U8 sessionId);
 
 /* ---------------------------------------------------------------------------
@@ -434,11 +434,11 @@ extern eHalStatus pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pReque
     \brief  Set the Keep Alive feature.
     \param  hHal - The handle returned by macOpen.
     \param  pRequest - Pointer to the Keep Alive.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the keepalive.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the keepalive.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-extern eHalStatus pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8 sessionId);
+extern VOS_STATUS pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8 sessionId);
 
 extern tANI_BOOLEAN pmcValidateConnectState( tHalHandle hHal );
 
@@ -449,15 +449,15 @@ extern tANI_BOOLEAN pmcAllowImps( tHalHandle hHal );
 /*Pref netw found Cb declaration*/
 typedef void(*preferredNetworkFoundIndCallback)(void *callbackContext, tpSirPrefNetworkFoundInd pPrefNetworkFoundInd);
 
-extern eHalStatus pmcSetPreferredNetworkList(tHalHandle hHal, tpSirPNOScanReq pRequest, tANI_U8 sessionId, preferredNetworkFoundIndCallback callbackRoutine, void *callbackContext);
-extern eHalStatus pmcSetRssiFilter(tHalHandle hHal, v_U8_t rssiThreshold);
+extern VOS_STATUS pmcSetPreferredNetworkList(tHalHandle hHal, tpSirPNOScanReq pRequest, tANI_U8 sessionId, preferredNetworkFoundIndCallback callbackRoutine, void *callbackContext);
+extern VOS_STATUS pmcSetRssiFilter(tHalHandle hHal, v_U8_t rssiThreshold);
 #endif // FEATURE_WLAN_SCAN_PNO
 
 #ifdef WLAN_FEATURE_PACKET_FILTERING
 // Packet Coalescing Filter Match Count Callback declaration
 typedef void(*FilterMatchCountCallback)(void *callbackContext,
                                         tpSirRcvFltPktMatchRsp pRcvFltPktMatchRsp);
-extern eHalStatus pmcGetFilterMatchCount(tHalHandle hHal, FilterMatchCountCallback callbackRoutine, 
+extern VOS_STATUS pmcGetFilterMatchCount(tHalHandle hHal, FilterMatchCountCallback callbackRoutine, 
                                                 void *callbackContext, tANI_U8 sessionId);
 #endif // WLAN_FEATURE_PACKET_FILTERING
 
@@ -470,22 +470,22 @@ typedef void(*GTKOffloadGetInfoCallback)(void *callbackContext, tpSirGtkOffloadG
     \brief  Set GTK offload feature.
     \param  hHal - The handle returned by macOpen.
     \param  pGtkOffload - Pointer to the GTK offload request.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the offload.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the offload.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-extern eHalStatus pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload, tANI_U8 sessionId);
+extern VOS_STATUS pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload, tANI_U8 sessionId);
 
 /* ---------------------------------------------------------------------------
     \fn pmcGetGTKOffload
     \brief  Get GTK offload information.
     \param  hHal - The handle returned by macOpen.
     \param  callbackRoutine - Pointer to the GTK Offload Get Info response callback routine.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the offload.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the offload.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-extern eHalStatus pmcGetGTKOffload(tHalHandle hHal,
+extern VOS_STATUS pmcGetGTKOffload(tHalHandle hHal,
                                    GTKOffloadGetInfoCallback callbackRoutine,
                                    void *callbackContext, tANI_U8 sessionId);
 #endif // WLAN_FEATURE_GTK_OFFLOAD
@@ -506,11 +506,11 @@ typedef void(*hddTriggerBatchScanResultIndCallback)(void *callbackContext,
     \param  sessionId - session id
     \param  callbackRoutine - Pointer to set batch scan request callback routine
     \param  calbackContext - callback context
-    \return eHalStatus
-             eHAL_STATUS_FAILURE  Cannot set batch scan request
-             eHAL_STATUS_SUCCESS  Request accepted.
+    \return VOS_STATUS
+             VOS_STATUS_E_FAILURE  Cannot set batch scan request
+             VOS_STATUS_SUCCESS  Request accepted.
  -----------------------------------------------------------------------------*/
-extern eHalStatus pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq
+extern VOS_STATUS pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq
        *pRequest, tANI_U8 sessionId, hddSetBatchScanReqCallback callbackRoutine,
        void *callbackContext);
 
@@ -521,11 +521,11 @@ extern eHalStatus pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq
     \param  sessionId - session id
     \param  callbackRoutine - Pointer to get batch scan request callback routine
     \param  calbackContext - callback context
-    \return eHalStatus
-             eHAL_STATUS_FAILURE  Cannot set batch scan request
-             eHAL_STATUS_SUCCESS  Request accepted.
+    \return VOS_STATUS
+             VOS_STATUS_E_FAILURE  Cannot set batch scan request
+             VOS_STATUS_SUCCESS  Request accepted.
  -----------------------------------------------------------------------------*/
-extern eHalStatus pmcTriggerBatchScanResultInd
+extern VOS_STATUS pmcTriggerBatchScanResultInd
 (
     tHalHandle hHal, tSirTriggerBatchScanResultInd *pRequest, tANI_U8 sessionId,
     hddTriggerBatchScanResultIndCallback callbackRoutine, void *callbackContext
@@ -537,12 +537,12 @@ extern eHalStatus pmcTriggerBatchScanResultInd
     \brief  Stoping batch scan request in FW
     \param  hHal - The handle returned by macOpen.
     \param  pInd - Pointer to stop batch scan indication
-    \return eHalStatus
-             eHAL_STATUS_FAILURE  Cannot set batch scan request
-             eHAL_STATUS_SUCCESS  Request accepted.
+    \return VOS_STATUS
+             VOS_STATUS_E_FAILURE  Cannot set batch scan request
+             VOS_STATUS_SUCCESS  Request accepted.
  -----------------------------------------------------------------------------*/
 
-extern eHalStatus pmcStopBatchScanInd
+extern VOS_STATUS pmcStopBatchScanInd
 (
     tHalHandle hHal,
     tSirStopBatchScanInd *pInd,

@@ -37,7 +37,7 @@
 #include "csrInternal.h"
 #include "wlan_qct_wda.h"
 
-eHalStatus csr_register_roaming_mbb_callback(tpAniSirGlobal mac);
+VOS_STATUS csr_register_roaming_mbb_callback(tpAniSirGlobal mac);
 
 #define PREAUTH_REASSOC_MBB_TIMER_VALUE    60
 
@@ -59,11 +59,11 @@ eHalStatus csr_register_roaming_mbb_callback(tpAniSirGlobal mac);
  *
  * This function prepares preauth request and sends request to PE
  *
- * Return: eHAL_STATUS_SUCCESS on success,
- *           : eHAL_STATUS_RESOURCES when resource allocation is failure
- *           : eHAL_STATUS_FAILURE otherwise
+ * Return: VOS_STATUS_SUCCESS on success,
+ *           : VOS_STATUS_E_RESOURCES when resource allocation is failure
+ *           : VOS_STATUS_E_FAILURE otherwise
  */
-eHalStatus csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
+VOS_STATUS csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
                      tANI_U32 session_id, tpSirBssDescription bss_description)
 {
     tpAniSirGlobal mac = PMAC_STRUCT(hal);
@@ -72,11 +72,11 @@ eHalStatus csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
     tCsrRoamSession *session = CSR_GET_SESSION(mac, session_id);
     tpCsrNeighborRoamControlInfo neighbor_roam_info =
                                           &mac->roam.neighborRoamInfo;
-    eHalStatus status;
+    VOS_STATUS status;
 
     if (session == NULL) {
         smsLog(mac, LOGE, FL("Invalid Session ID %d"), session_id);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     auth_req_len = sizeof(tSirFTPreAuthReq);
@@ -84,7 +84,7 @@ eHalStatus csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
     if (NULL == pre_auth_req) {
         smsLog(mac, LOGE,
                FL("Memory allocation for Preauth request failed"));
-        return eHAL_STATUS_RESOURCES;
+        return VOS_STATUS_E_RESOURCES;
     }
 
     /*
@@ -96,7 +96,7 @@ eHalStatus csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
                                           eCSR_NEIGHBOR_ROAM_STATE_INIT) {
         smsLog(mac, LOGE, FL("neighborRoamState %d"),
                           mac->roam.neighborRoamInfo.neighborRoamState);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /*
@@ -111,7 +111,7 @@ eHalStatus csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
     if (NULL == pre_auth_req->pbssDescription) {
         smsLog(mac, LOGE,
                FL("Unable to allocate memory for preauth bss description"));
-        return eHAL_STATUS_RESOURCES;
+        return VOS_STATUS_E_RESOURCES;
     }
 
     pre_auth_req->messageType =
@@ -153,13 +153,13 @@ eHalStatus csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
  * This function issues preauth_reassoc request to PE with the 1st AP
  * entry in the roamable AP list
  *
- * Return: eHAL_STATUS_SUCCESS on success, eHAL_STATUS_FAILURE otherwise
+ * Return: VOS_STATUS_SUCCESS on success, VOS_STATUS_E_FAILURE otherwise
  */
-eHalStatus csr_neighbor_roam_issue_preauth_reassoc(tpAniSirGlobal mac)
+VOS_STATUS csr_neighbor_roam_issue_preauth_reassoc(tpAniSirGlobal mac)
 {
     tpCsrNeighborRoamControlInfo neighbor_roam_info =
                                            &mac->roam.neighborRoamInfo;
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     tpCsrNeighborRoamBSSInfo neighbor_bss_node;
     tCsrRoamInfo roam_info;
 
@@ -174,7 +174,7 @@ eHalStatus csr_neighbor_roam_issue_preauth_reassoc(tpAniSirGlobal mac)
         smsLog(mac, LOGE, FL("Roamable AP list is empty"));
         csrRoamOffloadScan(mac, ROAM_SCAN_OFFLOAD_RESTART,
                             REASON_NO_CAND_FOUND_OR_NOT_ROAMING_NOW);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     else
     {
@@ -196,7 +196,7 @@ eHalStatus csr_neighbor_roam_issue_preauth_reassoc(tpAniSirGlobal mac)
                MAC_ADDR_ARRAY(neighbor_bss_node->pBssDescription->bssId),
                neighbor_bss_node->pBssDescription->channelId);
 
-        if (eHAL_STATUS_SUCCESS != status)
+        if (VOS_STATUS_SUCCESS != status)
         {
             smsLog(mac, LOGE,
                    FL("Send Preauth request to PE failed with status %d"),
@@ -269,7 +269,7 @@ void csr_preauth_reassoc_mbb_timer_callback(void *context)
  * This function dequeues ecsr_mbb_perform_preauth_reassoc
  *
  */
-eHalStatus csr_roam_dequeue_preauth_reassoc(tpAniSirGlobal mac)
+VOS_STATUS csr_roam_dequeue_preauth_reassoc(tpAniSirGlobal mac)
 {
     tListElem *entry;
     tSmeCmd *command;
@@ -295,7 +295,7 @@ eHalStatus csr_roam_dequeue_preauth_reassoc(tpAniSirGlobal mac)
                FL("pEntry NULL for eWNI_SME_MBB_PRE_AUTH_REASSOC_RSP"));
     }
     smeProcessPendingQueue( mac );
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /**
@@ -311,14 +311,14 @@ eHalStatus csr_roam_dequeue_preauth_reassoc(tpAniSirGlobal mac)
  * removed from roamable entry.
  *
  */
-eHalStatus
+VOS_STATUS
 csr_neighbor_roam_preauth_reassoc_rsp_handler(tpAniSirGlobal mac,
           tSirRetStatus lim_status, tSirBssDescription **bss_description)
 {
     tpCsrNeighborRoamControlInfo neighbor_roam_info =
                                       &mac->roam.neighborRoamInfo;
-    eHalStatus status = eHAL_STATUS_SUCCESS;
-    eHalStatus preauth_processed = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
+    VOS_STATUS preauth_processed = VOS_STATUS_SUCCESS;
     tpCsrNeighborRoamBSSInfo preauth_rsp_node = NULL;
 
     if (eANI_BOOLEAN_FALSE ==
@@ -331,7 +331,7 @@ csr_neighbor_roam_preauth_reassoc_rsp_handler(tpAniSirGlobal mac,
        smsLog(mac, LOGE,
               FL("Unexpected pre-auth response in state %d"),
               neighbor_roam_info->neighborRoamState);
-       preauth_processed = eHAL_STATUS_FAILURE;
+       preauth_processed = VOS_STATUS_E_FAILURE;
        goto DEQ_PREAUTH;
     }
 
@@ -341,7 +341,7 @@ csr_neighbor_roam_preauth_reassoc_rsp_handler(tpAniSirGlobal mac,
                FL("Preauth response received in state %s"),
                macTraceGetNeighbourRoamState(
                       neighbor_roam_info->neighborRoamState));
-        preauth_processed = eHAL_STATUS_FAILURE;
+        preauth_processed = VOS_STATUS_E_FAILURE;
         goto DEQ_PREAUTH;
     }
 
@@ -365,7 +365,7 @@ csr_neighbor_roam_preauth_reassoc_rsp_handler(tpAniSirGlobal mac,
         if (NULL == *bss_description) {
             smsLog(mac, LOGE,
                    FL("Unable to allocate memory for preauth bss description"));
-            preauth_processed = eHAL_STATUS_RESOURCES;
+            preauth_processed = VOS_STATUS_E_RESOURCES;
             goto DEQ_PREAUTH;
         }
 
@@ -381,7 +381,7 @@ csr_neighbor_roam_preauth_reassoc_rsp_handler(tpAniSirGlobal mac,
                          &neighbor_roam_info->roamableAPList, preauth_rsp_node);
         csrLLInsertTail(&neighbor_roam_info->FTRoamInfo.preAuthDoneList,
                                   &preauth_rsp_node->List, LL_ACCESS_LOCK);
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     } else {
         tpCsrNeighborRoamBSSInfo    neighbor_bss_node = NULL;
         tListElem                   *entry;
@@ -422,17 +422,17 @@ csr_neighbor_roam_preauth_reassoc_rsp_handler(tpAniSirGlobal mac,
         /* Start a timer to issue preauth_reassoc request for the next entry*/
         status = vos_timer_start(&mac->ft.ftSmeContext.
                    pre_auth_reassoc_mbb_timer, PREAUTH_REASSOC_MBB_TIMER_VALUE);
-        if (eHAL_STATUS_SUCCESS != status) {
+        if (VOS_STATUS_SUCCESS != status) {
             smsLog(mac, LOGE,
                    FL("pre_auth_reassoc_mbb_timer start failed status %d"),
                    status);
-            preauth_processed = eHAL_STATUS_FAILURE;
+            preauth_processed = VOS_STATUS_E_FAILURE;
             goto DEQ_PREAUTH;
         }
         mac->roam.neighborRoamInfo.is_pre_auth_reassoc_mbb_timer_started = true;
         smsLog(mac, LOG1, FL("is_pre_auth_reassoc_mbb_timer_started %d"),
            mac->roam.neighborRoamInfo.is_pre_auth_reassoc_mbb_timer_started);
-        preauth_processed = eHAL_STATUS_SUCCESS;
+        preauth_processed = VOS_STATUS_SUCCESS;
     }
 
 DEQ_PREAUTH:
@@ -440,10 +440,10 @@ DEQ_PREAUTH:
     return preauth_processed;
 }
 
-eHalStatus csr_update_roamed_info_mbb(tHalHandle hal,
+VOS_STATUS csr_update_roamed_info_mbb(tHalHandle hal,
      tpSirBssDescription bss_description, tpSirFTPreAuthRsp pre_auth_rsp)
 {
-    eHalStatus status;
+    VOS_STATUS status;
     tpAniSirGlobal mac = PMAC_STRUCT(hal);
     tDot11fBeaconIEs *ies_local = NULL;
     tCsrRoamSession *session = NULL;
@@ -461,12 +461,12 @@ eHalStatus csr_update_roamed_info_mbb(tHalHandle hal,
     if (session == NULL) {
         smsLog(mac, LOGE,
                FL("Invalid Session ID %d"), sme_session_id);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     profile = vos_mem_malloc(sizeof(*profile));
     if (NULL == profile) {
         smsLog(mac, LOGE, FL("Memory allocation failure for profile"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /*
@@ -512,7 +512,7 @@ eHalStatus csr_update_roamed_info_mbb(tHalHandle hal,
        smsLog(mac, LOGE,
               FL("ies_local is NULL "));
        vos_mem_free(profile);
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
     }
 
     vos_mem_set(&roam_info, sizeof(roam_info), 0);
@@ -548,7 +548,7 @@ eHalStatus csr_update_roamed_info_mbb(tHalHandle hal,
                bss_description->channelId);
 
         vos_mem_free(profile);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     if(CSR_IS_ENC_TYPE_STATIC(profile->negotiatedUCEncryptionType) &&
@@ -693,7 +693,7 @@ eHalStatus csr_update_roamed_info_mbb(tHalHandle hal,
         }
 
         if (pmcStartTrafficTimer(mac, BMPS_TRAFFIC_TIMER_ALLOW_SECURITY_DHCP)
-                    != eHAL_STATUS_SUCCESS)
+                    != VOS_STATUS_SUCCESS)
             smsLog(mac, LOGE, FL("Cannot start BMPS Retry timer"));
 
         smsLog(mac, LOG1, FL("BMPS Retry Timer already running or started"));
@@ -704,7 +704,7 @@ eHalStatus csr_update_roamed_info_mbb(tHalHandle hal,
     vos_mem_free(profile);
     vos_mem_free(ies_local);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -721,7 +721,7 @@ void csr_roam_preauth_rsp_mbb_processor(tHalHandle hal,
      tpSirFTPreAuthRsp pre_auth_rsp)
 {
     tpAniSirGlobal mac = PMAC_STRUCT(hal);
-    eHalStatus  status;
+    VOS_STATUS  status;
     tCsrRoamInfo roam_info;
     tpSirBssDescription  bss_description = NULL;
     tCsrRoamSession *session = NULL;
@@ -747,7 +747,7 @@ void csr_roam_preauth_rsp_mbb_processor(tHalHandle hal,
 
     status = csr_neighbor_roam_preauth_reassoc_rsp_handler(mac,
                                        pre_auth_rsp->status, &bss_description);
-    if (status != eHAL_STATUS_SUCCESS) {
+    if (status != VOS_STATUS_SUCCESS) {
         smsLog(mac, LOGE,FL("Preauth was not processed: %d SessionID: %d"),
                             status, pre_auth_rsp->smeSessionId);
         /*
@@ -819,7 +819,7 @@ static void csr_prepare_reassoc_req(void* pmac, tANI_U32 session_id,
        void* pbss_description, void *preassoc_req)
 {
     tDot11fBeaconIEs *ies_local = NULL;
-    eHalStatus status;
+    VOS_STATUS status;
     tpAniSirGlobal mac = (tpAniSirGlobal)pmac;
     tpSirBssDescription bss_description = (tpSirBssDescription)pbss_description;
     tSirSmeJoinReq **reassoc_req = (tSirSmeJoinReq **)preassoc_req;
@@ -887,14 +887,14 @@ static void csr_roaming_mbb_callback(void* pmac, tANI_U32 session_id,
  * csr_register_roaming_mbb_callback () - registers roaming callback
  * @mac: MAC context
  *
- *Return: eHAL_STATUS_SUCCESS on success, otherwise  failure
+ *Return: VOS_STATUS_SUCCESS on success, otherwise  failure
  */
-eHalStatus csr_register_roaming_mbb_callback(tpAniSirGlobal mac)
+VOS_STATUS csr_register_roaming_mbb_callback(tpAniSirGlobal mac)
 {
-    eHalStatus status;
+    VOS_STATUS status;
 
     status = sme_AcquireGlobalLock(&mac->sme);
-    if (eHAL_STATUS_SUCCESS == status) {
+    if (VOS_STATUS_SUCCESS == status) {
         mac->sme.roaming_mbb_callback = csr_roaming_mbb_callback;
         sme_ReleaseGlobalLock(&mac->sme);
     } else

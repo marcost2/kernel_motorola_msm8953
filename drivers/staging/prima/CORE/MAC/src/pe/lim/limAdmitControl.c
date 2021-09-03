@@ -1214,7 +1214,7 @@ void limProcessHalAddTsRsp(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
         goto end;
     }
 
-    if(pAddTsRspMsg->status == eHAL_STATUS_SUCCESS)
+    if(pAddTsRspMsg->status == VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOG1, FL("Received successful ADDTS response from HAL "));
         // Use the smesessionId and smetransactionId from the PE session context

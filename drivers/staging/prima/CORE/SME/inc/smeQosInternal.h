@@ -135,9 +135,9 @@ typedef struct
 
     \param pMac - Pointer to the global MAC parameter structure.
     
-    \return eHalStatus     
+    \return VOS_STATUS     
 ----------------------------------------------------------------------------*/
-eHalStatus sme_QosOpen(tpAniSirGlobal pMac);
+VOS_STATUS sme_QosOpen(tpAniSirGlobal pMac);
 
 /* --------------------------------------------------------------------------
     \brief sme_QosClose() - To close down SME QoS module. There should not be 
@@ -146,9 +146,9 @@ eHalStatus sme_QosOpen(tpAniSirGlobal pMac);
 
     \param pMac - Pointer to the global MAC parameter structure.
     
-    \return eHalStatus     
+    \return VOS_STATUS     
 ----------------------------------------------------------------------------*/
-eHalStatus sme_QosClose(tpAniSirGlobal pMac);
+VOS_STATUS sme_QosClose(tpAniSirGlobal pMac);
 
 /*--------------------------------------------------------------------------
   \brief sme_QosSetParams() - This function is used by HDD to provide the 
@@ -158,12 +158,12 @@ eHalStatus sme_QosClose(tpAniSirGlobal pMac);
   \param pQoSInfo - Pointer to sme_QosWmmTspecInfo which contains the WMM TSPEC
                     related info per AC as defined above, provided by HDD
   
-  \return eHAL_STATUS_SUCCESS - Setparam is successful.
+  \return VOS_STATUS_SUCCESS - Setparam is successful.
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosSetParams(tpAniSirGlobal pMac, sme_QosWmmTspecInfo * pQoSInfo);
+VOS_STATUS sme_QosSetParams(tpAniSirGlobal pMac, sme_QosWmmTspecInfo * pQoSInfo);
 
 /*--------------------------------------------------------------------------
   \brief sme_QosMsgProcessor() - sme_ProcessMsg() calls this function for the 
@@ -175,12 +175,12 @@ eHalStatus sme_QosSetParams(tpAniSirGlobal pMac, sme_QosWmmTspecInfo * pQoSInfo)
                    on the message type.
                    The beginning of the buffer can always map to tSirSmeRsp.
   
-  \return eHalStatus.
+  \return VOS_STATUS.
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
+VOS_STATUS sme_QosMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
                                 void *pMsgBuf);
 
 /*-------------------------------------------------------------------------- 
@@ -195,12 +195,12 @@ eHalStatus sme_QosMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type,
   \param pBssDesc - Pointer to the BSS Descriptor information passed down by 
                     CSR to PE while issuing the Join request
   
-  \return eHAL_STATUS_SUCCESS - Validation is successful
+  \return VOS_STATUS_SUCCESS - Validation is successful
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosValidateParams(tpAniSirGlobal pMac, 
+VOS_STATUS sme_QosValidateParams(tpAniSirGlobal pMac, 
                                  tSirBssDescription *pBssDesc);
 
 /*--------------------------------------------------------------------------
@@ -211,12 +211,12 @@ eHalStatus sme_QosValidateParams(tpAniSirGlobal pMac,
   \param ind - The event occurred of type sme_QosCsrEventIndType.
   \param pEvent_info - Information related to the event
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosCsrEventInd(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosCsrEventInd(tpAniSirGlobal pMac,
                               v_U8_t sessionId,
                               sme_QosCsrEventIndType ind, 
                               void *pEvent_info);

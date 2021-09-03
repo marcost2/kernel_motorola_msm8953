@@ -723,9 +723,9 @@ VOS_STATUS hdd_wmm_disable_inactivity_timer(hdd_wmm_qos_context_t* pQosContext)
   @param SmeStatus : [in] the QoS related SME status
 
   @return
-  eHAL_STATUS_SUCCESS if all good, eHAL_STATUS_FAILURE otherwise
+  VOS_STATUS_SUCCESS if all good, VOS_STATUS_E_FAILURE otherwise
 */
-static eHalStatus hdd_wmm_sme_callback (tHalHandle hHal,
+static VOS_STATUS hdd_wmm_sme_callback (tHalHandle hHal,
                                         void * hddCtx,
                                         sme_QosWmmTspecInfo* pCurrentQosInfo,
                                         sme_QosStatusType smeStatus,
@@ -743,7 +743,7 @@ static eHalStatus hdd_wmm_sme_callback (tHalHandle hHal,
    {
       VOS_TRACE(VOS_MODULE_ID_HDD, WMM_TRACE_LEVEL_ERROR,
                    FL("pVosContext is NULL"));
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    pHddCtx = vos_get_context( VOS_MODULE_ID_HDD, pVosContext);
@@ -751,7 +751,7 @@ static eHalStatus hdd_wmm_sme_callback (tHalHandle hHal,
    {
       VOS_TRACE(VOS_MODULE_ID_HDD, WMM_TRACE_LEVEL_ERROR,
                    FL("HddCtx is NULL"));
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
 
@@ -767,7 +767,7 @@ static eHalStatus hdd_wmm_sme_callback (tHalHandle hHal,
       VOS_TRACE(VOS_MODULE_ID_HDD, WMM_TRACE_LEVEL_ERROR,
                 "%s: Invalid QoS Context",
                 __func__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    mutex_unlock(&pHddCtx->wmmLock);
 
@@ -1386,7 +1386,7 @@ static eHalStatus hdd_wmm_sme_callback (tHalHandle hHal,
              acType,
              pAc->wmmAcAccessAllowed ? " " : " not ");
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 #endif
 

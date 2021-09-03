@@ -2780,7 +2780,7 @@ VOS_STATUS hdd_rx_packet_cbk( v_VOID_t *vosContext,
       {
          VOS_TRACE(VOS_MODULE_ID_HDD_DATA, VOS_TRACE_LEVEL_FATAL,
            "Magic cookie(%x) for adapter sanity verification is invalid", pAdapter->magic);
-         return eHAL_STATUS_FAILURE;
+         return VOS_STATUS_E_FAILURE;
       }
 
 #ifdef FEATURE_WLAN_TDLS

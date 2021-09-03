@@ -164,8 +164,8 @@ static v_BOOL_t wlan_hdd_is_type_p2p_action( const u8 *buf, uint32_t len )
     return VOS_TRUE;
 }
 
-eHalStatus wlan_hdd_remain_on_channel_callback( tHalHandle hHal, void* pCtx,
-                                                eHalStatus status )
+VOS_STATUS wlan_hdd_remain_on_channel_callback( tHalHandle hHal, void* pCtx,
+                                                VOS_STATUS status )
 {
     hdd_adapter_t *pAdapter = (hdd_adapter_t*) pCtx;
     hdd_cfg80211_state_t *cfgState = WLAN_HDD_GET_CFG_STATE_PTR( pAdapter );
@@ -176,7 +176,7 @@ eHalStatus wlan_hdd_remain_on_channel_callback( tHalHandle hHal, void* pCtx,
     if (pHddCtx == NULL)
     {
         hddLog(LOGE, "%s: Hdd Context is NULL", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     mutex_lock(&pHddCtx->roc_lock);
@@ -187,7 +187,7 @@ eHalStatus wlan_hdd_remain_on_channel_callback( tHalHandle hHal, void* pCtx,
         hddLog( LOGW,
                 "%s: No Rem on channel pending for which Rsp is received", __func__);
         mutex_unlock(&pHddCtx->roc_lock);
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
 
     hddLog( VOS_TRACE_LEVEL_INFO,
@@ -276,12 +276,12 @@ eHalStatus wlan_hdd_remain_on_channel_callback( tHalHandle hHal, void* pCtx,
         cfgState->remain_on_chan_ctx = NULL;
     }
     mutex_unlock(&pHddCtx->roc_lock);
-    if (eHAL_STATUS_SUCCESS != status)
+    if (VOS_STATUS_SUCCESS != status)
         complete(&pAdapter->rem_on_chan_ready_event);
     complete(&pAdapter->cancel_rem_on_chan_var);
     pAdapter->is_roc_inprogress = FALSE;
     hdd_allow_suspend(WIFI_POWER_EVENT_WAKELOCK_ROC);
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 VOS_STATUS wlan_hdd_cancel_existing_remain_on_channel(hdd_adapter_t *pAdapter)
@@ -387,7 +387,7 @@ VOS_STATUS wlan_hdd_cancel_existing_remain_on_channel(hdd_adapter_t *pAdapter)
                    ( VOS_P2P_CLIENT_MODE == pAdapter->device_mode ) ||
                    ( VOS_P2P_DEVICE == pAdapter->device_mode ))
             {
-                if (eHAL_STATUS_SUCCESS !=
+                if (VOS_STATUS_SUCCESS !=
                     sme_CancelRemainOnChannel( WLAN_HDD_GET_HAL_CTX( pAdapter ),
                                                      pAdapter->sessionId ))
                 {
@@ -507,7 +507,7 @@ void wlan_hdd_remain_on_chan_timeout(void *data)
            ( VOS_P2P_DEVICE == pAdapter->device_mode )
        )
     {
-        if (eHAL_STATUS_SUCCESS !=
+        if (VOS_STATUS_SUCCESS !=
                 sme_CancelRemainOnChannel( WLAN_HDD_GET_HAL_CTX( pAdapter),
                     pAdapter->sessionId ))
         {
@@ -615,7 +615,7 @@ static int wlan_hdd_p2p_start_remain_on_channel(
     {
         tANI_U8 sessionId = pAdapter->sessionId;
         //call sme API to start remain on channel.
-        if (eHAL_STATUS_SUCCESS != sme_RemainOnChannel(
+        if (VOS_STATUS_SUCCESS != sme_RemainOnChannel(
                 WLAN_HDD_GET_HAL_CTX(pAdapter), sessionId,
                 hw_value, duration,
                 wlan_hdd_remain_on_channel_callback, pAdapter,
@@ -647,7 +647,7 @@ static int wlan_hdd_p2p_start_remain_on_channel(
 
         if( REMAIN_ON_CHANNEL_REQUEST == request_type)
         {
-            if( eHAL_STATUS_SUCCESS != sme_RegisterMgmtFrame(
+            if( VOS_STATUS_SUCCESS != sme_RegisterMgmtFrame(
                         WLAN_HDD_GET_HAL_CTX(pAdapter),
                         sessionId, (SIR_MAC_MGMT_FRAME << 2) |
                         (SIR_MAC_MGMT_PROBE_REQ << 4), NULL, 0 ))
@@ -1168,7 +1168,7 @@ int __wlan_hdd_cfg80211_cancel_remain_on_channel( struct wiphy *wiphy,
          ( VOS_P2P_DEVICE == pAdapter->device_mode ))
     {
         tANI_U8 sessionId = pAdapter->sessionId;
-        if (eHAL_STATUS_SUCCESS !=
+        if (VOS_STATUS_SUCCESS !=
                 sme_CancelRemainOnChannel( WLAN_HDD_GET_HAL_CTX( pAdapter ),
                                            sessionId ))
         {
@@ -1273,7 +1273,7 @@ int __wlan_hdd_mgmt_tx( struct wiphy *wiphy, struct net_device *dev,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,38))
     uint8_t home_ch = 0;
 #endif
-    eHalStatus hal_status;
+    VOS_STATUS hal_status;
 
     ENTER();
 
@@ -1642,7 +1642,7 @@ bypass_lock:
             }
         }
 
-        if (eHAL_STATUS_SUCCESS !=
+        if (VOS_STATUS_SUCCESS !=
                sme_sendAction( WLAN_HDD_GET_HAL_CTX(pAdapter),
                                sessionId, buf, len, wait, noack))
         {

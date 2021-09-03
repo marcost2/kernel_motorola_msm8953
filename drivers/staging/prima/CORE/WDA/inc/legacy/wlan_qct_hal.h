@@ -53,7 +53,7 @@
 /// signed 32-bit types
 #define tANI_S32    v_S31_t
 
-#define eHalStatus    VOS_STATUS
+#define VOS_STATUS    VOS_STATUS
 
 #endif
 #define QWLAN_HAL_DXE0_MASTERID  5

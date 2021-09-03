@@ -58,7 +58,7 @@ void    limInitHashTable(tpAniSirGlobal);
  *
  * Return: status of operation
  */
-eHalStatus limLookupNaddHashEntry(tpAniSirGlobal pMac,
+VOS_STATUS limLookupNaddHashEntry(tpAniSirGlobal pMac,
                                   tLimScanResultNode *pBssDescr, tANI_U8 action,
                                   tANI_U8 dontUpdateAll, tANI_U32 ie_len,
                                   bool chan_info_present);
@@ -69,7 +69,7 @@ void    limCopyScanResult(tpAniSirGlobal, tANI_U8 *);
 void    limReInitScanResults(tpAniSirGlobal);
 #ifdef WLAN_FEATURE_ROAM_SCAN_OFFLOAD
 void    limInitLfrHashTable(tpAniSirGlobal);
-eHalStatus
+VOS_STATUS
    limLookupNaddLfrHashEntry(tpAniSirGlobal, tLimScanResultNode *,
    tANI_U8, tANI_U8, tANI_U32);
 void    limDeleteLfrHashEntry(tLimScanResultNode *);

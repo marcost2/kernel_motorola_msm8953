@@ -141,7 +141,7 @@
 
 // -------------------------------------------------------------------
 // Change channel generic scheme
-typedef void (*CHANGE_CHANNEL_CALLBACK)(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data,
+typedef void (*CHANGE_CHANNEL_CALLBACK)(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data,
     tpPESession psessionEntry);
 
 /// LIM global definitions

@@ -2293,7 +2293,7 @@ dump_lim_mcc_policy_maker(tpAniSirGlobal pMac, tANI_U32 arg1,tANI_U32 arg2,tANI_
    {  
       WDA_TrafficStatsTimerActivate(FALSE);
       if (ccmCfgSetInt(pMac, WNI_CFG_ENABLE_MCC_ADAPTIVE_SCHED, FALSE,
-          NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
+          NULL, eANI_BOOLEAN_FALSE)==VOS_STATUS_E_FAILURE)
       {
          limLog( pMac, LOGE, FL("Could not get WNI_CFG_ENABLE_MCC_ADAPTIVE_SCHED"));
       }
@@ -2301,7 +2301,7 @@ dump_lim_mcc_policy_maker(tpAniSirGlobal pMac, tANI_U32 arg1,tANI_U32 arg2,tANI_
    else if(arg1 == 1) //Enable feature
    {   
       if (ccmCfgSetInt(pMac, WNI_CFG_ENABLE_MCC_ADAPTIVE_SCHED, TRUE,
-         NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
+         NULL, eANI_BOOLEAN_FALSE)==VOS_STATUS_E_FAILURE)
       {
         limLog( pMac, LOGE, FL("Could not set WNI_CFG_ENABLE_MCC_ADAPTIVE_SCHED"));
       }    
@@ -2309,7 +2309,7 @@ dump_lim_mcc_policy_maker(tpAniSirGlobal pMac, tANI_U32 arg1,tANI_U32 arg2,tANI_
    else if(arg1 == 2) //Enable feature and activate periodic timer
    {   
       if (ccmCfgSetInt(pMac, WNI_CFG_ENABLE_MCC_ADAPTIVE_SCHED, TRUE,
-          NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
+          NULL, eANI_BOOLEAN_FALSE)==VOS_STATUS_E_FAILURE)
       {
          limLog( pMac, LOGE, FL("Could not set WNI_CFG_ENABLE_MCC_ADAPTIVE_SCHED"));
       }

@@ -193,7 +193,7 @@ static void hdd_indicateEseBcnReportInd(const hdd_adapter_t *pAdapter, const tCs
 
 #endif /* FEATURE_WLAN_ESE && FEATURE_WLAN_ESE_UPLOAD */
 
-static eHalStatus hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter,
+static VOS_STATUS hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter,
                                                 tCsrRoamInfo *pRoamInfo,
                                                 tANI_U32 roamId,
                                                 eRoamCmdStatus roamStatus,
@@ -1702,11 +1702,11 @@ static void hdd_check_and_move_if_sap_is_on_dfs_chan(hdd_context_t *hdd_ctx,
     }
 }
 
-static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
+static VOS_STATUS hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
                                             tANI_U32 roamId, eRoamCmdStatus roamStatus,
                                             eCsrRoamResult roamResult )
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     VOS_STATUS vstatus;
     struct net_device *dev = pAdapter->dev;
     hdd_context_t *pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
@@ -1719,7 +1719,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
     {
         hddLog(VOS_TRACE_LEVEL_ERROR,
           "%s: net_dev is released return", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     // notify apps that we can't pass traffic anymore
@@ -1891,7 +1891,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
                      "Status= %d [0x%x]"),
                      sta_id, status, status );
 
-            status = eHAL_STATUS_FAILURE;
+            status = VOS_STATUS_E_FAILURE;
         }
         pHddCtx->sta_to_adapter[sta_id] = NULL;
 
@@ -1911,7 +1911,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
                      FL("hdd_roamDeregisterSTA() failed to for staID %d.  "
                       "Status= %d [0x%x]"),
                        sta_id, status, status );
-                   status = eHAL_STATUS_FAILURE;
+                   status = VOS_STATUS_E_FAILURE;
                }
 
                vstatus = hdd_sta_id_hash_remove_entry(pAdapter,
@@ -1920,7 +1920,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
                    hddLog(VOS_TRACE_LEVEL_ERROR,
                              FL("Not able to remove staid hash %d"),
                              sta_id);
-                   status = eHAL_STATUS_FAILURE;
+                   status = VOS_STATUS_E_FAILURE;
                } else {
                    hddLog(VOS_TRACE_LEVEL_INFO,
                          FL("ibss station removed sta_id %d mac:"
@@ -1961,7 +1961,7 @@ static eHalStatus hdd_DisConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *
                   "Status= %d [0x%x]"),
                   sta_id, status, status );
 
-           status = eHAL_STATUS_FAILURE;
+           status = VOS_STATUS_E_FAILURE;
        }
 
        pHddCtx->sta_to_adapter[sta_id] = NULL;
@@ -2290,7 +2290,7 @@ done:
 
 void hdd_PerformRoamSetKeyComplete(hdd_adapter_t *pAdapter)
 {
-    eHalStatus halStatus = eHAL_STATUS_SUCCESS;
+    VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
     hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
     tCsrRoamInfo roamInfo;
     roamInfo.fAuthRequired = FALSE;
@@ -2301,12 +2301,12 @@ void hdd_PerformRoamSetKeyComplete(hdd_adapter_t *pAdapter)
                  pHddStaCtx->roam_info.peerMac,
                  WNI_CFG_BSSID_LEN);
 
-    halStatus = hdd_RoamSetKeyCompleteHandler(pAdapter,
+    vosStatus = hdd_RoamSetKeyCompleteHandler(pAdapter,
                                   &roamInfo,
                                   pHddStaCtx->roam_info.roamId,
                                   pHddStaCtx->roam_info.roamStatus,
                                   eCSR_ROAM_RESULT_AUTHENTICATED);
-    if (halStatus != eHAL_STATUS_SUCCESS)
+    if (vosStatus != VOS_STATUS_SUCCESS)
     {
         hddLog(LOGE, "%s: Set Key complete failure", __func__);
     }
@@ -2342,7 +2342,7 @@ hdd_schedule_ecsa_chan_change_work(hdd_context_t *hdd_ctx,
                           msecs_to_jiffies(time_diff));
 }
 
-static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
+static VOS_STATUS hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
                                                     tANI_U32 roamId, eRoamCmdStatus roamStatus,
                                                     eCsrRoamResult roamResult )
 {
@@ -2499,7 +2499,7 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
                                  pAdapter->sessionId,
                                  eCSR_DISCONNECT_REASON_UNSPECIFIED);
                 }
-                return eHAL_STATUS_FAILURE;
+                return VOS_STATUS_E_FAILURE;
             }
 
             //Association Response
@@ -2919,7 +2919,7 @@ static eHalStatus hdd_AssociationCompletionHandler( hdd_adapter_t *pAdapter, tCs
     {
         hdd_check_and_move_if_sap_is_on_dfs_chan(pHddCtx, pAdapter);
     }
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /**============================================================================
@@ -3045,7 +3045,7 @@ static void hdd_RoamIbssIndicationHandler( hdd_adapter_t *pAdapter,
                ||eCSR_ENCRYPT_TYPE_AES == pHddStaCtx->ibss_enc_key.encType ))
          {
              u8 grpmacaddr[WNI_CFG_BSSID_LEN] = {0xFF,0xFF,0xFF,0xFF,0xFF,0xFF};
-             VOS_STATUS vosStatus;
+             VOS_STATUS eStatus;
 
              pHddStaCtx->ibss_enc_key.keyDirection = eSIR_TX_RX;
 
@@ -3053,12 +3053,12 @@ static void hdd_RoamIbssIndicationHandler( hdd_adapter_t *pAdapter,
                             grpmacaddr, WNI_CFG_BSSID_LEN);
              hddLog(VOS_TRACE_LEVEL_INFO,
                        FL(" SET GTK in case of COALESCED"));
-             vosStatus = sme_RoamSetKey( WLAN_HDD_GET_HAL_CTX(pAdapter),
+             eStatus = sme_RoamSetKey( WLAN_HDD_GET_HAL_CTX(pAdapter),
                       pAdapter->sessionId, &pHddStaCtx->ibss_enc_key, &roamId );
-             if ( VOS_STATUS_SUCCESS != vosStatus )
+             if ( VOS_STATUS_SUCCESS != eStatus )
              {
                 hddLog(VOS_TRACE_LEVEL_ERROR,
-                       FL("sme_RoamSetKey failed, returned %d"),vosStatus);
+                       FL("sme_RoamSetKey failed, returned %d"),eStatus);
              }
          }
          break;
@@ -3212,7 +3212,7 @@ static int roamRemoveIbssStation( hdd_adapter_t *pAdapter, v_U8_t staId )
   connected in this function.
 
   ===========================================================================*/
-static eHalStatus roamIbssConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo )
+static VOS_STATUS roamIbssConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo )
 {
    struct cfg80211_bss *bss;
    VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
@@ -3234,7 +3234,7 @@ static eHalStatus roamIbssConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo 
       hddLog(VOS_TRACE_LEVEL_ERROR,
              "%s: %s: unable to create IBSS entry",
              __func__, pAdapter->dev->name);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    cfg80211_put_bss(
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,9,0))
@@ -3242,7 +3242,7 @@ static eHalStatus roamIbssConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo 
 #endif
                     bss);
 
-   return( eHAL_STATUS_SUCCESS );
+   return( VOS_STATUS_SUCCESS );
 }
 
 /**============================================================================
@@ -3250,7 +3250,7 @@ static eHalStatus roamIbssConnectHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo 
   @brief hdd_RoamSetKeyCompleteHandler() - Update the security parameters.
 
   ===========================================================================*/
-static eHalStatus hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
+static VOS_STATUS hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
                                                  tANI_U32 roamId, eRoamCmdStatus roamStatus,
                                                  eCsrRoamResult roamResult )
 {
@@ -3266,7 +3266,7 @@ static eHalStatus hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter, tCsrRo
    if (NULL == pRoamInfo)
    {
        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO_HIGH, "pRoamInfo is NULL");
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
    // if ( WPA ), tell TL to go to 'authenticated' after the keys are set.
    // then go to 'authenticated'.  For all other authentication types (those that do
@@ -3398,13 +3398,13 @@ static eHalStatus hdd_RoamSetKeyCompleteHandler( hdd_adapter_t *pAdapter, tCsrRo
    }
 
    EXIT();
-   return( eHAL_STATUS_SUCCESS );
+   return( VOS_STATUS_SUCCESS );
 }
 /**============================================================================
  *
   @brief hdd_RoamMicErrorIndicationHandler() - This function indicates the Mic failure to the supplicant.
   ===========================================================================*/
-static eHalStatus hdd_RoamMicErrorIndicationHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
+static VOS_STATUS hdd_RoamMicErrorIndicationHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
                                                  tANI_U32 roamId, eRoamCmdStatus roamStatus,                                                                              eCsrRoamResult roamResult )
 {
    hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
@@ -3439,7 +3439,7 @@ static eHalStatus hdd_RoamMicErrorIndicationHandler( hdd_adapter_t *pAdapter, tC
 
    }
 
-   return( eHAL_STATUS_SUCCESS );
+   return( VOS_STATUS_SUCCESS );
 }
 
 /**============================================================================
@@ -3448,7 +3448,7 @@ static eHalStatus hdd_RoamMicErrorIndicationHandler( hdd_adapter_t *pAdapter, tC
   updated regularly here in this function.
 
   ===========================================================================*/
-static eHalStatus roamRoamConnectStatusUpdateHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
+static VOS_STATUS roamRoamConnectStatusUpdateHandler( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo,
    tANI_U32 roamId, eRoamCmdStatus roamStatus,
    eCsrRoamResult roamResult )
 {
@@ -3499,7 +3499,7 @@ static eHalStatus roamRoamConnectStatusUpdateHandler( hdd_adapter_t *pAdapter, t
          if (staInfo == NULL) {
              VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                        "memory allocation for station_info failed");
-             return eHAL_STATUS_FAILED_ALLOC;
+             return VOS_STATUS_E_NOMEM;
          }
 
          memset(staInfo, 0, sizeof(*staInfo));
@@ -3599,7 +3599,7 @@ static eHalStatus roamRoamConnectStatusUpdateHandler( hdd_adapter_t *pAdapter, t
 
    }
 
-   return( eHAL_STATUS_SUCCESS );
+   return( VOS_STATUS_SUCCESS );
 }
 
 #ifdef FEATURE_WLAN_TDLS
@@ -3725,14 +3725,14 @@ VOS_STATUS hdd_roamDeregisterTDLSSTA( hdd_adapter_t *pAdapter, tANI_U8 staId )
  * TDLS client is deleted.
  */
 
-eHalStatus hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
+VOS_STATUS hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
                                              tCsrRoamInfo *pRoamInfo,
                                               tANI_U32 roamId,
                                                 eRoamCmdStatus roamStatus,
                                                   eCsrRoamResult roamResult)
 {
     hdd_context_t *pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
-    eHalStatus status = eHAL_STATUS_FAILURE ;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE ;
     tANI_U8 staIdx;
 
     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO_HIGH,
@@ -3793,7 +3793,7 @@ eHalStatus hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
 
                         vos_copy_macaddr(&pHddCtx->tdlsConnInfo[staIdx].peerMac,
                                          (v_MACADDR_t *)pRoamInfo->peerMac) ;
-                        status = eHAL_STATUS_SUCCESS ;
+                        status = VOS_STATUS_SUCCESS ;
                         break ;
                     }
                 }
@@ -3818,7 +3818,7 @@ eHalStatus hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
                 }
                 else
                 {
-                    status = eHAL_STATUS_FAILURE;
+                    status = VOS_STATUS_E_FAILURE;
                     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                     "%s: no available slot in conn_info. staId %d cannot be stored", __func__, pRoamInfo->staId);
                 }
@@ -3916,7 +3916,7 @@ eHalStatus hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
                     vos_mem_zero(&pHddCtx->tdlsConnInfo[staIdx].peerMac,
                                                sizeof(v_MACADDR_t)) ;
                     wlan_hdd_tdls_check_bmps(pAdapter);
-                    status = eHAL_STATUS_SUCCESS ;
+                    status = VOS_STATUS_SUCCESS ;
                     break ;
                 }
             }
@@ -3939,7 +3939,7 @@ eHalStatus hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
                                                           curr_peer->peerMac);
             mutex_unlock(&pHddCtx->tdls_lock);
 #endif
-            status = eHAL_STATUS_SUCCESS ;
+            status = VOS_STATUS_SUCCESS ;
             break ;
         }
         case eCSR_ROAM_RESULT_DELETE_ALL_TDLS_PEER_IND:
@@ -3967,7 +3967,7 @@ eHalStatus hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
                     pHddCtx->tdlsConnInfo[staIdx].staId = 0 ;
                     pHddCtx->tdlsConnInfo[staIdx].sessionId = 255;
 
-                    status = eHAL_STATUS_SUCCESS ;
+                    status = VOS_STATUS_SUCCESS ;
                 }
             }
             wlan_hdd_tdls_check_bmps(pAdapter);
@@ -3983,7 +3983,7 @@ eHalStatus hdd_RoamTdlsStatusUpdateHandler(hdd_adapter_t *pAdapter,
 }
 #endif
 
-void iw_full_power_cbfn (void *pContext, eHalStatus status)
+void iw_full_power_cbfn (void *pContext, VOS_STATUS status)
 {
     hdd_adapter_t *pAdapter = (hdd_adapter_t *)pContext;
     hdd_context_t *pHddCtx = NULL;
@@ -4014,10 +4014,9 @@ void iw_full_power_cbfn (void *pContext, eHalStatus status)
     EXIT();
 }
 
-eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U32 roamId,
+VOS_STATUS hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U32 roamId,
                                 eRoamCmdStatus roamStatus, eCsrRoamResult roamResult )
 {
-    eHalStatus halStatus = eHAL_STATUS_SUCCESS;
     hdd_adapter_t *pAdapter = (hdd_adapter_t *)pContext;
     hdd_wext_state_t *pWextState = NULL;
     hdd_station_ctx_t *pHddStaCtx = NULL;
@@ -4034,7 +4033,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
     {
        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_FATAL,
           "invalid adapter or adapter has invalid magic");
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
     }
 
     pWextState = WLAN_HDD_GET_WEXT_STATE_PTR(pAdapter);
@@ -4044,7 +4043,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
     {
        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_FATAL,
           "invalid WEXT state or HDD station context");
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
     }
 
     MTRACE(vos_trace(VOS_MODULE_ID_HDD, TRACE_CODE_HDD_RX_SME_MSG,
@@ -4065,7 +4064,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
             hddLog(LOGE, FL("Reassoc Failed with roamStatus: %d roamResult: %d SessionID: %d"),
                           roamStatus, roamResult, pAdapter->sessionId);
             sme_resetCoexEevent(WLAN_HDD_GET_HAL_CTX(pAdapter));
-            halStatus = hdd_DisConnectHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
+            status = hdd_DisConnectHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
             /* Check if Mcast/Bcast Filters are set, if yes clear the filters here */
             if ((WLAN_HDD_GET_CTX(pAdapter))->hdd_mcastbcast_filter_set == TRUE) {
                     (WLAN_HDD_GET_CTX(pAdapter))->hdd_mcastbcast_filter_set = FALSE;
@@ -4108,7 +4107,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
                               FL("WLANTL_ClearSTAClient failed for staID %d."
                               "Status= %d [0x%x]"), pHddStaCtx->conn_info.staId[0],
                               status, status);
-                    halStatus = eHAL_STATUS_FAILURE;
+                    status = VOS_STATUS_E_FAILURE;
                 }
             }
             pHddStaCtx->ft_carrier_on = TRUE;
@@ -4141,7 +4140,6 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
                     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_WARN,
                         FL("hdd_roamDeregisterSTA() failed to for staID %d.  Status= %d [0x%x]"),
                                         pHddStaCtx->conn_info.staId[0], status, status );
-                    halStatus = eHAL_STATUS_FAILURE;
                 }
 #endif
             }
@@ -4149,7 +4147,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
         case eCSR_ROAM_LOSTLINK_DETECTED:
              {
                  if (wlan_hdd_check_and_stop_mon(pAdapter, false))
-                     halStatus = eHAL_STATUS_FAILURE;
+                     status = VOS_STATUS_E_FAILURE;
              }
              break;
         case eCSR_ROAM_LOSTLINK:
@@ -4158,7 +4156,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
                 VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
                         "****eCSR_ROAM_DISASSOCIATED****");
                 sme_resetCoexEevent(WLAN_HDD_GET_HAL_CTX(pAdapter));
-                halStatus = hdd_DisConnectHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
+                status = hdd_DisConnectHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
                 /* Check if Mcast/Bcast Filters are set, if yes clear the filters here */
                 pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
                 if (pHddCtx->hdd_mcastbcast_filter_set == TRUE)
@@ -4190,7 +4188,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
         case eCSR_ROAM_IBSS_LEAVE:
             VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
                     "****eCSR_ROAM_IBSS_LEAVE****");
-            halStatus = hdd_DisConnectHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
+            status = hdd_DisConnectHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
             break;
         case eCSR_ROAM_ASSOCIATION_COMPLETION:
             VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
@@ -4201,11 +4199,11 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
                //Clear saved connection information in HDD
                hdd_connRemoveConnectInfo( WLAN_HDD_GET_STATION_CTX_PTR(pAdapter) );
             }
-            halStatus = hdd_AssociationCompletionHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
+            status = hdd_AssociationCompletionHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
 
             break;
         case eCSR_ROAM_ASSOCIATION_FAILURE:
-            halStatus = hdd_AssociationCompletionHandler( pAdapter,
+            status = hdd_AssociationCompletionHandler( pAdapter,
                     pRoamInfo, roamId, roamStatus, roamResult );
             break;
         case eCSR_ROAM_IBSS_IND:
@@ -4214,11 +4212,11 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
             break;
 
         case eCSR_ROAM_CONNECT_STATUS_UPDATE:
-            halStatus = roamRoamConnectStatusUpdateHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
+            status = roamRoamConnectStatusUpdateHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
             break;
 
         case eCSR_ROAM_MIC_ERROR_IND:
-            halStatus = hdd_RoamMicErrorIndicationHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
+            status = hdd_RoamMicErrorIndicationHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
             break;
         case eCSR_ROAM_LOST_LINK_PARAMS_IND:
             {
@@ -4273,13 +4271,13 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
                            "Stop and start traffic timer for roaming"));
                     pmcStopTrafficTimer(pHddCtx->hHal);
                     if (pmcStartTrafficTimer(pHddCtx->hHal,
-                        TRAFFIC_TIMER_ROAMING) != eHAL_STATUS_SUCCESS)
+                        TRAFFIC_TIMER_ROAMING) != VOS_STATUS_SUCCESS)
                     {
                        hddLog(LOGP, FL("Cannot start traffic timer"));
                     }
                 }
 
-                halStatus = hdd_RoamSetKeyCompleteHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
+                status = hdd_RoamSetKeyCompleteHandler( pAdapter, pRoamInfo, roamId, roamStatus, roamResult );
                 if ((eCSR_ROAM_RESULT_NONE == roamResult) ||
                      (pRoamInfo && pRoamInfo->is11rAssoc))
                     pHddStaCtx->hdd_ReassocScenario = FALSE;
@@ -4295,7 +4293,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
            if (eCSR_AUTH_TYPE_RSN == pHddStaCtx->conn_info.authType)
            {
                /* Notify the supplicant of a new candidate */
-               halStatus = wlan_hdd_cfg80211_pmksa_candidate_notify(pAdapter, pRoamInfo, 1, false);
+               status = wlan_hdd_cfg80211_pmksa_candidate_notify(pAdapter, pRoamInfo, 1, false);
            }
            break;
 #endif
@@ -4306,7 +4304,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
            if (VOS_STATUS_SUCCESS !=
                wlan_hdd_cfg80211_roam_metrics_preauth(pAdapter, pRoamInfo))
            {
-               halStatus = eHAL_STATUS_FAILURE;
+               status = VOS_STATUS_E_FAILURE;
            }
            break;
         case eCSR_ROAM_PREAUTH_STATUS_SUCCESS:
@@ -4315,7 +4313,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
                wlan_hdd_cfg80211_roam_metrics_preauth_status(pAdapter,
                                                              pRoamInfo, 1))
            {
-               halStatus = eHAL_STATUS_FAILURE;
+               status = VOS_STATUS_E_FAILURE;
            }
            break;
         case eCSR_ROAM_PREAUTH_STATUS_FAILURE:
@@ -4324,7 +4322,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
                wlan_hdd_cfg80211_roam_metrics_preauth_status(pAdapter,
                                                              pRoamInfo, 0))
            {
-               halStatus = eHAL_STATUS_FAILURE;
+               status = VOS_STATUS_E_FAILURE;
            }
            break;
         case eCSR_ROAM_HANDOVER_SUCCESS:
@@ -4333,7 +4331,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
            if (VOS_STATUS_SUCCESS !=
                wlan_hdd_cfg80211_roam_metrics_handover(pAdapter, pRoamInfo))
            {
-               halStatus = eHAL_STATUS_FAILURE;
+               status = VOS_STATUS_E_FAILURE;
            }
            break;
 #endif
@@ -4346,7 +4344,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
             break;
 #ifdef FEATURE_WLAN_TDLS
         case eCSR_ROAM_TDLS_STATUS_UPDATE:
-            halStatus = hdd_RoamTdlsStatusUpdateHandler( pAdapter, pRoamInfo,
+            status = hdd_RoamTdlsStatusUpdateHandler( pAdapter, pRoamInfo,
                                                 roamId, roamStatus, roamResult );
             break ;
         case eCSR_ROAM_RESULT_MGMT_TX_COMPLETE_IND:
@@ -4456,7 +4454,7 @@ eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, tANI_U3
        default:
             break;
     }
-    return( halStatus );
+    return( status );
 }
 
 #ifdef WLAN_FEATURE_SAE
@@ -4655,7 +4653,7 @@ static tANI_S32 hdd_ProcessGENIE(hdd_adapter_t *pAdapter,
                 u_int8_t *gen_ie)
 {
     tHalHandle halHandle = WLAN_HDD_GET_HAL_CTX(pAdapter);
-    eHalStatus result;
+    VOS_STATUS result;
     tDot11fIERSN dot11RSNIE = {0};
     tDot11fIEWPA dot11WPAIE = {0};
     tANI_U32 i;
@@ -5293,7 +5291,7 @@ int __iw_set_essid(struct net_device *dev,
     status = sme_RoamConnect( hHal,pAdapter->sessionId,
                          &(pWextState->roamProfile), &roamId);
 
-    if ((eHAL_STATUS_SUCCESS != status) &&
+    if ((VOS_STATUS_SUCCESS != status) &&
         (VOS_STA_MODE == pAdapter->device_mode ||
         VOS_P2P_CLIENT_MODE == pAdapter->device_mode))
     {

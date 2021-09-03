@@ -1062,7 +1062,7 @@ typedef WPT_PACK_PRE struct
   wpt_uint8    ucMgmtDpuSignature;
 
   /*Status of the request received from HAL */
-  eHalStatus   halStatus;
+  VOS_STATUS   vosStatus;
 }WPT_PACK_POST WDI_ConfigBSSRspInfoType;
 
 
@@ -1087,7 +1087,7 @@ typedef WPT_PACK_PRE struct
   wpt_macAddr  macBSSID; 
 
   /*HAL Status */
-  eHalStatus   halStatus;
+  VOS_STATUS   vosStatus;
 }WPT_PACK_POST WDI_PostAssocRspInfoType;
 
 #ifdef WLAN_FEATURE_LINK_LAYER_STATS

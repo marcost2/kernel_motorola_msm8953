@@ -769,7 +769,7 @@ void limSendSmeMgmtTXCompletion(tpAniSirGlobal pMac,
                                 tANI_U32 smeSessionId,
                                 tANI_U32 txCompleteStatus);
 tSirRetStatus limDeleteTDLSPeers(tpAniSirGlobal pMac, tpPESession psessionEntry);
-eHalStatus limProcessTdlsAddStaRsp(tpAniSirGlobal pMac, void *msg, tpPESession);
+VOS_STATUS limProcessTdlsAddStaRsp(tpAniSirGlobal pMac, void *msg, tpPESession);
 tSirRetStatus limSendTdlsTeardownFrame(tpAniSirGlobal pMac,
            tSirMacAddr peerMac, tANI_U16 reason, tANI_U8 responder, tpPESession psessionEntry,
            tANI_U8 *addIe, tANI_U16 addIeLen);
@@ -813,7 +813,7 @@ void limCompleteMlmScan(tpAniSirGlobal, tSirResultCodes);
 
 #ifdef FEATURE_OEM_DATA_SUPPORT
 /// Funtion that sets system into meas mode for oem data req
-void limSetOemDataReqMode(tpAniSirGlobal pMac, eHalStatus status, tANI_U32* data);
+void limSetOemDataReqMode(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32* data);
 #endif
 
 #ifdef ANI_SUPPORT_11H
@@ -1105,8 +1105,8 @@ void lim_process_ap_ecsa_timeout(tpAniSirGlobal mac_ctx);
 void lim_send_sme_ap_channel_switch_resp(tpAniSirGlobal mac_ctx,
            tpPESession session, tpSwitchChannelParams chan_param);
 
-eHalStatus limSendDisassocCnf(tpAniSirGlobal pMac);
-eHalStatus limSendDeauthCnf(tpAniSirGlobal pMac);
+VOS_STATUS limSendDisassocCnf(tpAniSirGlobal pMac);
+VOS_STATUS limSendDeauthCnf(tpAniSirGlobal pMac);
 
 #ifdef WLAN_FEATURE_VOWIFI_11R
 typedef struct sSetLinkCbackParams
@@ -1118,7 +1118,7 @@ typedef struct sSetLinkCbackParams
 void limProcessRxScanEvent(tpAniSirGlobal mac, void *buf);
 
 int limProcessRemainOnChnlReq(tpAniSirGlobal pMac, tANI_U32 *pMsg);
-void limRemainOnChnRsp(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data);
+void limRemainOnChnRsp(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data);
 void limProcessMlmSpoofMacAddrRsp(tpAniSirGlobal pMac, tSirRetStatus rspStatus);
 tSirRetStatus limProcessSmeSetTdls2040BSSCoexReq(tpAniSirGlobal pMac,
                                                  tANI_U32 *pMsgBuf);

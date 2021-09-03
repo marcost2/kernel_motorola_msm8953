@@ -384,7 +384,7 @@ struct sme_QosCb_s
    //counter for assigning Dialog Tokens
    v_U8_t                nextDialogToken;
 }sme_QosCb;
-typedef eHalStatus (*sme_QosProcessSearchEntry)(tpAniSirGlobal pMac, tListElem *pEntry);
+typedef VOS_STATUS (*sme_QosProcessSearchEntry)(tpAniSirGlobal pMac, tListElem *pEntry);
 /*-------------------------------------------------------------------------- 
                          Internal function declarations
   ------------------------------------------------------------------------*/
@@ -408,43 +408,43 @@ sme_QosStatusType sme_QosSetup(tpAniSirGlobal pMac,
                                v_U8_t sessionId,
                                sme_QosWmmTspecInfo *pTspec_Info, 
                                sme_QosEdcaAcType ac);
-eHalStatus sme_QosAddTsReq(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosAddTsReq(tpAniSirGlobal pMac,
                            v_U8_t sessionId,
                            sme_QosWmmTspecInfo * pTspec_Info,
                            sme_QosEdcaAcType ac);
-eHalStatus sme_QosDelTsReq(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosDelTsReq(tpAniSirGlobal pMac,
                            v_U8_t sessionId,
                            sme_QosEdcaAcType ac,
                            v_U8_t tspec_mask);
-eHalStatus sme_QosProcessAddTsRsp(tpAniSirGlobal pMac, void *pMsgBuf);
-eHalStatus sme_QosProcessDelTsInd(tpAniSirGlobal pMac, void *pMsgBuf);
-eHalStatus sme_QosProcessDelTsRsp(tpAniSirGlobal pMac, void *pMsgBuf);
-eHalStatus sme_QosProcessAssocCompleteEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessReassocFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessDisconnectEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessJoinReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessHandoffAssocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessHandoffSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessHandoffFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessAddTsRsp(tpAniSirGlobal pMac, void *pMsgBuf);
+VOS_STATUS sme_QosProcessDelTsInd(tpAniSirGlobal pMac, void *pMsgBuf);
+VOS_STATUS sme_QosProcessDelTsRsp(tpAniSirGlobal pMac, void *pMsgBuf);
+VOS_STATUS sme_QosProcessAssocCompleteEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessReassocFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessDisconnectEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessJoinReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessHandoffAssocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessHandoffSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessHandoffFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
 #ifdef WLAN_FEATURE_VOWIFI_11R
-eHalStatus sme_QosProcessPreauthSuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessSetKeySuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
-eHalStatus sme_QosProcessAggrQosRsp(tpAniSirGlobal pMac, void *pMsgBuf);
-eHalStatus sme_QosFTAggrQosReq( tpAniSirGlobal pMac, v_U8_t sessionId );
+VOS_STATUS sme_QosProcessPreauthSuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessSetKeySuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info);
+VOS_STATUS sme_QosProcessAggrQosRsp(tpAniSirGlobal pMac, void *pMsgBuf);
+VOS_STATUS sme_QosFTAggrQosReq( tpAniSirGlobal pMac, v_U8_t sessionId );
 #endif
-eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac, 
+VOS_STATUS sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac, 
                                          v_U8_t sessionId,
                                          tSirAddtsRspInfo * pRsp);
-eHalStatus sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac, 
+VOS_STATUS sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac, 
                                          v_U8_t sessionId,
                                          tSirAddtsRspInfo * pRsp);
-eHalStatus sme_QosAggregateParams(
+VOS_STATUS sme_QosAggregateParams(
    sme_QosWmmTspecInfo * pInput_Tspec_Info,
    sme_QosWmmTspecInfo * pCurrent_Tspec_Info,
    sme_QosWmmTspecInfo * pUpdated_Tspec_Info);
-static eHalStatus sme_QosUpdateParams(v_U8_t sessionId,
+static VOS_STATUS sme_QosUpdateParams(v_U8_t sessionId,
                                       sme_QosEdcaAcType ac,
                                       v_U8_t tspec_mask, 
                                       sme_QosWmmTspecInfo * pTspec_Info);
@@ -453,45 +453,45 @@ sme_QosEdcaAcType sme_QosUpToAc(sme_QosWmmUpType up);
 v_BOOL_t sme_QosIsACM(tpAniSirGlobal pMac, tSirBssDescription *pSirBssDesc, 
                       sme_QosEdcaAcType ac, tDot11fBeaconIEs *pIes);
 tListElem *sme_QosFindInFlowList(sme_QosSearchInfo search_key);
-eHalStatus sme_QosFindAllInFlowList(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosFindAllInFlowList(tpAniSirGlobal pMac,
                                     sme_QosSearchInfo search_key, 
                                     sme_QosProcessSearchEntry fnp);
 static void sme_QosStateTransition(v_U8_t sessionId,
                                    sme_QosEdcaAcType ac,
                                    sme_QosStates new_state);
-eHalStatus sme_QosBufferCmd(sme_QosCmdInfo *pcmd, v_BOOL_t insert_head);
-static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId);
-eHalStatus sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *pAssoc_info);
-eHalStatus sme_QosSetupFnp(tpAniSirGlobal pMac, tListElem *pEntry);
-eHalStatus sme_QosModificationNotifyFnp(tpAniSirGlobal pMac, tListElem *pEntry);
-eHalStatus sme_QosModifyFnp(tpAniSirGlobal pMac, tListElem *pEntry);
-eHalStatus sme_QosDelTsIndFnp(tpAniSirGlobal pMac, tListElem *pEntry);
-eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry);
-eHalStatus sme_QosAddTsFailureFnp(tpAniSirGlobal pMac, tListElem *pEntry);
-eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry);
+VOS_STATUS sme_QosBufferCmd(sme_QosCmdInfo *pcmd, v_BOOL_t insert_head);
+static VOS_STATUS sme_QosProcessBufferedCmd(v_U8_t sessionId);
+VOS_STATUS sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *pAssoc_info);
+VOS_STATUS sme_QosSetupFnp(tpAniSirGlobal pMac, tListElem *pEntry);
+VOS_STATUS sme_QosModificationNotifyFnp(tpAniSirGlobal pMac, tListElem *pEntry);
+VOS_STATUS sme_QosModifyFnp(tpAniSirGlobal pMac, tListElem *pEntry);
+VOS_STATUS sme_QosDelTsIndFnp(tpAniSirGlobal pMac, tListElem *pEntry);
+VOS_STATUS sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry);
+VOS_STATUS sme_QosAddTsFailureFnp(tpAniSirGlobal pMac, tListElem *pEntry);
+VOS_STATUS sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry);
 static v_BOOL_t sme_QosIsRspPending(v_U8_t sessionId, sme_QosEdcaAcType ac);
 static v_BOOL_t sme_QosIsUapsdActive(void);
-void sme_QosPmcFullPowerCallback(void *callbackContext, eHalStatus status);
-void sme_QosPmcStartUapsdCallback(void *callbackContext, eHalStatus status);
+void sme_QosPmcFullPowerCallback(void *callbackContext, VOS_STATUS status);
+void sme_QosPmcStartUapsdCallback(void *callbackContext, VOS_STATUS status);
 v_BOOL_t sme_QosPmcCheckRoutine(void *callbackContext);
 void sme_QosPmcDeviceStateUpdateInd(void *callbackContext, tPmcState pmcState);
-eHalStatus sme_QosProcessOutOfUapsdMode(tpAniSirGlobal pMac);
-eHalStatus sme_QosProcessIntoUapsdMode(tpAniSirGlobal pMac);
-static eHalStatus sme_QosBufferExistingFlows(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosProcessOutOfUapsdMode(tpAniSirGlobal pMac);
+VOS_STATUS sme_QosProcessIntoUapsdMode(tpAniSirGlobal pMac);
+static VOS_STATUS sme_QosBufferExistingFlows(tpAniSirGlobal pMac,
                                              v_U8_t sessionId);
-static eHalStatus sme_QosDeleteExistingFlows(tpAniSirGlobal pMac,
+static VOS_STATUS sme_QosDeleteExistingFlows(tpAniSirGlobal pMac,
                                              v_U8_t sessionId);
 static void sme_QosCleanupCtrlBlkForHandoff(tpAniSirGlobal pMac,
                                             v_U8_t sessionId);
-static eHalStatus sme_QosDeleteBufferedRequests(tpAniSirGlobal pMac,
+static VOS_STATUS sme_QosDeleteBufferedRequests(tpAniSirGlobal pMac,
                                                 v_U8_t sessionId);
 v_BOOL_t sme_QosValidateRequestedParams(tpAniSirGlobal pMac,
     sme_QosWmmTspecInfo * pQoSInfo,
     v_U8_t sessionId);
 
-extern eHalStatus sme_AcquireGlobalLock( tSmeStruct *psSme);
-extern eHalStatus sme_ReleaseGlobalLock( tSmeStruct *psSme);
-static eHalStatus qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
+extern VOS_STATUS sme_AcquireGlobalLock( tSmeStruct *psSme);
+extern VOS_STATUS sme_ReleaseGlobalLock( tSmeStruct *psSme);
+static VOS_STATUS qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
                                    eSmeCommandType cmdType, sme_QosWmmTspecInfo * pQoSInfo,
                                    sme_QosEdcaAcType ac, v_U8_t tspec_mask );
 /*
@@ -503,12 +503,12 @@ static sme_QosStatusType sme_QosReRequestAddTS(tpAniSirGlobal pMac,
                                                sme_QosEdcaAcType ac,
                                                v_U8_t tspecMask);
 static void sme_QosInitACs(tpAniSirGlobal pMac, v_U8_t sessionId);
-static eHalStatus sme_QosRequestReassoc(tpAniSirGlobal pMac, tANI_U8 sessionId,
+static VOS_STATUS sme_QosRequestReassoc(tpAniSirGlobal pMac, tANI_U8 sessionId,
                                         tCsrRoamModifyProfileFields *pModFields,
                                         v_BOOL_t fForce );
 static v_U32_t sme_QosAssignFlowId(void);
 static v_U8_t sme_QosAssignDialogToken(void);
-static eHalStatus sme_QosUpdateTspecMask(v_U8_t sessionId,
+static VOS_STATUS sme_QosUpdateTspecMask(v_U8_t sessionId,
                                       sme_QosSearchInfo search_key,
                                       v_U8_t new_tspec_mask);
 /*-------------------------------------------------------------------------- 
@@ -519,13 +519,13 @@ static eHalStatus sme_QosUpdateTspecMask(v_U8_t sessionId,
     SME QoS module.
     \param pMac - Pointer to the global MAC parameter structure.
     
-    \return eHalStatus     
+    \return VOS_STATUS     
 ----------------------------------------------------------------------------*/
-eHalStatus sme_QosOpen(tpAniSirGlobal pMac)
+VOS_STATUS sme_QosOpen(tpAniSirGlobal pMac)
 {
    sme_QosSessionInfo *pSession;
    v_U8_t sessionId;
-   eHalStatus status;
+   VOS_STATUS status;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: initializing SME-QoS module",
              __func__, __LINE__);
@@ -542,7 +542,7 @@ eHalStatus sme_QosOpen(tpAniSirGlobal pMac)
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_FATAL,
                 "%s: %d: cannot initialize Flow List",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    
    for (sessionId = 0; sessionId < CSR_ROAM_SESSION_MAX; ++sessionId)
@@ -559,7 +559,7 @@ eHalStatus sme_QosOpen(tpAniSirGlobal pMac)
                    "%s: %d: cannot initialize cmd list for session %d",
                    __func__, __LINE__,
                    sessionId);
-         return eHAL_STATUS_FAILURE;
+         return VOS_STATUS_E_FAILURE;
       }
       pSession->readyForPowerSave = VOS_TRUE;
    }
@@ -572,7 +572,7 @@ eHalStatus sme_QosOpen(tpAniSirGlobal pMac)
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_FATAL,
                 "%s: %d: cannot register with pmcRegisterPowerSaveCheck()",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    //the routine registered here gets called by PMC whenever there is a device 
    // state change. PMC might go to full power because of many reasons and this 
@@ -584,12 +584,12 @@ eHalStatus sme_QosOpen(tpAniSirGlobal pMac)
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_FATAL,
                 "%s: %d: cannot register with pmcRegisterDeviceStateUpdateInd()",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: done initializing SME-QoS module",
              __func__, __LINE__);
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /* --------------------------------------------------------------------------
     \brief sme_QosClose() - To close down SME QoS module. There should not be 
@@ -597,9 +597,9 @@ eHalStatus sme_QosOpen(tpAniSirGlobal pMac)
     call of sme_QosOpen.
     \param pMac - Pointer to the global MAC parameter structure.
     
-    \return eHalStatus     
+    \return VOS_STATUS     
 ----------------------------------------------------------------------------*/
-eHalStatus sme_QosClose(tpAniSirGlobal pMac)
+VOS_STATUS sme_QosClose(tpAniSirGlobal pMac)
 {
    sme_QosSessionInfo *pSession;
    sme_QosEdcaAcType ac;
@@ -663,7 +663,7 @@ eHalStatus sme_QosClose(tpAniSirGlobal pMac)
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: closed down QoS",
              __func__, __LINE__);
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosSetupReq() - The SME QoS API exposed to HDD to request for QoS 
@@ -692,7 +692,7 @@ eHalStatus sme_QosClose(tpAniSirGlobal pMac)
                      It is only meaningful if the QoS setup for the flow is 
                      successful
                   
-  \return eHAL_STATUS_SUCCESS - Setup is successful.
+  \return VOS_STATUS_SUCCESS - Setup is successful.
   
           Other status means Setup request failed     
   \sa
@@ -705,7 +705,7 @@ sme_QosStatusType sme_QosSetupReq(tHalHandle hHal, tANI_U32 sessionId,
                                   sme_QosWmmUpType UPType, v_U32_t * pQosFlowID)
 {
    sme_QosSessionInfo *pSession;
-   eHalStatus lock_status = eHAL_STATUS_FAILURE;
+   VOS_STATUS lock_status = VOS_STATUS_E_FAILURE;
    tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
    sme_QosStatusType status;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
@@ -791,7 +791,7 @@ sme_QosStatusType sme_QosModifyReq(tHalHandle hHal,
                                    sme_QosWmmTspecInfo * pQoSInfo,
                                    v_U32_t QosFlowID)
 {
-   eHalStatus lock_status = eHAL_STATUS_FAILURE;
+   VOS_STATUS lock_status = VOS_STATUS_E_FAILURE;
    tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
    sme_QosStatusType status;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
@@ -826,14 +826,14 @@ sme_QosStatusType sme_QosModifyReq(tHalHandle hHal,
                      It is only meaningful if the QoS setup for the flow is 
                      successful
   
-  \return eHAL_STATUS_SUCCESS - Release is successful.
+  \return VOS_STATUS_SUCCESS - Release is successful.
   
   \sa
   
   --------------------------------------------------------------------------*/
 sme_QosStatusType sme_QosReleaseReq(tHalHandle hHal, v_U32_t QosFlowID)
 {
-   eHalStatus lock_status = eHAL_STATUS_FAILURE;
+   VOS_STATUS lock_status = VOS_STATUS_E_FAILURE;
    tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
    sme_QosStatusType status;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
@@ -865,12 +865,12 @@ sme_QosStatusType sme_QosReleaseReq(tHalHandle hHal, v_U32_t QosFlowID)
   \param pQoSInfo - Pointer to sme_QosWmmTspecInfo which contains the WMM TSPEC
                     related info per AC as defined above, provided by HDD
   
-  \return eHAL_STATUS_SUCCESS - Setparam is successful.
+  \return VOS_STATUS_SUCCESS - Setparam is successful.
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosSetParams(tpAniSirGlobal pMac, sme_QosWmmTspecInfo * pQoSInfo)
+VOS_STATUS sme_QosSetParams(tpAniSirGlobal pMac, sme_QosWmmTspecInfo * pQoSInfo)
 {
    sme_QosEdcaAcType ac;
    // find the AC
@@ -882,7 +882,7 @@ eHalStatus sme_QosSetParams(tpAniSirGlobal pMac, sme_QosWmmTspecInfo * pQoSInfo)
                 "%s: %d: Invalid AC %d (via UP %d)",
                 __func__, __LINE__,
                 ac, pQoSInfo->ts_info.up );
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    //copy over the default params for this AC
    sme_QosCb.def_QoSInfo[ac] = *pQoSInfo;
@@ -890,7 +890,7 @@ eHalStatus sme_QosSetParams(tpAniSirGlobal pMac, sme_QosWmmTspecInfo * pQoSInfo)
              "%s: %d: QoS default params set for AC %d (via UP %d)",
              __func__, __LINE__,
              ac, pQoSInfo->ts_info.up );
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 void qosReleaseCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand )
@@ -909,15 +909,15 @@ void qosReleaseCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand )
                    on the message type.
                    The beginning of the buffer can always map to tSirSmeRsp.
   
-  \return eHAL_STATUS_SUCCESS - Validation is successful.
+  \return VOS_STATUS_SUCCESS - Validation is successful.
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
+VOS_STATUS sme_QosMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
                                 void *pMsgBuf)
 {
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    tListElem *pEntry;
    tSmeCmd *pCommand;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
@@ -984,16 +984,16 @@ eHalStatus sme_QosMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type,
   \param pBssDesc - Pointer to the BSS Descriptor information passed down by 
                     CSR to PE while issuing the Join request
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosValidateParams(tpAniSirGlobal pMac, 
+VOS_STATUS sme_QosValidateParams(tpAniSirGlobal pMac, 
                                  tSirBssDescription *pBssDesc)
 {
    tDot11fBeaconIEs *pIes = NULL;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH,
              "%s: %d: validation for QAP & APSD",
              __func__, __LINE__);
@@ -1026,7 +1026,7 @@ eHalStatus sme_QosValidateParams(tpAniSirGlobal pMac,
                    __func__, __LINE__);
          break;
       }
-      status = eHAL_STATUS_SUCCESS;
+      status = VOS_STATUS_SUCCESS;
    }while(0);
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: validated with status = %d",
@@ -1044,17 +1044,17 @@ eHalStatus sme_QosValidateParams(tpAniSirGlobal pMac,
   \param ind - The event occurred of type sme_QosCsrEventIndType.
   \param pEvent_info - Information related to the event
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosCsrEventInd(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosCsrEventInd(tpAniSirGlobal pMac,
                               v_U8_t sessionId,
                               sme_QosCsrEventIndType ind, 
                               void *pEvent_info)
 {
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: On Session %d Event %d received from CSR",
              __func__, __LINE__,
@@ -1184,7 +1184,7 @@ v_U8_t sme_QosGetACMMask(tpAniSirGlobal pMac, tSirBssDescription *pSirBssDesc, t
   \param buffered_cmd - tells us if the cmd was a buffered one or fresh from 
                         client
                   
-  \return eHAL_STATUS_SUCCESS - Setup is successful.
+  \return VOS_STATUS_SUCCESS - Setup is successful.
   
           Other status means Setup request failed     
   \sa
@@ -1212,7 +1212,7 @@ sme_QosStatusType sme_QosInternalSetupReq(tpAniSirGlobal pMac,
    v_U8_t new_tmask = 0;
    sme_QosSearchInfo search_key;
    v_BOOL_t bufferCommand;
-   eHalStatus hstatus;
+   VOS_STATUS hstatus;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: invoked on session %d for flow %d",
              __func__, __LINE__,
@@ -1285,7 +1285,7 @@ sme_QosStatusType sme_QosInternalSetupReq(tpAniSirGlobal pMac,
       // an AddTS or reassoc if necessary
       hstatus = pmcRequestFullPower(pMac, sme_QosPmcFullPowerCallback,
                                     pSession, eSME_REASON_OTHER);
-      if( eHAL_STATUS_PMC_PENDING == hstatus )
+      if( VOS_STATUS_PMC_PENDING == hstatus )
       {
          VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_MED, 
                    "%s: %d: buffering the setup request for flow %d in state %d, "
@@ -1597,7 +1597,7 @@ sme_QosStatusType sme_QosInternalSetupReq(tpAniSirGlobal pMac,
               if((hstatus = sme_QosAggregateParams(&Tspec_Info, 
                                                    &pACInfo->curr_QoSInfo[SME_QOS_TSPEC_INDEX_0],
                                                    &pACInfo->requested_QoSInfo[tmask - 1]))
-                          == eHAL_STATUS_SUCCESS)
+                          == VOS_STATUS_SUCCESS)
               {
                 hstatus = sme_QosAggregateParams(&pACInfo->curr_QoSInfo[SME_QOS_TSPEC_INDEX_1], 
                                                  &pACInfo->requested_QoSInfo[tmask - 1],
@@ -1841,7 +1841,7 @@ sme_QosStatusType sme_QosInternalModifyReq(tpAniSirGlobal pMac,
    sme_QosCmdInfo  cmd;
    v_U8_t sessionId;
    v_BOOL_t bufferCommand;
-   eHalStatus hstatus;
+   VOS_STATUS hstatus;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: invoked for flow %d",
              __func__, __LINE__,
@@ -1940,7 +1940,7 @@ sme_QosStatusType sme_QosInternalModifyReq(tpAniSirGlobal pMac,
       // an AddTS or reassoc if necessary
       hstatus = pmcRequestFullPower(pMac, sme_QosPmcFullPowerCallback,
                                     pSession, eSME_REASON_OTHER);
-      if( eHAL_STATUS_PMC_PENDING == hstatus )
+      if( VOS_STATUS_PMC_PENDING == hstatus )
       {
          VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_MED, 
                    "%s: %d: buffering the modify request for flow %d in state %d, "
@@ -2184,7 +2184,7 @@ sme_QosStatusType sme_QosInternalModifyReq(tpAniSirGlobal pMac,
                      It is only meaningful if the QoS setup for the flow is 
                      successful
   
-  \return eHAL_STATUS_SUCCESS - Release is successful.
+  \return VOS_STATUS_SUCCESS - Release is successful.
   
   \sa
   
@@ -2208,7 +2208,7 @@ sme_QosStatusType sme_QosInternalReleaseReq(tpAniSirGlobal pMac,
    v_BOOL_t  deltsIssued = VOS_FALSE;
    v_U8_t sessionId;
    v_BOOL_t bufferCommand;
-   eHalStatus hstatus;
+   VOS_STATUS hstatus;
    v_BOOL_t biDirectionalFlowsPresent = VOS_FALSE;
    v_BOOL_t uplinkFlowsPresent = VOS_FALSE;
    v_BOOL_t downlinkFlowsPresent = VOS_FALSE;
@@ -2265,7 +2265,7 @@ sme_QosStatusType sme_QosInternalReleaseReq(tpAniSirGlobal pMac,
       // a DelTS or reassoc if necessary
       hstatus = pmcRequestFullPower(pMac, sme_QosPmcFullPowerCallback,
                                     pSession, eSME_REASON_OTHER);
-      if( eHAL_STATUS_PMC_PENDING == hstatus )
+      if( VOS_STATUS_PMC_PENDING == hstatus )
       {
          VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_MED, 
                    "%s: %d: buffering the release request for flow %d in state %d, "
@@ -2815,7 +2815,7 @@ sme_QosStatusType sme_QosSetup(tpAniSirGlobal pMac,
    sme_QosStatusType status = SME_QOS_STATUS_SETUP_FAILURE_RSP;
    tDot11fBeaconIEs *pIes = NULL;
    tCsrRoamModifyProfileFields modifyProfileFields;
-   eHalStatus hstatus;
+   VOS_STATUS hstatus;
    if( !CSR_IS_SESSION_VALID( pMac, sessionId ) )
    {
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
@@ -3059,12 +3059,12 @@ sme_QosStatusType sme_QosSetup(tpAniSirGlobal pMac,
  * not required as we are ok with tspec getting programmed before set_key 
  * as the roam timings are measured without tspec in reassoc!
  */
-eHalStatus sme_QosProcessSetKeySuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessSetKeySuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
     VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_WARN, 
             "########### Set Key Complete #############");
     (void)sme_QosProcessBufferedCmd(sessionId);
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 #endif
 
@@ -3079,9 +3079,9 @@ eHalStatus sme_QosProcessSetKeySuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId,
   \param ac - Access Category for which this TSPEC rsp is received
   \param tspecIndex - flow/direction
   
-  \return eHAL_STATUS_SUCCESS - Release is successful.
+  \return VOS_STATUS_SUCCESS - Release is successful.
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosESESaveTspecResponse(tpAniSirGlobal pMac, v_U8_t sessionId, tDot11fIEWMMTSPEC *pTspec, v_U8_t ac, v_U8_t tspecIndex)
+VOS_STATUS sme_QosESESaveTspecResponse(tpAniSirGlobal pMac, v_U8_t sessionId, tDot11fIEWMMTSPEC *pTspec, v_U8_t ac, v_U8_t tspecIndex)
 {
     tpSirAddtsRsp pAddtsRsp = &sme_QosCb.sessionInfo[sessionId].ac_info[ac].addTsRsp[tspecIndex];
 
@@ -3106,7 +3106,7 @@ eHalStatus sme_QosESESaveTspecResponse(tpAniSirGlobal pMac, v_U8_t sessionId, tD
         ConvertWMMTSPEC(pMac, &pAddtsRsp->rsp.tspec, pTspec);
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /*--------------------------------------------------------------------------
@@ -3121,16 +3121,16 @@ eHalStatus sme_QosESESaveTspecResponse(tpAniSirGlobal pMac, v_U8_t sessionId, tD
   \param sessionId - SME session ID 
   \param pEven_info - Pointer to the smeJoinRsp structure
   
-  \return eHAL_STATUS_SUCCESS - Release is successful.
+  \return VOS_STATUS_SUCCESS - Release is successful.
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosESEProcessReassocTspecRsp(tpAniSirGlobal pMac, v_U8_t sessionId, void* pEvent_info)
+VOS_STATUS sme_QosESEProcessReassocTspecRsp(tpAniSirGlobal pMac, v_U8_t sessionId, void* pEvent_info)
 {
     sme_QosSessionInfo *pSession;
     sme_QosACInfo *pACInfo;
     tDot11fIEWMMTSPEC *pTspecIE = NULL;
     tCsrRoamSession *pCsrSession = CSR_GET_SESSION( pMac, sessionId );
     tCsrRoamConnectedInfo *pCsrConnectedInfo = &pCsrSession->connectedInfo;
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
     v_U8_t ac, numTspec, cnt;
     v_U8_t tspec_flow_index, tspec_mask_status;
     v_U32_t tspecIeLen;
@@ -3149,7 +3149,7 @@ eHalStatus sme_QosESEProcessReassocTspecRsp(tpAniSirGlobal pMac, v_U8_t sessionI
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                 FL("ESE Tspec IE len %d less than min %zu"),
                 tspecIeLen, sizeof(tDot11fIEWMMTSPEC));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_WARN,
@@ -3297,7 +3297,7 @@ v_U8_t sme_QosESERetrieveTspecInfo(tpAniSirGlobal pMac, v_U8_t sessionId, tTspec
 
 #ifdef WLAN_FEATURE_VOWIFI_11R
 
-eHalStatus sme_QosCreateTspecRICIE(tpAniSirGlobal pMac, sme_QosWmmTspecInfo *pTspec_Info,
+VOS_STATUS sme_QosCreateTspecRICIE(tpAniSirGlobal pMac, sme_QosWmmTspecInfo *pTspec_Info,
                                                        v_U8_t *pRICBuffer, v_U32_t *pRICLength, v_U8_t *pRICIdentifier)
 {
     tDot11fIERICDataDesc    ricIE;
@@ -3308,7 +3308,7 @@ eHalStatus sme_QosCreateTspecRICIE(tpAniSirGlobal pMac, sme_QosWmmTspecInfo *pTs
     VOS_ASSERT(NULL != pRICIdentifier);
 
     if (pRICBuffer == NULL || pRICIdentifier == NULL || pRICLength == NULL)
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
 
     vos_mem_zero(&ricIE, sizeof(tDot11fIERICDataDesc));
 
@@ -3405,7 +3405,7 @@ eHalStatus sme_QosCreateTspecRICIE(tpAniSirGlobal pMac, sme_QosWmmTspecInfo *pTs
     return nStatus;
 }
 
-eHalStatus sme_QosProcessFTReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessFTReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
     sme_QosSessionInfo *pSession;
     sme_QosACInfo *pACInfo;
@@ -3471,7 +3471,7 @@ eHalStatus sme_QosProcessFTReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, v
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_WARN,
                 "%s: %d: Flow List empty, nothing to update",
                 __func__, __LINE__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     do
@@ -3489,15 +3489,15 @@ eHalStatus sme_QosProcessFTReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, v
         pEntry = csrLLNext( &sme_QosCb.flow_list, pEntry, VOS_FALSE );
     } while( pEntry );
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
-eHalStatus sme_QosFTAggrQosReq( tpAniSirGlobal pMac, v_U8_t sessionId )
+VOS_STATUS sme_QosFTAggrQosReq( tpAniSirGlobal pMac, v_U8_t sessionId )
 {
     tSirAggrQosReq *pMsg = NULL;
     sme_QosSessionInfo *pSession;
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
     int i, j = 0;
     VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH,
             "%s: %d: invoked on session %d", __func__, __LINE__,
@@ -3514,7 +3514,7 @@ eHalStatus sme_QosFTAggrQosReq( tpAniSirGlobal pMac, v_U8_t sessionId )
                 "%s: %d: couldn't allocate memory for the msg buffer",
                 __func__, __LINE__);
 
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
       }
 
     vos_mem_zero(pMsg, sizeof(tSirAggrQosReq));
@@ -3580,7 +3580,7 @@ eHalStatus sme_QosFTAggrQosReq( tpAniSirGlobal pMac, v_U8_t sessionId )
 
     if(HAL_STATUS_SUCCESS(palSendMBMessage(pMac->hHdd, pMsg)))
     {
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH,
                 "%s: %d: sent down a AGGR QoS req to PE",
                 __func__, __LINE__);
@@ -3589,7 +3589,7 @@ eHalStatus sme_QosFTAggrQosReq( tpAniSirGlobal pMac, v_U8_t sessionId )
     return status;
 }
 
-eHalStatus sme_QosProcessFTRICResponse(tpAniSirGlobal pMac, v_U8_t sessionId, tDot11fIERICDataDesc *pRicDataDesc, v_U8_t ac, v_U8_t tspecIndex)
+VOS_STATUS sme_QosProcessFTRICResponse(tpAniSirGlobal pMac, v_U8_t sessionId, tDot11fIERICDataDesc *pRicDataDesc, v_U8_t ac, v_U8_t tspecIndex)
 {
     tANI_U8        i = 0;
     tpSirAddtsRsp   pAddtsRsp
@@ -3643,13 +3643,13 @@ eHalStatus sme_QosProcessFTRICResponse(tpAniSirGlobal pMac, v_U8_t sessionId, tD
         ConvertWMMTSPEC(pMac, &pAddtsRsp->rsp.tspec, &pRicDataDesc->WMMTSPEC);
     }
     //return sme_QosProcessAddTsRsp(pMac, &addtsRsp);
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
-eHalStatus sme_QosProcessAggrQosRsp(tpAniSirGlobal pMac, void *pMsgBuf)
+VOS_STATUS sme_QosProcessAggrQosRsp(tpAniSirGlobal pMac, void *pMsgBuf)
 {
     tpSirAggrQosRsp pAggrRsp = (tpSirAggrQosRsp)pMsgBuf;
     tSirAddtsRsp   addtsRsp;
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     int i, j = 0;
     tANI_U8 sessionId = pAggrRsp->sessionId;
 
@@ -3682,9 +3682,9 @@ eHalStatus sme_QosProcessAggrQosRsp(tpAniSirGlobal pMac, void *pMsgBuf)
                 VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO,
                         FL("Processing Addts rsp from LIM AC=%d, flow=%d"), i, j);
                 /* post ADD TS response for each */
-                if (sme_QosProcessAddTsRsp(pMac, &addtsRsp) != eHAL_STATUS_SUCCESS)
+                if (sme_QosProcessAddTsRsp(pMac, &addtsRsp) != VOS_STATUS_SUCCESS)
                 {
-                    status = eHAL_STATUS_FAILURE;
+                    status = VOS_STATUS_E_FAILURE;
                 }
             }
         }
@@ -3693,14 +3693,14 @@ eHalStatus sme_QosProcessAggrQosRsp(tpAniSirGlobal pMac, void *pMsgBuf)
 }
 
 
-eHalStatus sme_QosProcessFTReassocRspEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessFTReassocRspEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
     sme_QosSessionInfo *pSession;
     sme_QosACInfo *pACInfo;
     v_U8_t ac;
     v_U8_t tspec_flow_index;
     tDot11fIERICDataDesc *pRicDataDesc = NULL;
-    eHalStatus            status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS            status = VOS_STATUS_SUCCESS;
     tCsrRoamSession *pCsrSession = CSR_GET_SESSION( pMac, sessionId );
     tCsrRoamConnectedInfo *pCsrConnectedInfo = NULL;
     tANI_U32    ricRspLen;
@@ -3709,7 +3709,7 @@ eHalStatus sme_QosProcessFTReassocRspEv(tpAniSirGlobal pMac, v_U8_t sessionId, v
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 FL("The Session pointer is NULL"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pCsrConnectedInfo = &pCsrSession->connectedInfo;
@@ -3764,7 +3764,7 @@ eHalStatus sme_QosProcessFTReassocRspEv(tpAniSirGlobal pMac, v_U8_t sessionId, v
                                         FL("Processing RIC Response for AC %d, TSPEC Flow index %d with RIC ID %d "),
                                         ac, tspec_flow_index, pRicDataDesc->RICData.Identifier);
                                 status = sme_QosProcessFTRICResponse(pMac, sessionId, pRicDataDesc, ac, tspec_flow_index);
-                                if (eHAL_STATUS_SUCCESS != status)
+                                if (VOS_STATUS_SUCCESS != status)
                                 {
                                     VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                                             FL("Failed with status %d for AC %d in TSPEC Flow index = %d"),
@@ -3808,19 +3808,19 @@ eHalStatus sme_QosProcessFTReassocRspEv(tpAniSirGlobal pMac, v_U8_t sessionId, v
   \param pTspec_Info - Pointer to sme_QosWmmTspecInfo which contains the WMM 
                        TSPEC related info as defined above
   \param ac - Enumeration of the various EDCA Access Categories.
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosAddTsReq(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosAddTsReq(tpAniSirGlobal pMac,
                            v_U8_t sessionId,
                            sme_QosWmmTspecInfo * pTspec_Info,
                            sme_QosEdcaAcType ac)
 {
    tSirAddtsReq *pMsg = NULL;
    sme_QosSessionInfo *pSession;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
 #ifdef FEATURE_WLAN_ESE
    tCsrRoamSession *pCsrSession = CSR_GET_SESSION( pMac, sessionId );
 #endif
@@ -3837,7 +3837,7 @@ eHalStatus sme_QosAddTsReq(tpAniSirGlobal pMac,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                 "%s: %d: sessionId(%d) is invalid",
                 __func__, __LINE__, sessionId);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    pSession = &sme_QosCb.sessionInfo[sessionId];
@@ -3848,7 +3848,7 @@ eHalStatus sme_QosAddTsReq(tpAniSirGlobal pMac,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: couldn't allocate memory for the msg buffer",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_zero(pMsg, sizeof(tSirAddtsReq));
    pMsg->messageType = pal_cpu_to_be16((v_U16_t)eWNI_SME_ADDTS_REQ);
@@ -3902,7 +3902,7 @@ eHalStatus sme_QosAddTsReq(tpAniSirGlobal pMac,
                 "%s: %d: BSS descriptor is NULL so we don't send request to PE",
                 __func__, __LINE__);
       vos_mem_free(pMsg);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_copy( &pMsg->bssId[ 0 ], 
                  &pSession->assocInfo.pBssDesc->bssId[ 0 ], 
@@ -3921,7 +3921,7 @@ eHalStatus sme_QosAddTsReq(tpAniSirGlobal pMac,
 #endif
    if(HAL_STATUS_SUCCESS(palSendMBMessage(pMac->hHdd, pMsg)))
    {
-      status = eHAL_STATUS_SUCCESS;
+      status = VOS_STATUS_SUCCESS;
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
                 "%s: %d: sent down a ADDTS req to PE",
                 __func__, __LINE__);
@@ -3944,12 +3944,12 @@ eHalStatus sme_QosAddTsReq(tpAniSirGlobal pMac,
   \param ac - Enumeration of the various EDCA Access Categories.
   \param tspec_mask - on which tspec per AC, the delts is requested
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosDelTsReq(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosDelTsReq(tpAniSirGlobal pMac,
                            v_U8_t sessionId,
                            sme_QosEdcaAcType ac,
                            v_U8_t tspec_mask)
@@ -3958,7 +3958,7 @@ eHalStatus sme_QosDelTsReq(tpAniSirGlobal pMac,
    sme_QosACInfo *pACInfo;
    tSirDeltsReq *pMsg;
    sme_QosWmmTspecInfo *pTspecInfo;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
 #ifdef FEATURE_WLAN_DIAG_SUPPORT
    WLAN_VOS_DIAG_EVENT_DEF(qos, vos_event_wlan_qos_payload_type);
 #endif
@@ -3973,7 +3973,7 @@ eHalStatus sme_QosDelTsReq(tpAniSirGlobal pMac,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: couldn't allocate memory for the msg buffer",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_zero(pMsg, sizeof(tSirDeltsReq));
    // get pointer to the TSPEC being deleted
@@ -4015,7 +4015,7 @@ eHalStatus sme_QosDelTsReq(tpAniSirGlobal pMac,
                 "%s: %d: BSS descriptor is NULL so we don't send request to PE",
                 __func__, __LINE__);
       vos_mem_free(pMsg);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_copy( &pMsg->bssId[ 0 ], 
                  &pSession->assocInfo.pBssDesc->bssId[ 0 ], 
@@ -4030,7 +4030,7 @@ eHalStatus sme_QosDelTsReq(tpAniSirGlobal pMac,
                 sizeof(sme_QosWmmTspecInfo));
    if(HAL_STATUS_SUCCESS(palSendMBMessage(pMac->hHdd, pMsg)))
    {
-      status = eHAL_STATUS_SUCCESS;
+      status = VOS_STATUS_SUCCESS;
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
                 "%s: %d: sme_QosDelTsReq:Test: sent down a DELTS req to PE",
                 __func__, __LINE__);
@@ -4053,17 +4053,17 @@ eHalStatus sme_QosDelTsReq(tpAniSirGlobal pMac,
   \param pMac - Pointer to the global MAC parameter structure.  
   \param pMsgBuf - Pointer to the msg buffer came from PE.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessAddTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
+VOS_STATUS sme_QosProcessAddTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
 {
    tpSirAddtsRsp paddts_rsp = (tpSirAddtsRsp)pMsgBuf;
    sme_QosSessionInfo *pSession;
    v_U8_t sessionId = paddts_rsp->sessionId;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
 #ifdef WLAN_FEATURE_VOWIFI_11R
     sme_QosWmmUpType up = (sme_QosWmmUpType)paddts_rsp->rsp.tspec.tsinfo.traffic.userPrio;
     sme_QosACInfo *pACInfo;
@@ -4089,14 +4089,14 @@ eHalStatus sme_QosProcessAddTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
                 "%s: %d: invalid AC %d from UP %d",
                 __func__, __LINE__, ac, up);
 
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     pACInfo = &pSession->ac_info[ac];   
     if (SME_QOS_HANDOFF == pACInfo->curr_state)
     {
         smsLog(pMac, LOG1, FL("ADDTS Response received for AC %d in HANDOFF State.. Dropping"), ac);
         pSession->readyForPowerSave = VOS_TRUE;
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
 #endif
 
@@ -4130,12 +4130,12 @@ eHalStatus sme_QosProcessAddTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
   \param pMac - Pointer to the global MAC parameter structure.  
   \param pMsgBuf - Pointer to the msg buffer came from PE.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessDelTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
+VOS_STATUS sme_QosProcessDelTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
 {
    tpSirDeltsRsp pDeltsRsp = (tpSirDeltsRsp)pMsgBuf;
    sme_QosSessionInfo *pSession;
@@ -4150,7 +4150,7 @@ eHalStatus sme_QosProcessDelTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
    // we can go into powersave
    pSession->readyForPowerSave = VOS_TRUE;
    (void)sme_QosProcessBufferedCmd(sessionId);
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessDelTsInd() - Function to process the
@@ -4161,12 +4161,12 @@ eHalStatus sme_QosProcessDelTsRsp(tpAniSirGlobal pMac, void *pMsgBuf)
   \param pMac - Pointer to the global MAC parameter structure.  
   \param pMsgBuf - Pointer to the msg buffer came from PE.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessDelTsInd(tpAniSirGlobal pMac, void *pMsgBuf)
+VOS_STATUS sme_QosProcessDelTsInd(tpAniSirGlobal pMac, void *pMsgBuf)
 {
    tpSirDeltsRsp pdeltsind = (tpSirDeltsRsp)pMsgBuf;
    sme_QosSessionInfo *pSession;
@@ -4190,7 +4190,7 @@ eHalStatus sme_QosProcessDelTsInd(tpAniSirGlobal pMac, void *pMsgBuf)
                 "%s: %d: invalid AC %d from UP %d",
                 __func__, __LINE__,
                 ac, up);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    pSession = &sme_QosCb.sessionInfo[sessionId];
    pACInfo = &pSession->ac_info[ac];
@@ -4210,7 +4210,7 @@ eHalStatus sme_QosProcessDelTsInd(tpAniSirGlobal pMac, void *pMsgBuf)
                 search_key.key.ac_type);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
 //event: EVENT_WLAN_QOS
@@ -4220,23 +4220,23 @@ eHalStatus sme_QosProcessDelTsInd(tpAniSirGlobal pMac, void *pMsgBuf)
    WLAN_VOS_DIAG_EVENT_REPORT(&qos, EVENT_WLAN_QOS);
 #endif //FEATURE_WLAN_DIAG_SUPPORT
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessAssocCompleteEv() - Function to process the
   SME_QOS_CSR_ASSOC_COMPLETE event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessAssocCompleteEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessAssocCompleteEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    sme_QosEdcaAcType ac = SME_QOS_EDCA_AC_BE;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: invoked on session %d",
@@ -4299,7 +4299,7 @@ eHalStatus sme_QosProcessAssocCompleteEv(tpAniSirGlobal pMac, v_U8_t sessionId, 
       pSession->handoffRequested = VOS_FALSE;
       //renew all flows
       (void)sme_QosProcessBufferedCmd(sessionId);
-      status = eHAL_STATUS_SUCCESS;
+      status = VOS_STATUS_SUCCESS;
    }
    else
    {
@@ -4334,12 +4334,12 @@ eHalStatus sme_QosProcessAssocCompleteEv(tpAniSirGlobal pMac, v_U8_t sessionId, 
   SME_QOS_CSR_REASSOC_REQ event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -4362,7 +4362,7 @@ eHalStatus sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, voi
        VOS_ASSERT(pSession->ac_info[2].curr_state == SME_QOS_HANDOFF);
        VOS_ASSERT(pSession->ac_info[3].curr_state == SME_QOS_HANDOFF);
        sme_QosProcessFTReassocReqEv(pMac, sessionId, pEvent_info);
-       return eHAL_STATUS_SUCCESS;
+       return VOS_STATUS_SUCCESS;
    }
 #endif
 
@@ -4381,7 +4381,7 @@ eHalStatus sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, voi
       sme_QosBufferExistingFlows(pMac, sessionId);
       //clean up the control block partially for handoff
       sme_QosCleanupCtrlBlkForHandoff(pMac, sessionId);
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
 //TBH: Assuming both handoff algo & 11r willn't be enabled at the same time
 #ifdef WLAN_FEATURE_VOWIFI_11R
@@ -4397,7 +4397,7 @@ eHalStatus sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, voi
       VOS_ASSERT(pSession->ac_info[3].curr_state == SME_QOS_HANDOFF);
 
       sme_QosProcessFTReassocReqEv(pMac, sessionId, pEvent_info);
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
 #endif
 
@@ -4426,19 +4426,19 @@ eHalStatus sme_QosProcessReassocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, voi
             break;
       }
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessReassocSuccessEv() - Function to process the
   SME_QOS_CSR_REASSOC_COMPLETE event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
 
    tCsrRoamSession *pCsrRoamSession = NULL;
@@ -4447,7 +4447,7 @@ eHalStatus sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId,
    sme_QosEdcaAcType ac, ac_index;
    sme_QosSearchInfo search_key;
    sme_QosSearchInfo search_key1;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    tListElem *pEntry= NULL;
    sme_QosFlowInfoEntry *flow_info = NULL;
 
@@ -4501,7 +4501,7 @@ eHalStatus sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId,
       pSession->handoffRequested = VOS_FALSE;
       //renew all flows
       (void)sme_QosProcessBufferedCmd(sessionId);
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
 #ifdef WLAN_FEATURE_VOWIFI_11R
    if (pSession->ftHandoffInProgress)
@@ -4593,18 +4593,18 @@ eHalStatus sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId,
                             search_key.key.ac_type);
                   //ASSERT
                   VOS_ASSERT(0);
-                  return eHAL_STATUS_FAILURE;
+                  return VOS_STATUS_E_FAILURE;
                }
                pACInfo->hoRenewal = VOS_FALSE;
                vos_mem_zero(&pACInfo->requested_QoSInfo[SME_QOS_TSPEC_INDEX_0], 
                             sizeof(sme_QosWmmTspecInfo));
             }
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
             break;
          case SME_QOS_INIT:
          case SME_QOS_CLOSED:
             //NOP
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
             break;
          case SME_QOS_LINK_UP:
          case SME_QOS_REQUESTED:
@@ -4628,12 +4628,12 @@ eHalStatus sme_QosProcessReassocSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId,
   SME_QOS_CSR_REASSOC_FAILURE event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessReassocFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessReassocFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -4689,19 +4689,19 @@ eHalStatus sme_QosProcessReassocFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId,
    }
    //need to clean up flows
    sme_QosDeleteExistingFlows(pMac, sessionId);
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessHandoffAssocReqEv() - Function to process the
   SME_QOS_CSR_HANDOFF_ASSOC_REQ event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessHandoffAssocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessHandoffAssocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -4760,24 +4760,24 @@ eHalStatus sme_QosProcessHandoffAssocReqEv(tpAniSirGlobal pMac, v_U8_t sessionId
       (void)pmcStopUapsd(pMac);
    }
    pSession->uapsdAlreadyRequested = VOS_FALSE;
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessHandoffSuccessEv() - Function to process the
   SME_QOS_CSR_HANDOFF_COMPLETE event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessHandoffSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessHandoffSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
    v_U8_t ac;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: invoked on session %d",
              __func__, __LINE__,
@@ -4796,7 +4796,7 @@ eHalStatus sme_QosProcessHandoffSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId,
             {
                pACInfo->curr_state = SME_QOS_LINK_UP;
             }
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
             break;
          // FT logic, has already moved it to QOS_REQUESTED state during the 
          // reassoc request event, which would include the Qos (TSPEC) params
@@ -4830,12 +4830,12 @@ eHalStatus sme_QosProcessHandoffSuccessEv(tpAniSirGlobal pMac, v_U8_t sessionId,
   SME_QOS_CSR_HANDOFF_FAILURE event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessHandoffFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessHandoffFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -4889,7 +4889,7 @@ eHalStatus sme_QosProcessHandoffFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId,
       vos_mem_free(pSession->assocInfo.pBssDesc);
       pSession->assocInfo.pBssDesc = NULL;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessDisconnectEv() - Function to process the
@@ -4897,12 +4897,12 @@ eHalStatus sme_QosProcessHandoffFailureEv(tpAniSirGlobal pMac, v_U8_t sessionId,
   from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessDisconnectEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessDisconnectEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
@@ -4926,7 +4926,7 @@ eHalStatus sme_QosProcessDisconnectEv(tpAniSirGlobal pMac, v_U8_t sessionId, voi
       VOS_ASSERT(pSession->ac_info[1].curr_state == SME_QOS_HANDOFF);
       VOS_ASSERT(pSession->ac_info[2].curr_state == SME_QOS_HANDOFF);
       VOS_ASSERT(pSession->ac_info[3].curr_state == SME_QOS_HANDOFF);
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
    sme_QosInitACs(pMac, sessionId);
    // this session doesn't require UAPSD
@@ -4953,19 +4953,19 @@ eHalStatus sme_QosProcessDisconnectEv(tpAniSirGlobal pMac, v_U8_t sessionId, voi
       pSession->assocInfo.pBssDesc = NULL;
    }
    sme_QosCb.sessionInfo[sessionId].sessionActive = VOS_FALSE;
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessJoinReqEv() - Function to process the
   SME_QOS_CSR_JOIN_REQ event indication from CSR
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessJoinReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessJoinReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
    sme_QosSessionInfo *pSession;
    sme_QosEdcaAcType ac;
@@ -4988,7 +4988,7 @@ eHalStatus sme_QosProcessJoinReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void *
       sme_QosBufferExistingFlows(pMac, sessionId);
       //clean up the control block partially for handoff
       sme_QosCleanupCtrlBlkForHandoff(pMac, sessionId);
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
 
    for(ac = SME_QOS_EDCA_AC_BE; ac < SME_QOS_EDCA_AC_MAX; ac++) 
@@ -5001,7 +5001,7 @@ eHalStatus sme_QosProcessJoinReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void *
       vos_mem_free(pSession->assocInfo.pBssDesc);
       pSession->assocInfo.pBssDesc = NULL;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 #ifdef WLAN_FEATURE_VOWIFI_11R
@@ -5011,17 +5011,17 @@ eHalStatus sme_QosProcessJoinReqEv(tpAniSirGlobal pMac, v_U8_t sessionId, void *
 
   \param pEvent_info - Pointer to relevant info from CSR.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessPreauthSuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
+VOS_STATUS sme_QosProcessPreauthSuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId, void * pEvent_info)
 {
     sme_QosSessionInfo *pSession;
     sme_QosACInfo *pACInfo;
     v_U8_t ac;
-    eHalStatus  status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS  status = VOS_STATUS_SUCCESS;
 
     VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH,
             "%s: %d: invoked on session %d",
@@ -5128,12 +5128,12 @@ eHalStatus sme_QosProcessPreauthSuccessInd(tpAniSirGlobal pMac, v_U8_t sessionId
   \param pMac - Pointer to the global MAC parameter structure.  
   \param pRsp - Pointer to the addts response structure came from PE.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac, 
+VOS_STATUS sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac, 
                                          v_U8_t sessionId,
                                          tSirAddtsRspInfo * pRsp)
 {
@@ -5154,7 +5154,7 @@ eHalStatus sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: invalid AC %d from UP %d",
                 __func__, __LINE__, ac, up);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    pSession = &sme_QosCb.sessionInfo[sessionId];
    pACInfo = &pSession->ac_info[ac];
@@ -5168,7 +5168,7 @@ eHalStatus sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac,
                 __func__, __LINE__,
                 sessionId, ac);
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    vos_mem_zero(&search_key, sizeof(sme_QosSearchInfo));
@@ -5184,7 +5184,7 @@ eHalStatus sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac,
                 sessionId, search_key.key.ac_type);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_zero(&pACInfo->requested_QoSInfo[tspec_pending - 1], 
                 sizeof(sme_QosWmmTspecInfo));
@@ -5204,7 +5204,7 @@ eHalStatus sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac,
 
    (void)sme_QosProcessBufferedCmd(sessionId);
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 /*--------------------------------------------------------------------------
@@ -5217,12 +5217,12 @@ eHalStatus sme_QosProcessAddTsFailureRsp(tpAniSirGlobal pMac,
   \param old_tspec_mask - on which tspec per AC, the update is requested
   \param new_tspec_mask - tspec to be set for this AC
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_QosUpdateTspecMask(v_U8_t sessionId,
+static VOS_STATUS sme_QosUpdateTspecMask(v_U8_t sessionId,
                                       sme_QosSearchInfo search_key,
                                       v_U8_t new_tspec_mask)
 {
@@ -5248,7 +5248,7 @@ static eHalStatus sme_QosUpdateTspecMask(v_U8_t sessionId,
                 "%s: %d: Exceeded the array bounds of pSession->ac_info",
                 __func__, __LINE__);
       VOS_ASSERT (0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    pEntry = csrLLPeekHead( &sme_QosCb.flow_list, VOS_FALSE );
@@ -5257,7 +5257,7 @@ static eHalStatus sme_QosUpdateTspecMask(v_U8_t sessionId,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: Flow List empty, nothing to update",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    while( pEntry )
@@ -5302,7 +5302,7 @@ static eHalStatus sme_QosUpdateTspecMask(v_U8_t sessionId,
       pEntry = pNextEntry;
    }
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessAddTsSuccessRsp() - Function to process the
@@ -5315,12 +5315,12 @@ static eHalStatus sme_QosUpdateTspecMask(v_U8_t sessionId,
   \param pMac - Pointer to the global MAC parameter structure.  
   \param pRsp - Pointer to the addts response structure came from PE.   
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac, 
+VOS_STATUS sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac, 
                                          v_U8_t sessionId,
                                          tSirAddtsRspInfo * pRsp)
 {
@@ -5349,7 +5349,7 @@ eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: invalid AC %d from UP %d",
                 __func__, __LINE__, ac, up);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    pACInfo = &pSession->ac_info[ac];
    // is there a TSPEC request pending on this AC?
@@ -5360,7 +5360,7 @@ eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac,
                 "%s: %d: On session %d an AddTS is not pending on AC %d",
                 __func__, __LINE__,
                 sessionId, ac);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    //App is looking for APSD or the App which was looking for APSD has been 
    //released, so STA re-negotiated with AP
@@ -5388,7 +5388,7 @@ eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac,
                    "%s: %d: Exceeded the array bounds of pACInfo->requested_QosInfo",
                    __func__, __LINE__);
          VOS_ASSERT (0);
-         return eHAL_STATUS_FAILURE;
+         return VOS_STATUS_E_FAILURE;
       }
    }
 
@@ -5491,7 +5491,7 @@ eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac,
                 sessionId, search_key.key.ac_type);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    pACInfo->hoRenewal = VOS_FALSE;
    vos_mem_zero(&pACInfo->requested_QoSInfo[tspec_pending - 1], 
@@ -5542,7 +5542,7 @@ eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac,
 
 
    (void)sme_QosProcessBufferedCmd(sessionId);
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
    
 }
 /*--------------------------------------------------------------------------
@@ -5554,12 +5554,12 @@ eHalStatus sme_QosProcessAddTsSuccessRsp(tpAniSirGlobal pMac,
   \param pCurrent_Tspec_Info - Pointer to sme_QosWmmTspecInfo which contains 
   current the WMM TSPEC related info
 
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosAggregateParams(
+VOS_STATUS sme_QosAggregateParams(
    sme_QosWmmTspecInfo * pInput_Tspec_Info,
    sme_QosWmmTspecInfo * pCurrent_Tspec_Info,
    sme_QosWmmTspecInfo * pUpdated_Tspec_Info)
@@ -5573,14 +5573,14 @@ eHalStatus sme_QosAggregateParams(
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
                 "%s: %d: input is NULL, nothing to aggregate",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    if(!pCurrent_Tspec_Info)
    {
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
                 "%s: %d: Current is NULL, can't aggregate",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_copy(&TspecInfo, pCurrent_Tspec_Info, 
                 sizeof(sme_QosWmmTspecInfo));
@@ -5726,7 +5726,7 @@ eHalStatus sme_QosAggregateParams(
       vos_mem_copy(pCurrent_Tspec_Info, &TspecInfo, 
                    sizeof(sme_QosWmmTspecInfo));
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosUpdateParams() - Utiltity function to update the TSPEC 
@@ -5737,12 +5737,12 @@ eHalStatus sme_QosAggregateParams(
   \param ac - Enumeration of the various EDCA Access Categories.
   \param tspec_mask - on which tspec per AC, the update is requested
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_QosUpdateParams(v_U8_t sessionId,
+static VOS_STATUS sme_QosUpdateParams(v_U8_t sessionId,
                                       sme_QosEdcaAcType ac,
                                       v_U8_t tspec_mask, 
                                       sme_QosWmmTspecInfo * pTspec_Info)
@@ -5761,7 +5761,7 @@ static eHalStatus sme_QosUpdateParams(v_U8_t sessionId,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: output is NULL, can't aggregate",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_zero(&Tspec_Info, sizeof(sme_QosWmmTspecInfo));
    pEntry = csrLLPeekHead( &sme_QosCb.flow_list, VOS_FALSE );
@@ -5770,7 +5770,7 @@ static eHalStatus sme_QosUpdateParams(v_U8_t sessionId,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: Flow List empty, nothing to update",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    pSession = &sme_QosCb.sessionInfo[sessionId];
    pACInfo = &pSession->ac_info[ac];
@@ -5815,7 +5815,7 @@ static eHalStatus sme_QosUpdateParams(v_U8_t sessionId,
    }
    // return the aggregate
    *pTspec_Info = Tspec_Info;
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosAcToUp() - Utiltity function to map an AC to UP
@@ -5978,26 +5978,26 @@ tListElem *sme_QosFindInFlowList(sme_QosSearchInfo search_key)
   bit 0 - Flow ID
   bit 1 - AC type
   \param fnp - function pointer specifying the action type for the entry found
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosFindAllInFlowList(tpAniSirGlobal pMac,
+VOS_STATUS sme_QosFindAllInFlowList(tpAniSirGlobal pMac,
                                     sme_QosSearchInfo search_key, 
                                     sme_QosProcessSearchEntry fnp)
 {
    tListElem *pEntry= NULL, *pNextEntry = NULL;
    sme_QosSessionInfo *pSession;
    sme_QosFlowInfoEntry *flow_info = NULL;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    pEntry = csrLLPeekHead( &sme_QosCb.flow_list, VOS_FALSE );
    if(!pEntry)
    {
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: Flow List empty, can't search",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    while( pEntry )
    {
@@ -6016,7 +6016,7 @@ eHalStatus sme_QosFindAllInFlowList(tpAniSirGlobal pMac,
                          "%s: %d: match found on flowID, ending search",
                          __func__, __LINE__);
                status = fnp(pMac, pEntry);
-               if(eHAL_STATUS_FAILURE == status)
+               if(VOS_STATUS_E_FAILURE == status)
                {
                   VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                             "%s: %d: Failed to process entry",
@@ -6035,7 +6035,7 @@ eHalStatus sme_QosFindAllInFlowList(tpAniSirGlobal pMac,
                          __func__, __LINE__);
                flow_info->hoRenewal = pSession->ac_info[flow_info->ac_type].hoRenewal;
                status = fnp(pMac, pEntry);
-               if(eHAL_STATUS_FAILURE == status)
+               if(VOS_STATUS_E_FAILURE == status)
                {
                   VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                             "%s: %d: Failed to process entry",
@@ -6131,12 +6131,12 @@ v_BOOL_t sme_QosIsACM(tpAniSirGlobal pMac, tSirBssDescription *pSirBssDesc,
   \brief sme_QosBufferExistingFlows() - Utility function to buffer the existing
   flows in flow_list, so that we can renew them after handoff is done.
 
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_QosBufferExistingFlows(tpAniSirGlobal pMac,
+static VOS_STATUS sme_QosBufferExistingFlows(tpAniSirGlobal pMac,
                                              v_U8_t sessionId)
 {
    tListElem *pEntry= NULL, *pNextEntry = NULL;
@@ -6149,7 +6149,7 @@ static eHalStatus sme_QosBufferExistingFlows(tpAniSirGlobal pMac,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH,
                 "%s: %d: Flow List empty, nothing to buffer",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    while( pEntry )
    {
@@ -6252,18 +6252,18 @@ static eHalStatus sme_QosBufferExistingFlows(tpAniSirGlobal pMac,
    }
    pSession = &sme_QosCb.sessionInfo[sessionId];
    pSession->uapsdAlreadyRequested = VOS_FALSE;
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosDeleteExistingFlows() - Utility function to Delete the existing
   flows in flow_list, if we lost connectivity.
 
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_QosDeleteExistingFlows(tpAniSirGlobal pMac,
+static VOS_STATUS sme_QosDeleteExistingFlows(tpAniSirGlobal pMac,
                                              v_U8_t sessionId)
 {
    tListElem *pEntry= NULL, *pNextEntry = NULL;
@@ -6274,7 +6274,7 @@ static eHalStatus sme_QosDeleteExistingFlows(tpAniSirGlobal pMac,
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_WARN,
                 "%s: %d: Flow List empty, nothing to delete",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    while( pEntry )
    {
@@ -6302,7 +6302,7 @@ static eHalStatus sme_QosDeleteExistingFlows(tpAniSirGlobal pMac,
       }
       pEntry = pNextEntry;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosBufferCmd() - Utility function to buffer a request (setup/modify/
@@ -6310,12 +6310,12 @@ static eHalStatus sme_QosDeleteExistingFlows(tpAniSirGlobal pMac,
   \param pcmd - a pointer to the cmd structure to be saved inside the buffered
                 cmd link list
                 
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosBufferCmd(sme_QosCmdInfo *pcmd, v_BOOL_t insert_head)
+VOS_STATUS sme_QosBufferCmd(sme_QosCmdInfo *pcmd, v_BOOL_t insert_head)
 {
    sme_QosSessionInfo *pSession;
    sme_QosCmdInfoEntry * pentry = NULL;
@@ -6329,7 +6329,7 @@ eHalStatus sme_QosBufferCmd(sme_QosCmdInfo *pcmd, v_BOOL_t insert_head)
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: Memory allocation failure",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    // copy the entire CmdInfo
    pentry->cmdInfo = *pcmd;
@@ -6343,24 +6343,24 @@ eHalStatus sme_QosBufferCmd(sme_QosCmdInfo *pcmd, v_BOOL_t insert_head)
    {
       csrLLInsertTail(&pSession->bufferedCommandList, &pentry->link, VOS_TRUE);
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessBufferedCmd() - Utility function to process a buffered 
   request (setup/modify/release) initially came from the client.
 
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId)
+static VOS_STATUS sme_QosProcessBufferedCmd(v_U8_t sessionId)
 {
    sme_QosSessionInfo *pSession;
    sme_QosCmdInfoEntry *pcmd = NULL;
    tListElem *pEntry= NULL;
    sme_QosStatusType hdd_status = SME_QOS_STATUS_SETUP_FAILURE_RSP;
-   eHalStatus halStatus = eHAL_STATUS_SUCCESS;
+   VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
              "%s: %d: Invoked on session %d",
              __func__, __LINE__,
@@ -6377,7 +6377,7 @@ static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId)
                    __func__, __LINE__,
                    sessionId);
          pSession->readyForPowerSave = VOS_TRUE;
-         return eHAL_STATUS_FAILURE;
+         return VOS_STATUS_E_FAILURE;
       }
       pcmd = GET_BASE_ADDR( pEntry, sme_QosCmdInfoEntry, link );
       switch(pcmd->cmdInfo.command)
@@ -6399,7 +6399,7 @@ static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId)
                       "%s: %d: sme_QosInternalSetupReq failed on session %d",
                       __func__, __LINE__,
                       sessionId);
-            halStatus = eHAL_STATUS_FAILURE;
+            vosStatus = VOS_STATUS_E_FAILURE;
          }
          break;
       case SME_QOS_RELEASE_REQ:
@@ -6413,7 +6413,7 @@ static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId)
                       "%s: %d: sme_QosInternalReleaseReq failed on session %d",
                       __func__, __LINE__,
                       sessionId);
-            halStatus = eHAL_STATUS_FAILURE;
+            vosStatus = VOS_STATUS_E_FAILURE;
          }
          break;
       case SME_QOS_MODIFY_REQ:
@@ -6428,7 +6428,7 @@ static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId)
                       "%s: %d: sme_QosInternalModifyReq failed on session %d",
                       __func__, __LINE__,
                       sessionId);
-            halStatus = eHAL_STATUS_FAILURE;
+            vosStatus = VOS_STATUS_E_FAILURE;
          }
          break;
       case SME_QOS_RESEND_REQ:
@@ -6444,7 +6444,7 @@ static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId)
                       "%s: %d: sme_QosReRequestAddTS failed on session %d",
                       __func__, __LINE__,
                       sessionId);
-            halStatus = eHAL_STATUS_FAILURE;
+            vosStatus = VOS_STATUS_E_FAILURE;
          }
          break;
       default:
@@ -6467,18 +6467,18 @@ static eHalStatus sme_QosProcessBufferedCmd(v_U8_t sessionId)
                 __func__, __LINE__);
       pSession->readyForPowerSave = VOS_TRUE;
    }
-   return halStatus;
+   return vosStatus;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosDeleteBufferedRequests() - Utility function to Delete the buffered
   requests in the buffered_cmd_list, if we lost connectivity.
 
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_QosDeleteBufferedRequests(tpAniSirGlobal pMac,
+static VOS_STATUS sme_QosDeleteBufferedRequests(tpAniSirGlobal pMac,
                                                 v_U8_t sessionId)
 {
    sme_QosSessionInfo *pSession;
@@ -6495,7 +6495,7 @@ static eHalStatus sme_QosDeleteBufferedRequests(tpAniSirGlobal pMac,
                 "%s: %d: Buffered List empty, nothing to delete on session %d",
                 __func__, __LINE__,
                 sessionId);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    while( pEntry )
    {
@@ -6510,7 +6510,7 @@ static eHalStatus sme_QosDeleteBufferedRequests(tpAniSirGlobal pMac,
       vos_mem_free(pcmd);
       pEntry = pNextEntry;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosSaveAssocInfo() - Utility function to save the assoc info in the
@@ -6520,12 +6520,12 @@ static eHalStatus sme_QosDeleteBufferedRequests(tpAniSirGlobal pMac,
                        of the AP, the profile that HDD sent down with the 
                        connect request
                        
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *pAssoc_info)
+VOS_STATUS sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *pAssoc_info)
 {
    tSirBssDescription    *pBssDesc = NULL;
    v_U32_t                bssLen = 0;
@@ -6534,7 +6534,7 @@ eHalStatus sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: pAssoc_info is NULL",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    //clean up the assoc info if already set
    if(pSession->assocInfo.pBssDesc)
@@ -6551,7 +6551,7 @@ eHalStatus sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: couldn't allocate memory for the bss Descriptor",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    vos_mem_copy(pBssDesc, pAssoc_info->pBssDesc, bssLen);
    pSession->assocInfo.pBssDesc = pBssDesc;
@@ -6561,7 +6561,7 @@ eHalStatus sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *
        pSession->apsdMask |= pAssoc_info->pProfile->uapsd_mask;
    }
    // [TODO] Do we need to update the global APSD bitmap?
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 /*--------------------------------------------------------------------------
@@ -6570,12 +6570,12 @@ eHalStatus sme_QosSaveAssocInfo(sme_QosSessionInfo *pSession, sme_QosAssocInfo *
   \param pMac - Pointer to the global MAC parameter structure.
   \param pEntry - Pointer to an entry in the flow_list(i.e. tListElem structure)
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosSetupFnp(tpAniSirGlobal pMac, tListElem *pEntry)
+VOS_STATUS sme_QosSetupFnp(tpAniSirGlobal pMac, tListElem *pEntry)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -6589,7 +6589,7 @@ eHalStatus sme_QosSetupFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    flow_info = GET_BASE_ADDR( pEntry, sme_QosFlowInfoEntry, link );
    ac = flow_info->ac_type;
@@ -6607,7 +6607,7 @@ eHalStatus sme_QosSetupFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__,
                 flow_info->QosFlowID);
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosModificationNotifyFnp() - Utility function (pointer) to notify 
@@ -6615,12 +6615,12 @@ eHalStatus sme_QosSetupFnp(tpAniSirGlobal pMac, tListElem *pEntry)
   \param pMac - Pointer to the global MAC parameter structure.
   \param pEntry - Pointer to an entry in the flow_list(i.e. tListElem structure)
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosModificationNotifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
+VOS_STATUS sme_QosModificationNotifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -6634,7 +6634,7 @@ eHalStatus sme_QosModificationNotifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    flow_info = GET_BASE_ADDR( pEntry, sme_QosFlowInfoEntry, link );
    ac = flow_info->ac_type;
@@ -6652,7 +6652,7 @@ eHalStatus sme_QosModificationNotifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__,
                 flow_info->QosFlowID);
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosModifyFnp() - Utility function (pointer) to delete the origianl 
@@ -6660,12 +6660,12 @@ eHalStatus sme_QosModificationNotifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
   \param pMac - Pointer to the global MAC parameter structure.
   \param pEntry - Pointer to an entry in the flow_list(i.e. tListElem structure)
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosModifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
+VOS_STATUS sme_QosModifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
 {
    sme_QosFlowInfoEntry *flow_info = NULL;
    if(!pEntry)
@@ -6674,7 +6674,7 @@ eHalStatus sme_QosModifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 "%s: %d: Entry is NULL",
                 __func__, __LINE__);
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    flow_info = GET_BASE_ADDR( pEntry, sme_QosFlowInfoEntry, link );
    switch(flow_info->reason)
@@ -6696,7 +6696,7 @@ eHalStatus sme_QosModifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
    default:
       break;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosDelTsIndFnp() - Utility function (pointer) to find all Flows on 
@@ -6705,18 +6705,18 @@ eHalStatus sme_QosModifyFnp(tpAniSirGlobal pMac, tListElem *pEntry)
   \param pMac - Pointer to the global MAC parameter structure.
   \param pEntry - Pointer to an entry in the flow_list(i.e. tListElem structure)
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosDelTsIndFnp(tpAniSirGlobal pMac, tListElem *pEntry)
+VOS_STATUS sme_QosDelTsIndFnp(tpAniSirGlobal pMac, tListElem *pEntry)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
    sme_QosFlowInfoEntry *flow_info = NULL;
    sme_QosEdcaAcType ac;
-   eHalStatus lock_status = eHAL_STATUS_FAILURE;
+   VOS_STATUS lock_status = VOS_STATUS_E_FAILURE;
    sme_QosStatusType status;
 
    if(!pEntry)
@@ -6726,7 +6726,7 @@ eHalStatus sme_QosDelTsIndFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    //delete the entry from Flow List
    flow_info = GET_BASE_ADDR( pEntry, sme_QosFlowInfoEntry, link );
@@ -6751,7 +6751,7 @@ eHalStatus sme_QosDelTsIndFnp(tpAniSirGlobal pMac, tListElem *pEntry)
              __func__, __LINE__,
              flow_info->QosFlowID, status);
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosReassocSuccessEvFnp() - Utility function (pointer) to notify HDD 
@@ -6760,12 +6760,12 @@ eHalStatus sme_QosDelTsIndFnp(tpAniSirGlobal pMac, tListElem *pEntry)
   \param pMac - Pointer to the global MAC parameter structure.
   \param pEntry - Pointer to an entry in the flow_list(i.e. tListElem structure)
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
+VOS_STATUS sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -6773,7 +6773,7 @@ eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
    v_BOOL_t delete_entry = VOS_FALSE;
    sme_QosStatusType hdd_status = SME_QOS_STATUS_SETUP_FAILURE_RSP;
    sme_QosEdcaAcType ac;
-   eHalStatus pmc_status = eHAL_STATUS_FAILURE;
+   VOS_STATUS pmc_status = VOS_STATUS_E_FAILURE;
    if(!pEntry)
    {
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
@@ -6781,7 +6781,7 @@ eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    flow_info = GET_BASE_ADDR(pEntry, sme_QosFlowInfoEntry, link);
    ac = flow_info->ac_type;
@@ -6809,13 +6809,13 @@ eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
             // if PMC doesn't return success right away means it is yet to put
             // the module in BMPS state & later to UAPSD state
          
-            if(eHAL_STATUS_FAILURE == pmc_status)
+            if(VOS_STATUS_E_FAILURE == pmc_status)
             {
                hdd_status = SME_QOS_STATUS_SETUP_SUCCESS_IND_APSD_SET_FAILED;
                //we need to always notify this case
                flow_info->hoRenewal = VOS_FALSE;
             }
-            else if(eHAL_STATUS_PMC_PENDING == pmc_status)
+            else if(VOS_STATUS_PMC_PENDING == pmc_status)
             {
                // let other flows know PMC has been notified
                pSession->uapsdAlreadyRequested = VOS_TRUE;
@@ -6846,13 +6846,13 @@ eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
          
             // if PMC doesn't return success right away means it is yet to put
             // the module in BMPS state & later to UAPSD state
-            if(eHAL_STATUS_FAILURE == pmc_status)
+            if(VOS_STATUS_E_FAILURE == pmc_status)
             {
                hdd_status = SME_QOS_STATUS_MODIFY_SETUP_SUCCESS_IND_APSD_SET_FAILED;
                // we need to always notify this case
                flow_info->hoRenewal = VOS_FALSE;
             }
-            else if(eHAL_STATUS_PMC_PENDING == pmc_status)
+            else if(VOS_STATUS_PMC_PENDING == pmc_status)
             {
                pSession->uapsdAlreadyRequested = VOS_TRUE;
             }
@@ -6893,7 +6893,7 @@ eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
       vos_mem_free(flow_info);
    }
    
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosAddTsFailureFnp() - Utility function (pointer), 
@@ -6908,12 +6908,12 @@ eHalStatus sme_QosReassocSuccessEvFnp(tpAniSirGlobal pMac, tListElem *pEntry)
   \param pMac - Pointer to the global MAC parameter structure.
   \param pEntry - Pointer to an entry in the flow_list(i.e. tListElem structure)
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosAddTsFailureFnp(tpAniSirGlobal pMac, tListElem *pEntry)
+VOS_STATUS sme_QosAddTsFailureFnp(tpAniSirGlobal pMac, tListElem *pEntry)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -6928,7 +6928,7 @@ eHalStatus sme_QosAddTsFailureFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    flow_info = GET_BASE_ADDR( pEntry, sme_QosFlowInfoEntry, link );
    ac = flow_info->ac_type;
@@ -6995,7 +6995,7 @@ eHalStatus sme_QosAddTsFailureFnp(tpAniSirGlobal pMac, tListElem *pEntry)
       // reclaim the memory
       vos_mem_free(flow_info);
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosAddTsSuccessFnp() - Utility function (pointer), 
@@ -7011,12 +7011,12 @@ eHalStatus sme_QosAddTsFailureFnp(tpAniSirGlobal pMac, tListElem *pEntry)
   \param pMac - Pointer to the global MAC parameter structure.
   \param pEntry - Pointer to an entry in the flow_list(i.e. tListElem structure)
   
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
+VOS_STATUS sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
@@ -7025,7 +7025,7 @@ eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
    v_BOOL_t delete_entry = VOS_FALSE;
    sme_QosStatusType hdd_status = SME_QOS_STATUS_SETUP_FAILURE_RSP;
    sme_QosEdcaAcType ac;
-   eHalStatus pmc_status = eHAL_STATUS_FAILURE;
+   VOS_STATUS pmc_status = VOS_STATUS_E_FAILURE;
    tCsrRoamModifyProfileFields modifyProfileFields;
 
    if(!pEntry)
@@ -7035,7 +7035,7 @@ eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 __func__, __LINE__);
       //ASSERT
       VOS_ASSERT(0);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    flow_info = GET_BASE_ADDR( pEntry, sme_QosFlowInfoEntry, link );
    ac = flow_info->ac_type;
@@ -7048,7 +7048,7 @@ eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                 "success is not for index = %d of the AC = %d",
                 __func__, __LINE__,
                 flow_info->tspec_mask, ac);
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
    switch(flow_info->reason)
    {
@@ -7070,13 +7070,13 @@ eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                                        pSession);
             // if PMC doesn't return success right away means it is yet to put
             // the module in BMPS state & later to UAPSD state
-            if(eHAL_STATUS_FAILURE == pmc_status)
+            if(VOS_STATUS_E_FAILURE == pmc_status)
             {
                hdd_status = SME_QOS_STATUS_SETUP_SUCCESS_IND_APSD_SET_FAILED;
                // we need to always notify this case
                flow_info->hoRenewal = VOS_FALSE;
             }
-            else if(eHAL_STATUS_PMC_PENDING == pmc_status)
+            else if(VOS_STATUS_PMC_PENDING == pmc_status)
             {
                // let other flows know PMC has been notified
                pSession->uapsdAlreadyRequested = VOS_TRUE;
@@ -7113,13 +7113,13 @@ eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
                                        pSession);
             // if PMC doesn't return success right away means it is yet to put
             // the module in BMPS state & later to UAPSD state
-            if(eHAL_STATUS_FAILURE == pmc_status)
+            if(VOS_STATUS_E_FAILURE == pmc_status)
             {
                hdd_status = SME_QOS_STATUS_MODIFY_SETUP_SUCCESS_IND_APSD_SET_FAILED;
                // we need to always notify this case
                flow_info->hoRenewal = VOS_FALSE;
             }
-            else if(eHAL_STATUS_PMC_PENDING == pmc_status)
+            else if(VOS_STATUS_PMC_PENDING == pmc_status)
             {
                // let other flows know PMC has been notified
                pSession->uapsdAlreadyRequested = VOS_TRUE;
@@ -7215,7 +7215,7 @@ eHalStatus sme_QosAddTsSuccessFnp(tpAniSirGlobal pMac, tListElem *pEntry)
       vos_mem_free(flow_info);
    }
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosIsRspPending() - Utility function to check if we are waiting 
@@ -7308,14 +7308,14 @@ static v_BOOL_t sme_QosIsUapsdActive(void)
   
   \param callbackContext - The context passed to PMC during pmcRequestFullPower
   call.
-  \param status - eHalStatus returned by PMC.
+  \param status - VOS_STATUS returned by PMC.
   
   \return None
   
   \sa
   
   --------------------------------------------------------------------------*/
-void sme_QosPmcFullPowerCallback(void *callbackContext, eHalStatus status)
+void sme_QosPmcFullPowerCallback(void *callbackContext, VOS_STATUS status)
 {
    sme_QosSessionInfo *pSession = callbackContext;
    if(HAL_STATUS_SUCCESS(status))
@@ -7337,14 +7337,14 @@ void sme_QosPmcFullPowerCallback(void *callbackContext, eHalStatus status)
   to notify SME-QoS when it puts the chip into UAPSD mode
   
   \param callbackContext - The context passed to PMC during pmcStartUapsd call.
-  \param status - eHalStatus returned by PMC.
+  \param status - VOS_STATUS returned by PMC.
   
   \return None
   
   \sa
   
   --------------------------------------------------------------------------*/
-void sme_QosPmcStartUapsdCallback(void *callbackContext, eHalStatus status)
+void sme_QosPmcStartUapsdCallback(void *callbackContext, VOS_STATUS status)
 {
    sme_QosSessionInfo *pSession = callbackContext;
    // NOTE WELL
@@ -7420,7 +7420,7 @@ v_BOOL_t sme_QosPmcCheckRoutine(void *callbackContext)
   --------------------------------------------------------------------------*/
 void sme_QosPmcDeviceStateUpdateInd(void *callbackContext, tPmcState pmcState)
 {
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    tpAniSirGlobal pMac = PMAC_STRUCT( callbackContext );
    //check all the entries in Flow list for non-zero service interval, which will
    //tell us if we need to notify HDD when PMC is out of UAPSD mode or going 
@@ -7434,7 +7434,7 @@ void sme_QosPmcDeviceStateUpdateInd(void *callbackContext, tPmcState pmcState)
       status = sme_QosProcessIntoUapsdMode(pMac);
       break;
    default:
-      status = eHAL_STATUS_SUCCESS;
+      status = VOS_STATUS_SUCCESS;
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO,
                 "%s: %d: nothing to process in PMC state %s (%d)",
                 __func__, __LINE__,
@@ -7454,12 +7454,12 @@ void sme_QosPmcDeviceStateUpdateInd(void *callbackContext, tPmcState pmcState)
   notifies SME-QoS that it moved out of UAPSD mode to FULL power
   
   \param pMac - Pointer to the global MAC parameter structure.
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessOutOfUapsdMode(tpAniSirGlobal pMac)
+VOS_STATUS sme_QosProcessOutOfUapsdMode(tpAniSirGlobal pMac)
 {
    sme_QosSessionInfo *pSession;
    tListElem *pEntry= NULL, *pNextEntry = NULL;
@@ -7471,7 +7471,7 @@ eHalStatus sme_QosProcessOutOfUapsdMode(tpAniSirGlobal pMac)
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
                 "%s: %d: Flow List empty, can't search",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    while( pEntry )
    {
@@ -7490,19 +7490,19 @@ eHalStatus sme_QosProcessOutOfUapsdMode(tpAniSirGlobal pMac)
       }
       pEntry = pNextEntry;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 /*--------------------------------------------------------------------------
   \brief sme_QosProcessIntoUapsdMode() - Function to notify HDD when PMC 
   notifies SME-QoS that it is moving into UAPSD mode 
   
   \param pMac - Pointer to the global MAC parameter structure.
-  \return eHalStatus
+  \return VOS_STATUS
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_QosProcessIntoUapsdMode(tpAniSirGlobal pMac)
+VOS_STATUS sme_QosProcessIntoUapsdMode(tpAniSirGlobal pMac)
 {
    sme_QosSessionInfo *pSession;
    tListElem *pEntry= NULL, *pNextEntry = NULL;
@@ -7514,7 +7514,7 @@ eHalStatus sme_QosProcessIntoUapsdMode(tpAniSirGlobal pMac)
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                 "%s: %d: Flow List empty, can't search",
                 __func__, __LINE__);
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
    while( pEntry )
    {
@@ -7532,7 +7532,7 @@ eHalStatus sme_QosProcessIntoUapsdMode(tpAniSirGlobal pMac)
       }
       pEntry = pNextEntry;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 void sme_QosCleanupCtrlBlkForHandoff(tpAniSirGlobal pMac, v_U8_t sessionId)
@@ -7579,7 +7579,7 @@ v_BOOL_t sme_QosIsTSInfoAckPolicyValid(tpAniSirGlobal pMac,
 {
   tDot11fBeaconIEs *pIes = NULL;
   sme_QosSessionInfo *pSession;
-  eHalStatus hstatus;
+  VOS_STATUS hstatus;
   if( !CSR_IS_SESSION_VALID( pMac, sessionId ) )
   {
      VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
@@ -7748,11 +7748,11 @@ v_BOOL_t sme_QosValidateRequestedParams(tpAniSirGlobal pMac,
    return rc;
 }
 
-static eHalStatus qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
+static VOS_STATUS qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
                                    eSmeCommandType cmdType, sme_QosWmmTspecInfo * pQoSInfo,
                                    sme_QosEdcaAcType ac, v_U8_t tspec_mask )
 {
-    eHalStatus status = eHAL_STATUS_RESOURCES;
+    VOS_STATUS status = VOS_STATUS_E_RESOURCES;
     tSmeCmd *pCommand = NULL;
     do
     {
@@ -7771,7 +7771,7 @@ static eHalStatus qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
         case eSmeCommandAddTs:
             if( pQoSInfo )
             {
-                status = eHAL_STATUS_SUCCESS;
+                status = VOS_STATUS_SUCCESS;
                 pCommand->u.qosCmd.tspecInfo = *pQoSInfo;
                 pCommand->u.qosCmd.ac = ac;
             }
@@ -7780,11 +7780,11 @@ static eHalStatus qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
                VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                          "%s: %d: NULL pointer passed",
                          __func__, __LINE__);
-               status = eHAL_STATUS_INVALID_PARAMETER;
+               status = VOS_STATUS_E_INVAL;
             }
             break;
         case eSmeCommandDelTs:
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
             pCommand->u.qosCmd.ac = ac;
             pCommand->u.qosCmd.tspec_mask = tspec_mask;
             break;
@@ -7792,7 +7792,7 @@ static eHalStatus qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
             VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                       "%s: %d: invalid command type %d",
                       __func__, __LINE__, cmdType );
-            status = eHAL_STATUS_INVALID_PARAMETER;
+            status = VOS_STATUS_E_INVAL;
             break;
         }
     } while( 0 );
@@ -7808,7 +7808,7 @@ static eHalStatus qosIssueCommand( tpAniSirGlobal pMac, v_U8_t sessionId,
 }
 tANI_BOOLEAN qosProcessCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand )
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     tANI_BOOLEAN fRemoveCmd = eANI_BOOLEAN_TRUE;
     do
     {
@@ -8183,7 +8183,7 @@ static sme_QosStatusType sme_QosReRequestAddTS(tpAniSirGlobal pMac,
    //which will safegaurd the above scenario, & also won't confuse PE with back 
    //to back Addts or Addts followed by Reassoc
    if(sme_QosIsRspPending(sessionId, ac) || 
-      ( eHAL_STATUS_PMC_PENDING == pmcRequestFullPower(pMac, sme_QosPmcFullPowerCallback, pSession, eSME_REASON_OTHER)))
+      ( VOS_STATUS_PMC_PENDING == pmcRequestFullPower(pMac, sme_QosPmcFullPowerCallback, pSession, eSME_REASON_OTHER)))
    {
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                 "%s: %d: On session %d buffering the AddTS request "
@@ -8315,13 +8315,13 @@ static void sme_QosInitACs(tpAniSirGlobal pMac, v_U8_t sessionId)
       sme_QosStateTransition(sessionId, ac, SME_QOS_INIT);
    }
 }
-static eHalStatus sme_QosRequestReassoc(tpAniSirGlobal pMac, tANI_U8 sessionId,
+static VOS_STATUS sme_QosRequestReassoc(tpAniSirGlobal pMac, tANI_U8 sessionId,
                                         tCsrRoamModifyProfileFields *pModFields,
                                         v_BOOL_t fForce )
 {
    sme_QosSessionInfo *pSession;
    sme_QosACInfo *pACInfo;
-   eHalStatus status;
+   VOS_STATUS status;
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH,
              "%s: %d: Invoked on session %d with UAPSD mask 0x%X",
              __func__, __LINE__,

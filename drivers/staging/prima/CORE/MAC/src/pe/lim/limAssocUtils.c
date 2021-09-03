@@ -2498,7 +2498,7 @@ limAddSta(
 
     pAddStaParams->updateSta = updateEntry;
 
-    pAddStaParams->status = eHAL_STATUS_SUCCESS;
+    pAddStaParams->status = VOS_STATUS_SUCCESS;
     pAddStaParams->respReqd = 1;
     //Update HT Capability
 
@@ -2843,7 +2843,7 @@ limDelSta(
     /* Update PE session ID*/
     pDelStaParams->sessionId = psessionEntry->peSessionId;
     
-    pDelStaParams->status  = eHAL_STATUS_SUCCESS;
+    pDelStaParams->status  = VOS_STATUS_SUCCESS;
 #ifdef SAP_AUTH_OFFLOAD
     if (pMac->sap_auth_offload && LIM_IS_AP_ROLE(psessionEntry))
         msgQ.type = WDA_SAP_OFL_DEL_STA;
@@ -3000,7 +3000,7 @@ limAddStaSelf(tpAniSirGlobal pMac,tANI_U16 staIdx, tANI_U8 updateSta, tpPESessio
 
     pAddStaParams->assocId = psessionEntry->limAID;
     pAddStaParams->staType = STA_ENTRY_SELF;
-    pAddStaParams->status = eHAL_STATUS_SUCCESS;
+    pAddStaParams->status = VOS_STATUS_SUCCESS;
     pAddStaParams->respReqd = 1;
     pAddStaParams->currentOperChan = psessionEntry->currentOperChannel;
     /* Update  PE session ID */
@@ -3613,7 +3613,7 @@ limDelBss(tpAniSirGlobal pMac, tpDphHashNode pStaDs, tANI_U16 bssIdx,tpPESession
         limDeactivateAndChangeTimer(pMac, eLIM_JOIN_FAIL_TIMER);
     }
 
-    pDelBssParams->status= eHAL_STATUS_SUCCESS;
+    pDelBssParams->status= VOS_STATUS_SUCCESS;
     pDelBssParams->respReqd = 1;
 
     PELOGW(limLog( pMac, LOGW, FL("Sessionid %d : Sending HAL_DELETE_BSS_REQ "
@@ -4047,7 +4047,7 @@ tSirRetStatus limStaSendAddBss( tpAniSirGlobal pMac, tpSirAssocRsp pAssocRsp,
                        pAddBssParams->maxTxPower);
 #endif
     // FIXME_GEN4 - Any other value that can be used for initialization?
-    pAddBssParams->status = eHAL_STATUS_SUCCESS;
+    pAddBssParams->status = VOS_STATUS_SUCCESS;
     pAddBssParams->respReqd = true;
 
     pAddBssParams->halPersona = (tANI_U8)psessionEntry->pePersona; //update persona
@@ -4500,7 +4500,7 @@ tSirRetStatus limStaSendAddBssPreAssoc( tpAniSirGlobal pMac, tANI_U8 updateEntry
                        pAddBssParams->maxTxPower);
 #endif
 
-    pAddBssParams->status = eHAL_STATUS_SUCCESS;
+    pAddBssParams->status = VOS_STATUS_SUCCESS;
     pAddBssParams->respReqd = true;
 
     pAddBssParams->staContext.sessionId = psessionEntry->peSessionId;

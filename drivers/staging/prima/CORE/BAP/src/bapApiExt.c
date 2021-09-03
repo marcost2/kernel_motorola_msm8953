@@ -166,7 +166,7 @@ WLANBAP_GetCurrentChannel
   }
 
   if (ccmCfgGetInt(halHandle, WNI_CFG_CURRENT_CHANNEL, channel) 
-          != eHAL_STATUS_SUCCESS ) 
+          != VOS_STATUS_SUCCESS ) 
   {
     VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR,
                  "Get CFG failed in %s", __func__);

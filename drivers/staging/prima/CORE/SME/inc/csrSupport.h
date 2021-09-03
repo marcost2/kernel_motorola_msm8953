@@ -793,35 +793,35 @@ tANI_U16 csrRatesFindBestRate( tSirMacRateSet *pSuppRates, tSirMacRateSet *pExtR
 tSirBssType csrTranslateBsstypeToMacType(eCsrRoamBssType csrtype);
                             
 //Caller allocates memory for pIEStruct
-eHalStatus csrParseBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs *pIEStruct);
+VOS_STATUS csrParseBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs *pIEStruct);
 //This function will allocate memory for the parsed IEs to the caller. Caller must free the memory
 //after it is done with the data only if this function succeeds
-eHalStatus csrGetParsedBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs **ppIEStruct);
+VOS_STATUS csrGetParsedBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs **ppIEStruct);
 
 tANI_BOOLEAN csrValidateCountryString( tHalHandle hHal, tANI_U8 *pCountryString );
 tSirScanType csrGetScanType(tpAniSirGlobal pMac, tANI_U8 chnId);
 
 tANI_U8 csrToUpper( tANI_U8 ch );
-eHalStatus csrGetPhyModeFromBss(tpAniSirGlobal pMac, tSirBssDescription *pBSSDescription, 
+VOS_STATUS csrGetPhyModeFromBss(tpAniSirGlobal pMac, tSirBssDescription *pBSSDescription, 
                                 eCsrPhyMode *pPhyMode, tDot11fBeaconIEs *pIes);
 
 //fForce -- force reassoc regardless of whether there is any change
 //The reason is that for UAPSD-bypass, the code underneath this call determine whether
 //to allow UAPSD. The information in pModProfileFields reflects what the user wants.
 //There may be discrepency in it. UAPSD-bypass logic should decide if it needs to reassoc
-eHalStatus csrReassoc(tpAniSirGlobal pMac, tANI_U32 sessionId,
+VOS_STATUS csrReassoc(tpAniSirGlobal pMac, tANI_U32 sessionId,
                       tCsrRoamModifyProfileFields *pModProfileFields,
                       tANI_U32 *pRoamId, v_BOOL_t fForce);
 
-eHalStatus
+VOS_STATUS
 csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                  tVOS_CON_MODE currBssPersona);
 
 //Update beaconInterval for P2P-GO case if it is different 
-eHalStatus csrUpdatep2pBeaconInterval(tpAniSirGlobal pMac);
+VOS_STATUS csrUpdatep2pBeaconInterval(tpAniSirGlobal pMac);
 
 //BeaconInterval validation for MCC support
-eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
+VOS_STATUS csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                                      tANI_U16 *beaconInterval, tANI_U32 cursessionId,
                                      tVOS_CON_MODE currBssPersona);
 

@@ -808,12 +808,12 @@ VOS_STATUS WLANBAP_TLFlushCompCallback
   RETURN VALUE
     The result code associated with performing the operation  
 
-    eHAL_STATUS_SUCCESS:  Success
+    VOS_STATUS_SUCCESS:  Success
   
   SIDE EFFECTS 
   
 ----------------------------------------------------------------------------*/
-eHalStatus
+VOS_STATUS
 WLANBAP_RoamCallback
 (
   void *pContext, 
@@ -1063,7 +1063,7 @@ WLANBAP_CreateNewLogLinkCtx
 
     IN
     callbackContext:  The user passed in a context to identify 
-    status:           The halStatus 
+    status:           The vosStatus 
     
    
   RETURN VALUE
@@ -1076,7 +1076,7 @@ void
 WLANBAP_pmcFullPwrReqCB
 ( 
   void *callbackContext, 
-  eHalStatus status
+  VOS_STATUS status
 );
   
 /*===========================================================================

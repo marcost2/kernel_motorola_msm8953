@@ -335,7 +335,7 @@ limSuspendLink(tpAniSirGlobal pMac, tSirLinkTrafficCheck trafficCheck,  SUSPEND_
       limLog( pMac, LOGE, FL("Something is wrong, SuspendLinkCbk:%pK "
               "IsSystemInScanLearnMode:%d"), pMac->lim.gpLimSuspendCallback,
                pMac->lim.gLimSystemInScanLearnMode );
-      callback( pMac, eHAL_STATUS_FAILURE, data ); 
+      callback( pMac, VOS_STATUS_E_FAILURE, data ); 
       return;
    }
 
@@ -378,7 +378,7 @@ limResumeLink(tpAniSirGlobal pMac, SUSPEND_RESUME_LINK_CALLBACK callback, tANI_U
    if( pMac->lim.gpLimResumeCallback )
    {
       limLog( pMac, LOGE, "%s:%d: gLimResumeLink callback is not NULL...something is wrong", __func__, __LINE__ );
-      callback( pMac, eHAL_STATUS_FAILURE, data ); 
+      callback( pMac, VOS_STATUS_E_FAILURE, data ); 
       return;
    }
 
@@ -1139,7 +1139,7 @@ limSendHalStartScanReq(tpAniSirGlobal pMac, tANI_U8 channelNum, tLimLimHalScanSt
         msg.type = WDA_START_SCAN_REQ;
         msg.bodyptr = pStartScanParam;
         msg.bodyval = 0;
-        pStartScanParam->status = eHAL_STATUS_SUCCESS;
+        pStartScanParam->status = VOS_STATUS_SUCCESS;
         pStartScanParam->scanChannel = (tANI_U8)channelNum;
 
         pMac->lim.gLimHalScanState = nextState;
@@ -1206,7 +1206,7 @@ void limSendHalEndScanReq(tpAniSirGlobal pMac, tANI_U8 channelNum, tLimLimHalSca
         msg.type = WDA_END_SCAN_REQ;
         msg.bodyptr = pEndScanParam;
         msg.bodyval = 0;
-        pEndScanParam->status = eHAL_STATUS_SUCCESS;
+        pEndScanParam->status = VOS_STATUS_SUCCESS;
         pEndScanParam->scanChannel = (tANI_U8)channelNum;
 
         pMac->lim.gLimHalScanState = nextState;
@@ -1627,7 +1627,7 @@ error:
  * @return None
  */
 
-void limSetOemDataReqModeFailed(tpAniSirGlobal pMac, eHalStatus status, tANI_U32* data)
+void limSetOemDataReqModeFailed(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32* data)
 {
     tpLimMlmOemDataRsp pMlmOemDataRsp;
 
@@ -1672,9 +1672,9 @@ void limSetOemDataReqModeFailed(tpAniSirGlobal pMac, eHalStatus status, tANI_U32
  * @return None
  */
 
-void limSetOemDataReqMode(tpAniSirGlobal pMac, eHalStatus status, tANI_U32* data)
+void limSetOemDataReqMode(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32* data)
 {
-    if(status != eHAL_STATUS_SUCCESS)
+    if(status != VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOGE, FL("OEM_DATA: failed in suspend link"));
         /* If failed to suspend the link, there is no need
@@ -1894,7 +1894,7 @@ limMlmAddBss (
     mlm_add_sta(pMac, &pAddBssParams->staContext,
                 pAddBssParams->bssId, pAddBssParams->htCapable,psessionEntry);
 
-    pAddBssParams->status   = eHAL_STATUS_SUCCESS;
+    pAddBssParams->status   = VOS_STATUS_SUCCESS;
     pAddBssParams->respReqd = 1;
 
     // Set a new state for MLME
@@ -2324,14 +2324,14 @@ static void limProcessMlmOemDataReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
  * @return None
  */
 static void
-limProcessMlmPostJoinSuspendLink(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *ctx)
+limProcessMlmPostJoinSuspendLink(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *ctx)
 {
     tANI_U8             chanNum, secChanOffset;
     tLimMlmJoinCnf      mlmJoinCnf;
     tpPESession         psessionEntry = (tpPESession)ctx;
     tSirLinkState       linkState;
 
-    if( eHAL_STATUS_SUCCESS != status )
+    if( VOS_STATUS_SUCCESS != status )
     {
        limLog(pMac, LOGE, FL("Sessionid %d Suspend link(NOTIFY_BSS) failed. "
        "still proceeding with join"),psessionEntry->peSessionId);
@@ -2483,7 +2483,7 @@ limProcessMlmJoinReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
           //No need to suspend link.
           limLog(pMac,LOG1,"SessionId:%d Join request on current channel",
                  sessionId);
-          limProcessMlmPostJoinSuspendLink( pMac, eHAL_STATUS_SUCCESS,
+          limProcessMlmPostJoinSuspendLink( pMac, VOS_STATUS_SUCCESS,
                                                     (tANI_U32*) psessionEntry );
         }
                 
@@ -3092,7 +3092,7 @@ end:
 
 
 static void
-limProcessMlmDisassocReqNtf(tpAniSirGlobal pMac, eHalStatus suspendStatus, tANI_U32 *pMsgBuf)
+limProcessMlmDisassocReqNtf(tpAniSirGlobal pMac, VOS_STATUS suspendStatus, tANI_U32 *pMsgBuf)
 {
     tANI_U16                 aid;
     tSirMacAddr              currentBssId;
@@ -3105,7 +3105,7 @@ limProcessMlmDisassocReqNtf(tpAniSirGlobal pMac, eHalStatus suspendStatus, tANI_
     tANI_U8                 *pBuf;
     vos_msg_t               msg = {0};
 
-    if(eHAL_STATUS_SUCCESS != suspendStatus)
+    if(VOS_STATUS_SUCCESS != suspendStatus)
     {
         PELOGE(limLog(pMac, LOGE,FL("Suspend Status is not success %X"), suspendStatus);)
 #if 0
@@ -3422,12 +3422,12 @@ limProcessMlmDisassocReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
     "from: "MAC_ADDRESS_STR), pMlmDisassocReq->sessionId,
     MAC_ADDR_ARRAY(pMlmDisassocReq->peerMacAddr));
 
-    limProcessMlmDisassocReqNtf( pMac, eHAL_STATUS_SUCCESS, (tANI_U32*) pMsgBuf );
+    limProcessMlmDisassocReqNtf( pMac, VOS_STATUS_SUCCESS, (tANI_U32*) pMsgBuf );
     
 } /*** limProcessMlmDisassocReq() ***/
 
 static void
-limProcessMlmDeauthReqNtf(tpAniSirGlobal pMac, eHalStatus suspendStatus, tANI_U32 *pMsgBuf)
+limProcessMlmDeauthReqNtf(tpAniSirGlobal pMac, VOS_STATUS suspendStatus, tANI_U32 *pMsgBuf)
 {
     tANI_U16                aid;
     tSirMacAddr             currentBssId;
@@ -3440,7 +3440,7 @@ limProcessMlmDeauthReqNtf(tpAniSirGlobal pMac, eHalStatus suspendStatus, tANI_U3
     tANI_U8                 *pBuf;
     vos_msg_t               msg = {0};
 
-    if(eHAL_STATUS_SUCCESS != suspendStatus)
+    if(VOS_STATUS_SUCCESS != suspendStatus)
     {
         PELOGE(limLog(pMac, LOGE,FL("Suspend Status is not success %X"), suspendStatus);)
 #if 0
@@ -3856,7 +3856,7 @@ limProcessMlmDeauthReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
         pMlmDeauthReq->sessionId);
         return;
     }
-    limProcessMlmDeauthReqNtf( pMac, eHAL_STATUS_SUCCESS, (tANI_U32*) pMsgBuf );
+    limProcessMlmDeauthReqNtf( pMac, VOS_STATUS_SUCCESS, (tANI_U32*) pMsgBuf );
 
 } /*** limProcessMlmDeauthReq() ***/
 

@@ -2147,7 +2147,7 @@ VOS_STATUS hdd_softap_stop_bss( hdd_adapter_t *pAdapter)
 VOS_STATUS hdd_softap_change_STA_state( hdd_adapter_t *pAdapter, v_MACADDR_t *pDestMacAddress, WLANTL_STAStateType state)
 {
     v_U8_t ucSTAId = WLAN_MAX_STA_COUNT;
-    VOS_STATUS vosStatus = eHAL_STATUS_SUCCESS;
+    VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
     v_CONTEXT_t pVosContext = (WLAN_HDD_GET_CTX(pAdapter))->pvosContext;
 
     ptSapContext pSapCtx = NULL;

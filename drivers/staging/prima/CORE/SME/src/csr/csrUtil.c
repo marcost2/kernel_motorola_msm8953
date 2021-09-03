@@ -1844,12 +1844,12 @@ tANI_BOOLEAN csrIsValidMcConcurrentSession(tpAniSirGlobal pMac, tANI_U32 session
         {
             if (csrIsconcurrentsessionValid (pMac, sessionId,
                                        pSession->pCurRoamProfile->csrPersona)
-                                       == eHAL_STATUS_SUCCESS )
+                                       == VOS_STATUS_SUCCESS )
             {
                 if (csrValidateMCCBeaconInterval( pMac, pBssDesc->channelId,
                                &pBssDesc->beaconInterval, sessionId,
                                pSession->pCurRoamProfile->csrPersona)
-                               != eHAL_STATUS_SUCCESS)
+                               != VOS_STATUS_SUCCESS)
                 {
                     status = eANI_BOOLEAN_FALSE;
                 }
@@ -2103,9 +2103,9 @@ eCsrMediaAccessType csrGetQoSFromBssDesc( tHalHandle hHal, tSirBssDescription *p
 
 
 //Caller allocates memory for pIEStruct
-eHalStatus csrParseBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs *pIEStruct)
+VOS_STATUS csrParseBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs *pIEStruct)
 {
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
     tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
     int ieLen = (int)GET_IE_LEN_IN_BSS(pBssDesc->length);
 
@@ -2113,7 +2113,7 @@ eHalStatus csrParseBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDe
     {
         if(!DOT11F_FAILED(dot11fUnpackBeaconIEs( pMac, (tANI_U8 *)pBssDesc->ieFields, ieLen, pIEStruct )))
         {
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
         }
     }
 
@@ -2123,9 +2123,9 @@ eHalStatus csrParseBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDe
 
 //This function will allocate memory for the parsed IEs to the caller. Caller must free the memory
 //after it is done with the data only if this function succeeds
-eHalStatus csrGetParsedBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs **ppIEStruct)
+VOS_STATUS csrGetParsedBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pBssDesc, tDot11fBeaconIEs **ppIEStruct)
 {
-    eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+    VOS_STATUS status = VOS_STATUS_E_INVAL;
     tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
 
     if(pBssDesc && ppIEStruct)
@@ -2145,33 +2145,33 @@ eHalStatus csrGetParsedBssDescriptionIEs(tHalHandle hHal, tSirBssDescription *pB
         {
             smsLog( pMac, LOGE, FL(" failed to allocate memory") );
             VOS_ASSERT( 0 );
-            return eHAL_STATUS_FAILURE;
+            return VOS_STATUS_E_FAILURE;
         }
     }
 
     return (status);
 }
 
-eHalStatus csrProcessGetFrameLogCommand( tpAniSirGlobal pMac,
+VOS_STATUS csrProcessGetFrameLogCommand( tpAniSirGlobal pMac,
                                          tSmeCmd *pCommand )
 {
    tAniGetFrameLogReq *pMsg;
    tANI_U16 msgLen;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
 
    msgLen = sizeof(tAniGetFrameLogReq);
 
    if ( NULL == pCommand )
    {
        smsLog( pMac, LOGE, FL("cannot process. cmd is null") );
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
 
    pMsg = vos_mem_malloc(msgLen);
    if ( NULL == pMsg )
    {
        smsLog( pMac, LOGE, FL("fail to allocate memory") );
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
 
    pMsg->msgType= pal_cpu_to_be16((tANI_U16)WDA_GET_FRAME_LOG_REQ);
@@ -2367,10 +2367,10 @@ tANI_U32 csrTranslateToWNICfgDot11Mode(tpAniSirGlobal pMac, eCsrCfgDot11Mode csr
 
 
 //This function should only return the super set of supported modes. 11n implies 11b/g/a/n.
-eHalStatus csrGetPhyModeFromBss(tpAniSirGlobal pMac, tSirBssDescription *pBSSDescription, 
+VOS_STATUS csrGetPhyModeFromBss(tpAniSirGlobal pMac, tSirBssDescription *pBSSDescription, 
                                 eCsrPhyMode *pPhyMode, tDot11fBeaconIEs *pIes)
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     eCsrPhyMode phyMode = csrTranslateToPhyModeFromBssDesc(pBSSDescription);
 
     if( pIes )
@@ -2898,7 +2898,7 @@ tANI_BOOLEAN csrIsProfileRSN( tCsrRoamProfile *pProfile )
     return( fRSNProfile );
 }
 
-eHalStatus
+VOS_STATUS
 csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                  tVOS_CON_MODE currBssPersona)
 {
@@ -2918,7 +2918,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                 case VOS_STA_MODE:
                     {
                         smsLog(pMac, LOG4, FL(" Second session for persona %d"), currBssPersona);
-                        return eHAL_STATUS_SUCCESS;
+                        return VOS_STATUS_SUCCESS;
                     }
                     break;
 
@@ -2929,7 +2929,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                       != eCSR_ASSOC_STATE_TYPE_NOT_CONNECTED))
                     {
                         smsLog(pMac, LOGE, FL(" ****SoftAP mode already exists ****"));
-                        return eHAL_STATUS_FAILURE;
+                        return VOS_STATUS_E_FAILURE;
                     }
                     else if( (pMac->roam.roamSession[sessionId].bssParams.bssPersona
                                       == VOS_P2P_GO_MODE &&
@@ -2941,7 +2941,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                       != eCSR_ASSOC_STATE_TYPE_IBSS_DISCONNECTED))
                     {
                         smsLog(pMac, LOGE, FL(" ****Cannot start Multiple Beaconing Role ****"));
-                        return eHAL_STATUS_FAILURE;
+                        return VOS_STATUS_E_FAILURE;
                     }
                     break;
 
@@ -2951,7 +2951,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                                   == VOS_P2P_CLIENT_MODE)) //check for P2P client mode
                     {
                         smsLog(pMac, LOGE, FL(" ****CLIENT mode already exists ****"));
-                        return eHAL_STATUS_FAILURE;
+                        return VOS_STATUS_E_FAILURE;
                     }
                     break;
 
@@ -2962,7 +2962,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                       != eCSR_ASSOC_STATE_TYPE_NOT_CONNECTED))
                     {
                         smsLog(pMac, LOGE, FL(" ****P2P GO mode already exists ****"));
-                        return eHAL_STATUS_FAILURE;
+                        return VOS_STATUS_E_FAILURE;
                     }
                     else if( (pMac->roam.roamSession[sessionId].bssParams.bssPersona
                                       == VOS_STA_SAP_MODE &&
@@ -2974,7 +2974,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                       != eCSR_ASSOC_STATE_TYPE_IBSS_DISCONNECTED) )
                     {
                         smsLog(pMac, LOGE, FL(" ****Cannot start Multiple Beaconing Role ****"));
-                        return eHAL_STATUS_FAILURE;
+                        return VOS_STATUS_E_FAILURE;
                     }
                     break;
                 case VOS_IBSS_MODE:
@@ -2984,7 +2984,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                       != eCSR_ASSOC_STATE_TYPE_IBSS_CONNECTED))
                     {
                         smsLog(pMac, LOGE, FL(" ****IBSS mode already exists ****"));
-                        return eHAL_STATUS_FAILURE;
+                        return VOS_STATUS_E_FAILURE;
                     }
                     else if( (pMac->roam.roamSession[sessionId].bssParams.bssPersona
                                       == VOS_P2P_GO_MODE ||
@@ -2994,7 +2994,7 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
                                      != eCSR_ASSOC_STATE_TYPE_NOT_CONNECTED)
                     {
                         smsLog(pMac, LOGE, FL(" ****Cannot start Multiple Beaconing Role ****"));
-                        return eHAL_STATUS_FAILURE;
+                        return VOS_STATUS_E_FAILURE;
                     }
                     break;
                 default :
@@ -3003,17 +3003,17 @@ csrIsconcurrentsessionValid(tpAniSirGlobal pMac,tANI_U32 cursessionId,
             }
         }
     }
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 
 }
 
-eHalStatus csrUpdateMCCp2pBeaconInterval(tpAniSirGlobal pMac)
+VOS_STATUS csrUpdateMCCp2pBeaconInterval(tpAniSirGlobal pMac)
 {
     tANI_U32 sessionId = 0;
 
     //If MCC is not supported just break and return SUCCESS
     if ( !pMac->roam.configParam.fenableMCCMode){
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     for (sessionId = 0; sessionId < CSR_ROAM_SESSION_MAX; sessionId++ )
@@ -3040,7 +3040,7 @@ eHalStatus csrUpdateMCCp2pBeaconInterval(tpAniSirGlobal pMac)
            }
         }
     }
-    return eHAL_STATUS_FAILURE;
+    return VOS_STATUS_E_FAILURE;
 }
 
 tANI_U16 csrCalculateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U16 sta_bi, tANI_U16 go_gbi)
@@ -3101,7 +3101,7 @@ tANI_U16 csrCalculateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U16 sta_bi, tAN
     return go_fbi;
 }
 
-eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
+VOS_STATUS csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                                      tANI_U16 *beaconInterval, tANI_U32 cursessionId,
                                      tVOS_CON_MODE currBssPersona)
 {
@@ -3110,7 +3110,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
   
     //If MCC is not supported just break
     if (!pMac->roam.configParam.fenableMCCMode){
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     for (sessionId = 0; sessionId < CSR_ROAM_SESSION_MAX; sessionId++ )
@@ -3140,7 +3140,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                                                         != channelId )
                         {
                             smsLog(pMac, LOGE, FL("*** MCC with SAP+STA sessions ****"));
-                            return eHAL_STATUS_SUCCESS;
+                            return VOS_STATUS_SUCCESS;
                         }
                     }
                     else if (pMac->roam.roamSession[sessionId].bssParams.bssPersona
@@ -3156,7 +3156,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                            /* if GO in MCC support different beacon interval, return success */
                            if ( pMac->roam.configParam.fAllowMCCGODiffBI == 0x01)
                            {
-                               return eHAL_STATUS_SUCCESS;
+                               return VOS_STATUS_SUCCESS;
                            }
                            // Send only Broadcast disassoc and update beaconInterval
                            //If configuration is set to 0x04 then dont
@@ -3179,7 +3179,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                                    pMac->roam.roamSession[sessionId].bssParams.updatebeaconInterval = eANI_BOOLEAN_TRUE;
                                     return csrUpdateMCCp2pBeaconInterval(pMac);
                                }
-                               return eHAL_STATUS_SUCCESS;
+                               return VOS_STATUS_SUCCESS;
                            }
                            //Disconnect the P2P session
                            else if (pMac->roam.configParam.fAllowMCCGODiffBI == 0x03)
@@ -3190,7 +3190,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                            else
                            {
                                smsLog(pMac, LOGE, FL("BeaconInterval is different cannot connect to preferred AP..."));
-                               return eHAL_STATUS_FAILURE;
+                               return VOS_STATUS_E_FAILURE;
                            }
                         }
                     }
@@ -3212,7 +3212,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                                                         != channelId )
                         {
                             smsLog(pMac, LOGE, FL("***MCC is not enabled for SAP + CLIENT****"));
-                            return eHAL_STATUS_FAILURE;
+                            return VOS_STATUS_E_FAILURE;
                         }
                     }
                     else if (pMac->roam.roamSession[sessionId].bssParams.bssPersona
@@ -3224,7 +3224,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                                 != *beaconInterval))
                         {
                             smsLog(pMac, LOGE, FL("BeaconInterval is different cannot connect to P2P_GO network ..."));
-                            return eHAL_STATUS_FAILURE;
+                            return VOS_STATUS_E_FAILURE;
                         }
                     }
                     break;
@@ -3270,7 +3270,7 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
                                                 *beaconInterval );
                             if(*beaconInterval != new_beaconInterval)
                                 *beaconInterval = new_beaconInterval;
-                            return eHAL_STATUS_SUCCESS;
+                            return VOS_STATUS_SUCCESS;
                          }
                     }
                 }
@@ -3278,12 +3278,12 @@ eHalStatus csrValidateMCCBeaconInterval(tpAniSirGlobal pMac, tANI_U8 channelId,
 
                 default :
                     smsLog(pMac, LOGE, FL(" Persona not supported : %d"),currBssPersona);
-                    return eHAL_STATUS_FAILURE;
+                    return VOS_STATUS_E_FAILURE;
             }
         }
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 #ifdef WLAN_FEATURE_VOWIFI_11R
@@ -6710,9 +6710,9 @@ eCsrCfgDot11Mode csrGetCfgDot11ModeFromCsrPhyMode(tCsrRoamProfile *pProfile, eCs
 }
 
 
-eHalStatus csrSetRegulatoryDomain(tpAniSirGlobal pMac, v_REGDOMAIN_t domainId, tANI_BOOLEAN *pfRestartNeeded)
+VOS_STATUS csrSetRegulatoryDomain(tpAniSirGlobal pMac, v_REGDOMAIN_t domainId, tANI_BOOLEAN *pfRestartNeeded)
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     tANI_BOOLEAN fRestart;
 
     if(pMac->scan.domainIdCurrent == domainId)
@@ -6728,7 +6728,7 @@ eHalStatus csrSetRegulatoryDomain(tpAniSirGlobal pMac, v_REGDOMAIN_t domainId, t
     else
     {
         //We cannot change the domain
-        status = eHAL_STATUS_CSR_WRONG_STATE;
+        status = VOS_STATUS_CSR_WRONG_STATE;
         fRestart = eANI_BOOLEAN_FALSE;
     }
     if(pfRestartNeeded)
@@ -6746,7 +6746,7 @@ v_REGDOMAIN_t csrGetCurrentRegulatoryDomain(tpAniSirGlobal pMac)
 }
 
 
-eHalStatus csrGetRegulatoryDomainForCountry
+VOS_STATUS csrGetRegulatoryDomainForCountry
 (
 tpAniSirGlobal pMac,
 tANI_U8 *pCountry,
@@ -6754,7 +6754,7 @@ v_REGDOMAIN_t *pDomainId,
 v_CountryInfoSource_t source
 )
 {
-    eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+    VOS_STATUS status = VOS_STATUS_E_INVAL;
     VOS_STATUS vosStatus;
     v_COUNTRYCODE_t countryCode;
     v_REGDOMAIN_t domainId;
@@ -6773,12 +6773,12 @@ v_CountryInfoSource_t source
             {
                 *pDomainId = domainId;
             }
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
         }
         else
         {
             smsLog(pMac, LOGW, FL(" Couldn't find domain for country code  %c%c"), pCountry[0], pCountry[1]);
-            status = eHAL_STATUS_INVALID_PARAMETER;
+            status = VOS_STATUS_E_INVAL;
         }
     }
 
@@ -6795,7 +6795,7 @@ tANI_BOOLEAN csrMatchCountryCode( tpAniSirGlobal pMac, tANI_U8 *pCountry, tDot11
 {
     tANI_BOOLEAN fRet = eANI_BOOLEAN_TRUE;
     v_REGDOMAIN_t domainId = REGDOMAIN_COUNT;   //This is init to invalid value
-    eHalStatus status;
+    VOS_STATUS status;
 
     do
     {
@@ -6875,9 +6875,9 @@ tANI_BOOLEAN csrMatchCountryCode( tpAniSirGlobal pMac, tANI_U8 *pCountry, tDot11
 }
 
 #if 0
-eHalStatus csrSetCountryDomainMapping(tpAniSirGlobal pMac, tCsrCountryDomainMapping *pCountryDomainMapping)
+VOS_STATUS csrSetCountryDomainMapping(tpAniSirGlobal pMac, tCsrCountryDomainMapping *pCountryDomainMapping)
 {
-    eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+    VOS_STATUS status = VOS_STATUS_E_INVAL;
     tANI_U32 i, j;
     tANI_BOOLEAN fDomainChanged = eANI_BOOLEAN_FALSE;
     tANI_U8 countryCode[WNI_CFG_COUNTRY_CODE_LEN];
@@ -6913,7 +6913,7 @@ eHalStatus csrSetCountryDomainMapping(tpAniSirGlobal pMac, tCsrCountryDomainMapp
                     }
                 }
             }
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
             if(fDomainChanged)
             {
                 tCsrChannel *pChannelList;
@@ -6944,9 +6944,9 @@ eHalStatus csrSetCountryDomainMapping(tpAniSirGlobal pMac, tCsrCountryDomainMapp
     return (status);
 }
 
-eHalStatus csrSetDomainScanSetting(tpAniSirGlobal pMac, tCsrDomainFreqInfo *pDomainFreqInfo)
+VOS_STATUS csrSetDomainScanSetting(tpAniSirGlobal pMac, tCsrDomainFreqInfo *pDomainFreqInfo)
 {
-    eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+    VOS_STATUS status = VOS_STATUS_E_INVAL;
     tANI_U32 i, j;
     tANI_U16 freq;
 
@@ -6973,30 +6973,30 @@ eHalStatus csrSetDomainScanSetting(tpAniSirGlobal pMac, tCsrDomainFreqInfo *pDom
                 smsLog(pMac, LOGW, "   Failed to get frequency of channel %d", pDomainChnInfo->chnInfo[j].chnId);
             }
         }
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
     }
 
     return (status);
 }
 #endif
 
-eHalStatus csrGetModifyProfileFields(tpAniSirGlobal pMac, tANI_U32 sessionId,
+VOS_STATUS csrGetModifyProfileFields(tpAniSirGlobal pMac, tANI_U32 sessionId,
                                      tCsrRoamModifyProfileFields *pModifyProfileFields)
 {
 
    if(!pModifyProfileFields)
    {
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    vos_mem_copy(pModifyProfileFields,
                 &pMac->roam.roamSession[sessionId].connectedProfile.modifyProfileFields,
                 sizeof(tCsrRoamModifyProfileFields));
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
-eHalStatus csrSetModifyProfileFields(tpAniSirGlobal pMac, tANI_U32 sessionId,
+VOS_STATUS csrSetModifyProfileFields(tpAniSirGlobal pMac, tANI_U32 sessionId,
                                      tCsrRoamModifyProfileFields *pModifyProfileFields)
 {
    tCsrRoamSession *pSession = CSR_GET_SESSION( pMac, sessionId );
@@ -7005,7 +7005,7 @@ eHalStatus csrSetModifyProfileFields(tpAniSirGlobal pMac, tANI_U32 sessionId,
                  pModifyProfileFields,
                  sizeof(tCsrRoamModifyProfileFields));
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 
@@ -7018,20 +7018,20 @@ eHalStatus csrSetModifyProfileFields(tpAniSirGlobal pMac, tANI_U32 sessionId,
     caller wants to know the needed bytes.
     \param pbLen - Caller allocated, as input, it indicates the length of pBuf. Upon success return,
     this contains the length of the data in pBuf
-    \return eHalStatus     
+    \return VOS_STATUS     
   -------------------------------------------------------------------------------*/
-eHalStatus csrGetSupportedCountryCode(tpAniSirGlobal pMac, tANI_U8 *pBuf, tANI_U32 *pbLen)
+VOS_STATUS csrGetSupportedCountryCode(tpAniSirGlobal pMac, tANI_U8 *pBuf, tANI_U32 *pbLen)
 {
     tANI_U32 numOfCountry = sizeof( gCsrCountryInfo ) / sizeof( gCsrCountryInfo[0] );
     tANI_U32 numBytes = 0;
-    eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+    VOS_STATUS status = VOS_STATUS_E_INVAL;
 
     if( pbLen )
     {
         numBytes = *pbLen;
         //Consider it ok, at least we can return the number of bytes needed;
         *pbLen = numOfCountry * WNI_CFG_COUNTRY_CODE_LEN;
-        status = eHAL_STATUS_SUCCESS;
+        status = VOS_STATUS_SUCCESS;
         if( pBuf && ( numBytes >= *pbLen ) )
         {
             //The ugly part starts.
@@ -7059,11 +7059,11 @@ eHalStatus csrGetSupportedCountryCode(tpAniSirGlobal pMac, tANI_U8 *pBuf, tANI_U
     caller wants to know the needed bytes.
     \param pbLen - Caller allocated, as input, it indicates the length of pBuf. Upon success return,
     this contains the length of the data in pBuf
-    \return eHalStatus     
+    \return VOS_STATUS     
   -------------------------------------------------------------------------------*/
-eHalStatus csrGetSupportedCountryCode(tpAniSirGlobal pMac, tANI_U8 *pBuf, tANI_U32 *pbLen)
+VOS_STATUS csrGetSupportedCountryCode(tpAniSirGlobal pMac, tANI_U8 *pBuf, tANI_U32 *pbLen)
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     VOS_STATUS vosStatus;
     v_SIZE_t size = (v_SIZE_t)*pbLen;
 
@@ -7085,7 +7085,7 @@ eHalStatus csrGetSupportedCountryCode(tpAniSirGlobal pMac, tANI_U8 *pBuf, tANI_U
         }
         else
         {
-            status = eHAL_STATUS_FAILURE;
+            status = VOS_STATUS_E_FAILURE;
         }
     }
 
@@ -7095,9 +7095,9 @@ eHalStatus csrGetSupportedCountryCode(tpAniSirGlobal pMac, tANI_U8 *pBuf, tANI_U
 
 
 //Upper layer to get the list of the base channels to scan for passively 11d info from csr
-eHalStatus csrScanGetBaseChannels( tpAniSirGlobal pMac, tCsrChannelInfo * pChannelInfo )
+VOS_STATUS csrScanGetBaseChannels( tpAniSirGlobal pMac, tCsrChannelInfo * pChannelInfo )
 {
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
 
     do
     {
@@ -7110,7 +7110,7 @@ eHalStatus csrScanGetBaseChannels( tpAniSirGlobal pMac, tCsrChannelInfo * pChann
        if ( NULL == pChannelInfo->ChannelList )
        {
           smsLog( pMac, LOGE, FL("csrScanGetBaseChannels: fail to allocate memory") );
-          return eHAL_STATUS_FAILURE;
+          return VOS_STATUS_E_FAILURE;
        }
        vos_mem_copy(pChannelInfo->ChannelList,
                     pMac->scan.baseChannels.channelList,
@@ -7223,7 +7223,7 @@ VOS_STATUS csrAddToChannelListFront(
     int i = 0;
 
     // Check for NULL pointer
-    if (!pChannelList) return eHAL_STATUS_E_NULL_VALUE;
+    if (!pChannelList) return VOS_STATUS_E_NULL;
 
     // Make room for the addition.  (Start moving from the back.)
     for (i = numChannels; i > 0; i--)
@@ -7234,7 +7234,7 @@ VOS_STATUS csrAddToChannelListFront(
     // Now add the NEW channel...at the front
     pChannelList[0] = channel;
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 #endif
 const char * sme_requestTypetoString(const v_U8_t requestType)

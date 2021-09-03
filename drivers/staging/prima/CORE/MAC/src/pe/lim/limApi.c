@@ -2470,7 +2470,7 @@ bool lim_is_assoc_req_for_drop(tpAniSirGlobal pMac, uint8_t *rx_pkt_info)
     tpSirMacMgmtHdr pMacHdr;
     tpDphHashNode sta_ds;
     bool status;
-    eHalStatus lock_status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS lock_status = VOS_STATUS_SUCCESS;
 
     pMacHdr = WDA_GET_RX_MAC_HEADER(rx_pkt_info);
     session_entry = peFindSessionByBssid(pMac, pMacHdr->bssId, &session_id);
@@ -2483,7 +2483,7 @@ bool lim_is_assoc_req_for_drop(tpAniSirGlobal pMac, uint8_t *rx_pkt_info)
     }
 
     lock_status =  pe_AcquireGlobalLock(&pMac->lim);
-    if (lock_status != eHAL_STATUS_SUCCESS)
+    if (lock_status != VOS_STATUS_SUCCESS)
     {
 	    limLog(pMac, LOGE, FL("pe_AcquireGlobalLock error"));
 	    return TRUE;
@@ -2539,7 +2539,7 @@ boolean limIsDeauthDiassocForDrop(tpAniSirGlobal pMac,
     tpPESession     psessionEntry;
     tpSirMacMgmtHdr pMacHdr;
     tpDphHashNode     pStaDs;
-    eHalStatus lock_status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS lock_status = VOS_STATUS_SUCCESS;
     boolean ret = FALSE;
 
     pMacHdr = WDA_GET_RX_MAC_HEADER(pRxPacketInfo);
@@ -2553,7 +2553,7 @@ boolean limIsDeauthDiassocForDrop(tpAniSirGlobal pMac,
     }
 
     lock_status =  pe_AcquireGlobalLock(&pMac->lim);
-    if (lock_status != eHAL_STATUS_SUCCESS)
+    if (lock_status != VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOGE, FL("pe_AcquireGlobalLock error"));
         return TRUE;
@@ -2722,27 +2722,27 @@ tMgmtFrmDropReason limIsPktCandidateForDrop(tpAniSirGlobal pMac, tANI_U8 *pRxPac
     return eMGMT_DROP_NO_DROP;
 }
 
-eHalStatus pe_AcquireGlobalLock( tAniSirLim *psPe)
+VOS_STATUS pe_AcquireGlobalLock( tAniSirLim *psPe)
 {
-    eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+    VOS_STATUS status = VOS_STATUS_E_INVAL;
 
     if(psPe)
     {
         if( VOS_IS_STATUS_SUCCESS( vos_lock_acquire( &psPe->lkPeGlobalLock) ) )
         {
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
         }
     }
     return (status);
 }
-eHalStatus pe_ReleaseGlobalLock( tAniSirLim *psPe)
+VOS_STATUS pe_ReleaseGlobalLock( tAniSirLim *psPe)
 {
-    eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+    VOS_STATUS status = VOS_STATUS_E_INVAL;
     if(psPe)
     {
         if( VOS_IS_STATUS_SUCCESS( vos_lock_release( &psPe->lkPeGlobalLock) ) )
         {
-            status = eHAL_STATUS_SUCCESS;
+            status = VOS_STATUS_SUCCESS;
         }
     }
     return (status);

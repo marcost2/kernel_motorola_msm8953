@@ -74,7 +74,7 @@
 /*-------------------------------------------------------------------------
  * Function declarations and documentation
  * ------------------------------------------------------------------------*/
- eHalStatus hdd_exit_standby(hdd_context_t *pHddCtx);
+ VOS_STATUS hdd_exit_standby(hdd_context_t *pHddCtx);
  VOS_STATUS hdd_exit_deep_sleep(hdd_context_t *pHddCtx, 
                                 hdd_adapter_t* pAdapter);
  VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx);
@@ -108,7 +108,7 @@ int wlan_hdd_ipv4_changed(struct notifier_block *nb,
 int wlan_hdd_ipv6_changed(struct notifier_block *nb,
                            unsigned long data, void *arg);
 
-eHalStatus hdd_set_mc_list_cfg_item(hdd_context_t* pHddCtx,
+VOS_STATUS hdd_set_mc_list_cfg_item(hdd_context_t* pHddCtx,
                 bool value);
 bool is_mc_list_cfg_disable_required(hdd_context_t* pHddCtx);
 void hdd_mc_addr_list_cfg_config(hdd_context_t* pHddCtx, bool action);

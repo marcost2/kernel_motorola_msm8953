@@ -1224,7 +1224,7 @@ struct hdd_adapter_s
    struct completion tdls_del_station_comp;
    struct completion tdls_mgmt_comp;
    struct completion tdls_link_establish_req_comp;
-   eHalStatus tdlsAddStaStatus;
+   VOS_STATUS tdlsAddStaStatus;
 #endif
 
 #ifdef WLAN_FEATURE_RMC

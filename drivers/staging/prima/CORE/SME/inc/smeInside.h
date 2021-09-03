@@ -236,29 +236,29 @@ tANI_BOOLEAN pmcProcessCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
 //the command, if applicable.
 void pmcAbortCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand, tANI_BOOLEAN fStopping );
 tANI_BOOLEAN qosProcessCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
-eHalStatus csrIsValidChannel(tpAniSirGlobal pMac, tANI_U8 chnNum);
+VOS_STATUS csrIsValidChannel(tpAniSirGlobal pMac, tANI_U8 chnNum);
 tANI_BOOLEAN csrRoamIsValid40MhzChannel(tpAniSirGlobal pMac, tANI_U8 channel);
-eHalStatus csrProcessScanCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
-eHalStatus csrRoamProcessCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrProcessScanCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrRoamProcessCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
 void csrRoamProcessWmStatusChangeCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
 void csrReinitRoamCmd(tpAniSirGlobal pMac, tSmeCmd *pCommand); 
 void csrReinitWmStatusChangeCmd(tpAniSirGlobal pMac, tSmeCmd *pCommand);
 void csrReinitSetKeyCmd(tpAniSirGlobal pMac, tSmeCmd *pCommand);
 void csrReinitRemoveKeyCmd(tpAniSirGlobal pMac, tSmeCmd *pCommand);
-eHalStatus csrRoamProcessSetKeyCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
-eHalStatus csrRoamProcessRemoveKeyCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrRoamProcessSetKeyCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrRoamProcessRemoveKeyCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
 void csrReleaseCommandSetKey(tpAniSirGlobal pMac, tSmeCmd *pCommand);
 void csrReleaseCommandRemoveKey(tpAniSirGlobal pMac, tSmeCmd *pCommand);
-//eHalStatus csrRoamIssueSetKeyCommand( tpAniSirGlobal pMac, tANI_U32 sessionId, tCsrRoamSetKey *pSetKey, tANI_U32 roamId );
-eHalStatus csrRoamIssueRemoveKeyCommand( tpAniSirGlobal pMac, tANI_U32 sessionId,
+//VOS_STATUS csrRoamIssueSetKeyCommand( tpAniSirGlobal pMac, tANI_U32 sessionId, tCsrRoamSetKey *pSetKey, tANI_U32 roamId );
+VOS_STATUS csrRoamIssueRemoveKeyCommand( tpAniSirGlobal pMac, tANI_U32 sessionId,
                                          tCsrRoamRemoveKey *pRemoveKey, tANI_U32 roamId );
-eHalStatus csrIsFullPowerNeeded( tpAniSirGlobal pMac, tSmeCmd *pCommand, tRequestFullPowerReason *pReason,
+VOS_STATUS csrIsFullPowerNeeded( tpAniSirGlobal pMac, tSmeCmd *pCommand, tRequestFullPowerReason *pReason,
                                  tANI_BOOLEAN *pfNeedPower);
 bool csr_is_disconnect_full_power_cmd(tSmeCmd *command);
 void csrAbortCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand, tANI_BOOLEAN fStopping );
 
-eHalStatus sme_AcquireGlobalLock( tSmeStruct *psSme);
-eHalStatus sme_ReleaseGlobalLock( tSmeStruct *psSme);
+VOS_STATUS sme_AcquireGlobalLock( tSmeStruct *psSme);
+VOS_STATUS sme_ReleaseGlobalLock( tSmeStruct *psSme);
 
 /* ---------------------------------------------------------------------------
     \fn sme_SetCfgScanControlList
@@ -266,21 +266,21 @@ eHalStatus sme_ReleaseGlobalLock( tSmeStruct *psSme);
     \param  hHal - The handle returned by macOpen.
     \param  countryCode -  Pointer to the countryCode
     \param  pChannelList -  Pointer to the valid channel list
-    \return eHalStatus
+    \return VOS_STATUS
   ---------------------------------------------------------------------------*/
-eHalStatus sme_SetCfgScanControlList(tHalHandle hHal, tANI_U8 *countryCode,
+VOS_STATUS sme_SetCfgScanControlList(tHalHandle hHal, tANI_U8 *countryCode,
                                                     tCsrChannel *pChannelList);
 
 #ifdef FEATURE_OEM_DATA_SUPPORT
-eHalStatus oemData_ProcessOemDataReqCommand(tpAniSirGlobal pMac, tSmeCmd *pCommand);
+VOS_STATUS oemData_ProcessOemDataReqCommand(tpAniSirGlobal pMac, tSmeCmd *pCommand);
 #endif
 
-eHalStatus csrProcessAddStaSessionCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
-eHalStatus csrProcessAddStaSessionRsp( tpAniSirGlobal pMac, tANI_U8 *pMsg);
-eHalStatus csrProcessDelStaSessionCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
-eHalStatus csrProcessMacAddrSpoofCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
-eHalStatus csrProcessDelStaSessionRsp( tpAniSirGlobal pMac, tANI_U8 *pMsg);
-eHalStatus csrProcessGetFrameLogCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrProcessAddStaSessionCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrProcessAddStaSessionRsp( tpAniSirGlobal pMac, tANI_U8 *pMsg);
+VOS_STATUS csrProcessDelStaSessionCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrProcessMacAddrSpoofCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
+VOS_STATUS csrProcessDelStaSessionRsp( tpAniSirGlobal pMac, tANI_U8 *pMsg);
+VOS_STATUS csrProcessGetFrameLogCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand );
 
 #ifdef WLAN_NS_OFFLOAD
 /* ---------------------------------------------------------------------------
@@ -289,23 +289,23 @@ eHalStatus csrProcessGetFrameLogCommand( tpAniSirGlobal pMac, tSmeCmd *pCommand 
     \param  hHal - The handle returned by macOpen.
     \param  pRequest - Pointer to the offload request.
     \param  sessionId .  Session index of the session
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the offload.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the offload.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcSetNSOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest, tANI_U8 sessionId);
+VOS_STATUS pmcSetNSOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest, tANI_U8 sessionId);
 #endif //WLAN_NS_OFFLOAD
 
 #ifdef FEATURE_WLAN_SCAN_PNO
-eHalStatus pmcSetPreferredNetworkList(tHalHandle hHal, tpSirPNOScanReq pRequest, tANI_U8 sessionId, preferredNetworkFoundIndCallback callbackRoutine,  void *callbackContext);
-eHalStatus pmcUpdateScanParams(tHalHandle hHal, tCsrConfig *pRequest, tCsrChannel *pChannelList, tANI_U8 b11dResolved);
-eHalStatus pmcSetRssiFilter(tHalHandle hHal,   v_U8_t        rssiThreshold);
+VOS_STATUS pmcSetPreferredNetworkList(tHalHandle hHal, tpSirPNOScanReq pRequest, tANI_U8 sessionId, preferredNetworkFoundIndCallback callbackRoutine,  void *callbackContext);
+VOS_STATUS pmcUpdateScanParams(tHalHandle hHal, tCsrConfig *pRequest, tCsrChannel *pChannelList, tANI_U8 b11dResolved);
+VOS_STATUS pmcSetRssiFilter(tHalHandle hHal,   v_U8_t        rssiThreshold);
 #endif // FEATURE_WLAN_SCAN_PNO
-eHalStatus pmcSetPowerParams(tHalHandle hHal,   tSirSetPowerParamsReq*  pwParams, tANI_BOOLEAN forced);
+VOS_STATUS pmcSetPowerParams(tHalHandle hHal,   tSirSetPowerParamsReq*  pwParams, tANI_BOOLEAN forced);
 
 tANI_BOOLEAN csrRoamGetConcurrencyConnectStatusForBmps(tpAniSirGlobal pMac);
 #ifdef FEATURE_WLAN_TDLS
-eHalStatus csrTdlsSendMgmtReq(tHalHandle hHal, tANI_U8 sessionId, tCsrTdlsSendMgmt *tdlsSendMgmt);
+VOS_STATUS csrTdlsSendMgmtReq(tHalHandle hHal, tANI_U8 sessionId, tCsrTdlsSendMgmt *tdlsSendMgmt);
 VOS_STATUS csrTdlsSendLinkEstablishParams(tHalHandle hHal,
                                           tANI_U8 sessionId,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
@@ -314,31 +314,31 @@ VOS_STATUS csrTdlsSendLinkEstablishParams(tHalHandle hHal,
                                           tSirMacAddr peerMac,
 #endif
                                           tCsrTdlsLinkEstablishParams *tdlsLinkEstablishParams);
-eHalStatus csrTdlsAddPeerSta(tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS csrTdlsAddPeerSta(tHalHandle hHal, tANI_U8 sessionId,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
                              const tSirMacAddr peerMac
 #else
                              tSirMacAddr peerMac
 #endif
                              );
-eHalStatus csrTdlsChangePeerSta(tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS csrTdlsChangePeerSta(tHalHandle hHal, tANI_U8 sessionId,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
                                 const tSirMacAddr peerMac,
 #else
                                 tSirMacAddr peerMac,
 #endif
                                 tCsrStaParams *pstaParams);
-eHalStatus csrTdlsDelPeerSta(tHalHandle hHal, tANI_U8 sessionId,
+VOS_STATUS csrTdlsDelPeerSta(tHalHandle hHal, tANI_U8 sessionId,
 #if (LINUX_VERSION_CODE >= KERNEL_VERSION(3,18,0))
                              const tSirMacAddr peerMac
 #else
                              tSirMacAddr peerMac
 #endif
                              );
-eHalStatus csrTdlsProcessCmd(tpAniSirGlobal pMac,tSmeCmd *pCommand );
-eHalStatus csrTdlsProcessLinkEstablish( tpAniSirGlobal pMac, tSmeCmd *cmd );
-eHalStatus csrTdlsProcessChanSwitchReq(tpAniSirGlobal pMac, tSmeCmd *cmd ); //tdlsoffchan
-eHalStatus tdlsMsgProcessor(tpAniSirGlobal pMac,v_U16_t msg_type, void *pMsgBuf);
+VOS_STATUS csrTdlsProcessCmd(tpAniSirGlobal pMac,tSmeCmd *pCommand );
+VOS_STATUS csrTdlsProcessLinkEstablish( tpAniSirGlobal pMac, tSmeCmd *cmd );
+VOS_STATUS csrTdlsProcessChanSwitchReq(tpAniSirGlobal pMac, tSmeCmd *cmd ); //tdlsoffchan
+VOS_STATUS tdlsMsgProcessor(tpAniSirGlobal pMac,v_U16_t msg_type, void *pMsgBuf);
 VOS_STATUS csrTdlsSendChanSwitchReq(tHalHandle hHal,
                                     tANI_U8 sessionId,
                                     tSirMacAddr peerMac,
@@ -348,15 +348,15 @@ VOS_STATUS csrTdlsSendChanSwitchReq(tHalHandle hHal,
 #endif /* FEATURE_WLAN_TDLS */
 
 #if  defined (WLAN_FEATURE_VOWIFI_11R) || defined (FEATURE_WLAN_ESE) || defined(FEATURE_WLAN_LFR)
-eHalStatus csrFlushCfgBgScanRoamChannelList(tpAniSirGlobal pMac);
-eHalStatus csrCreateBgScanRoamChannelList(tpAniSirGlobal pMac,
+VOS_STATUS csrFlushCfgBgScanRoamChannelList(tpAniSirGlobal pMac);
+VOS_STATUS csrCreateBgScanRoamChannelList(tpAniSirGlobal pMac,
                                             const tANI_U8 *pChannelList,
                                             const tANI_U8 numChannels);
-eHalStatus csrUpdateBgScanConfigIniChannelList(tpAniSirGlobal pMac, eCsrBand eBand);
+VOS_STATUS csrUpdateBgScanConfigIniChannelList(tpAniSirGlobal pMac, eCsrBand eBand);
 #endif
 
 #if defined(FEATURE_WLAN_ESE) && defined(FEATURE_WLAN_ESE_UPLOAD)
-eHalStatus csrCreateRoamScanChannelList(tpAniSirGlobal pMac,
+VOS_STATUS csrCreateRoamScanChannelList(tpAniSirGlobal pMac,
                                                 tANI_U8 *pChannelList,
                                                 tANI_U8 numChannels,
                                                 const eCsrBand eBand);

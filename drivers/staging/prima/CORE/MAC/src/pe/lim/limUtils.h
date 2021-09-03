@@ -238,7 +238,7 @@ tSirRetStatus limRestorePreChannelSwitchState(tpAniSirGlobal pMac, tpPESession p
 tSirRetStatus limRestorePreQuietState(tpAniSirGlobal pMac, tpPESession psessionEntry);
 
 void limPrepareFor11hChannelSwitch(tpAniSirGlobal pMac, tpPESession psessionEntry);
-void limSwitchChannelCback(tpAniSirGlobal pMac, eHalStatus status, 
+void limSwitchChannelCback(tpAniSirGlobal pMac, VOS_STATUS status, 
                            tANI_U32 *data, tpPESession psessionEntry);
 
 static inline tSirRFBand limGetRFBand(tANI_U8 channel)
@@ -598,8 +598,8 @@ extern tANI_U32 limGetMaxRateFlags(tpDphHashNode pStaDs,
 
 void limDecrementPendingMgmtCount (tpAniSirGlobal pMac);
 
-eHalStatus limTxBdComplete(tpAniSirGlobal pMac, void *pData);
-eHalStatus limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData);
+VOS_STATUS limTxBdComplete(tpAniSirGlobal pMac, void *pData);
+VOS_STATUS limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData);
 bool lim_is_robust_mgmt_action_frame(uint8 action_catagory);
 tANI_U8 lim_compute_ext_cap_ie_length (tDot11fIEExtCap *ext_cap);
 void lim_update_caps_info_for_bss(tpAniSirGlobal mac_ctx,

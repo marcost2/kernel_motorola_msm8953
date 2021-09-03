@@ -52,14 +52,14 @@
 void sme_FTOpen(tHalHandle hHal)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
-    eHalStatus     status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS     status = VOS_STATUS_SUCCESS;
 
     //Clear the FT Context.
     sme_FTReset(hHal);
     status = vos_timer_init(&pMac->ft.ftSmeContext.preAuthReassocIntvlTimer,VOS_TIMER_TYPE_SW,
                             sme_PreauthReassocIntvlTimerCallback, (void *)pMac);
 
-    if (eHAL_STATUS_SUCCESS != status)
+    if (VOS_STATUS_SUCCESS != status)
     {
         smsLog(pMac, LOGE, FL("Preauth Reassoc interval Timer allocation failed"));
         return;
@@ -72,7 +72,7 @@ void sme_FTOpen(tHalHandle hHal)
                             csr_preauth_reassoc_mbb_timer_callback,
                             (void *)pMac);
 
-    if (eHAL_STATUS_SUCCESS != status) {
+    if (VOS_STATUS_SUCCESS != status) {
         smsLog(pMac, LOGE, FL("pre_auth_reassoc_mbb_timer allocation failed"));
         return;
     }
@@ -115,7 +115,7 @@ void sme_SetFTIEs( tHalHandle hHal, tANI_U8 sessionId, const tANI_U8 *ft_ies,
         tANI_U16 ft_ies_length )
 {
     tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
 
     status = sme_AcquireGlobalLock( &pMac->sme );
     if (!( HAL_STATUS_SUCCESS( status ))) return;
@@ -227,11 +227,11 @@ void sme_SetFTIEs( tHalHandle hHal, tANI_U8 sessionId, const tANI_U8 *ft_ies,
     sme_ReleaseGlobalLock( &pMac->sme );
 }
             
-eHalStatus sme_FTSendUpdateKeyInd(tHalHandle hHal, tCsrRoamSetKey * pFTKeyInfo)
+VOS_STATUS sme_FTSendUpdateKeyInd(tHalHandle hHal, tCsrRoamSetKey * pFTKeyInfo)
 {
     tSirFTUpdateKeyInfo *pMsg;
     tANI_U16 msgLen;
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
     tAniEdType tmpEdType;
     tSirKeyMaterial *keymaterial = NULL;
     tAniEdType edType;
@@ -245,7 +245,7 @@ eHalStatus sme_FTSendUpdateKeyInd(tHalHandle hHal, tCsrRoamSetKey * pFTKeyInfo)
     pMsg = vos_mem_malloc(msgLen);
     if ( NULL == pMsg )
     {
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
     }
 
     vos_mem_set(pMsg, msgLen, 0);
@@ -304,22 +304,22 @@ void sme_SetFTPTKState(tHalHandle hHal, v_BOOL_t state)
   pMac->ft.ftSmeContext.setFTPTKState = state;
 }
 
-eHalStatus sme_FTUpdateKey( tHalHandle hHal, tCsrRoamSetKey * pFTKeyInfo )
+VOS_STATUS sme_FTUpdateKey( tHalHandle hHal, tCsrRoamSetKey * pFTKeyInfo )
 {
     tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
 
     status = sme_AcquireGlobalLock( &pMac->sme );
     if (!( HAL_STATUS_SUCCESS( status )))
     {
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
     }
 
     if (pFTKeyInfo == NULL)
     {
         smsLog( pMac, LOGE, "%s: pFTKeyInfo is NULL", __func__);
         sme_ReleaseGlobalLock( &pMac->sme );
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
 #if defined WLAN_FEATURE_VOWIFI_11R_DEBUG
@@ -344,12 +344,12 @@ eHalStatus sme_FTUpdateKey( tHalHandle hHal, tCsrRoamSetKey * pFTKeyInfo )
               smsLog( pMac, LOGE, "%s: Key set failure %d", __func__,
                       status);
               pMac->ft.ftSmeContext.setFTPTKState = FALSE;
-              status = eHAL_STATUS_FT_PREAUTH_KEY_FAILED;
+              status = VOS_STATUS_FT_PREAUTH_KEY_FAILED;
           }
           else
           {
               pMac->ft.ftSmeContext.setFTPTKState = TRUE;
-              status = eHAL_STATUS_FT_PREAUTH_KEY_SUCCESS;
+              status = VOS_STATUS_FT_PREAUTH_KEY_SUCCESS;
               smsLog( pMac, LOG1, "%s: Key set success", __func__);
           }
           sme_SetFTPreAuthState(hHal, FALSE);
@@ -364,7 +364,7 @@ eHalStatus sme_FTUpdateKey( tHalHandle hHal, tCsrRoamSetKey * pFTKeyInfo )
     default:
        smsLog(pMac, LOG1, FL("Unhandled state=%d"),
                               pMac->ft.ftSmeContext.FTState);
-       status = eHAL_STATUS_FAILURE;
+       status = VOS_STATUS_E_FAILURE;
        break;
     }
     sme_ReleaseGlobalLock( &pMac->sme );
@@ -382,7 +382,7 @@ void sme_GetFTPreAuthResponse( tHalHandle hHal, tANI_U8 *ft_ies,
                                tANI_U32 ft_ies_ip_len, tANI_U16 *ft_ies_length )
 {
     tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
 
     *ft_ies_length = 0;
 
@@ -430,7 +430,7 @@ void sme_GetRICIEs( tHalHandle hHal, tANI_U8 *ric_ies, tANI_U32 ric_ies_ip_len,
                     tANI_U32 *ric_ies_length )
 {
     tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
 
     *ric_ies_length = 0;
 

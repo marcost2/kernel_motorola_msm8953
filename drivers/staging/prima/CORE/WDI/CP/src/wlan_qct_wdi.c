@@ -1040,7 +1040,7 @@ void* WDI_GET_PAL_CTX( void )
 WPT_STATIC WPT_INLINE WDI_Status
 WDI_HAL_2_WDI_STATUS
 (
-  eHalStatus halStatus
+  VOS_STATUS vosStatus
 );
 
 /*Convert WDI request type into HAL request type*/
@@ -2069,39 +2069,16 @@ static char *WDI_getHALStatusMsgString(wpt_uint16 halStatusId)
 {
   switch (halStatusId)
   {
-    CASE_RETURN_STRING( eHAL_STATUS_SUCCESS );
+    CASE_RETURN_STRING( VOS_STATUS_SUCCESS );
     CASE_RETURN_STRING( PAL_STATUS_INVAL );
     CASE_RETURN_STRING( PAL_STATUS_ALREADY );
     CASE_RETURN_STRING( PAL_STATUS_EMPTY );
     CASE_RETURN_STRING( PAL_STATUS_FAILURE );
-    CASE_RETURN_STRING( eHAL_STATUS_FAILURE );
-    CASE_RETURN_STRING( eHAL_STATUS_INVALID_PARAMETER );
-    CASE_RETURN_STRING( eHAL_STATUS_INVALID_STAIDX );
-    CASE_RETURN_STRING( eHAL_STATUS_DPU_DESCRIPTOR_TABLE_FULL );
-    CASE_RETURN_STRING( eHAL_STATUS_NO_INTERRUPTS );
-    CASE_RETURN_STRING( eHAL_STATUS_INTERRUPT_PRESENT );
-    CASE_RETURN_STRING( eHAL_STATUS_STA_TABLE_FULL );
-    CASE_RETURN_STRING( eHAL_STATUS_DUPLICATE_STA );
-    CASE_RETURN_STRING( eHAL_STATUS_BSSID_INVALID );
-    CASE_RETURN_STRING( eHAL_STATUS_STA_INVALID );
-    CASE_RETURN_STRING( eHAL_STATUS_DUPLICATE_BSSID );
-    CASE_RETURN_STRING( eHAL_STATUS_INVALID_BSSIDX );
-    CASE_RETURN_STRING( eHAL_STATUS_BSSID_TABLE_FULL );
-    CASE_RETURN_STRING( eHAL_STATUS_INVALID_SIGNATURE );
-    CASE_RETURN_STRING( eHAL_STATUS_INVALID_KEYID );
-    CASE_RETURN_STRING( eHAL_STATUS_SET_CHAN_ALREADY_ON_REQUESTED_CHAN );
-    CASE_RETURN_STRING( eHAL_STATUS_UMA_DESCRIPTOR_TABLE_FULL );
-    CASE_RETURN_STRING( eHAL_STATUS_DPU_MICKEY_TABLE_FULL );
-    CASE_RETURN_STRING( eHAL_STATUS_BA_RX_BUFFERS_FULL );
-    CASE_RETURN_STRING( eHAL_STATUS_BA_RX_MAX_SESSIONS_REACHED );
-    CASE_RETURN_STRING( eHAL_STATUS_BA_RX_INVALID_SESSION_ID );
-    CASE_RETURN_STRING( eHAL_STATUS_TIMER_START_FAILED );
-    CASE_RETURN_STRING( eHAL_STATUS_TIMER_STOP_FAILED );
-    CASE_RETURN_STRING( eHAL_STATUS_FAILED_ALLOC );
-    CASE_RETURN_STRING( eHAL_STATUS_NOTIFY_BSS_FAIL );
-    CASE_RETURN_STRING( eHAL_STATUS_DEL_STA_SELF_IGNORED_REF_COUNT_NOT_ZERO );
-    CASE_RETURN_STRING( eHAL_STATUS_ADD_STA_SELF_IGNORED_REF_COUNT_NOT_ZERO );
-    CASE_RETURN_STRING( eHAL_STATUS_FW_SEND_MSG_FAILED );
+    CASE_RETURN_STRING( VOS_STATUS_E_FAILURE );
+    CASE_RETURN_STRING( VOS_STATUS_E_INVAL );
+    CASE_RETURN_STRING( VOS_STATUS_E_NOMEM );
+    CASE_RETURN_STRING( VOS_STATUS_E_PERM );
+    CASE_RETURN_STRING( VOS_STATUS_E_EXISTS );
     default:
         return "Unknown HAL status";
   }
@@ -17599,7 +17576,7 @@ WDI_ProcessStartScanRsp
                   2);
 #endif
 
-  if ( eHAL_STATUS_SUCCESS != halStartScanRspMsg.startScanRspParams.status )
+  if ( VOS_STATUS_SUCCESS != halStartScanRspMsg.startScanRspParams.status )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Start scan failed with status %s (%d)",
@@ -17661,7 +17638,7 @@ WDI_ProcessEndScanRsp
 
   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halEndScanRspMsg.endScanRspParams.status);
 
-  if ( eHAL_STATUS_SUCCESS != halEndScanRspMsg.endScanRspParams.status )
+  if ( VOS_STATUS_SUCCESS != halEndScanRspMsg.endScanRspParams.status )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "End Scan failed with status %s (%d )",
@@ -17727,8 +17704,8 @@ WDI_ProcessFinishScanRsp
               "Finish scan response reported status: %d",
               halFinishScanRspMsg.finishScanRspParams.status);
 
-  if (( eHAL_STATUS_SUCCESS != halFinishScanRspMsg.finishScanRspParams.status )&&
-      ( eHAL_STATUS_NOTIFY_BSS_FAIL  != halFinishScanRspMsg.finishScanRspParams.status ))
+  if (( VOS_STATUS_SUCCESS != halFinishScanRspMsg.finishScanRspParams.status )&&
+      ( VOS_STATUS_E_FAILURE  != halFinishScanRspMsg.finishScanRspParams.status ))
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Finish Scan failed with status %s (%d)",
@@ -18448,7 +18425,7 @@ WDI_ProcessSetBssKeyRsp
 )
 {
   WDI_Status            wdiStatus;
-  eHalStatus            halStatus;
+  VOS_STATUS            vosStatus;
   WDI_SetBSSKeyRspCb    wdiSetBSSKeyRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18469,15 +18446,15 @@ WDI_ProcessSetBssKeyRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if ( eHAL_STATUS_SUCCESS != halStatus )
+  if ( VOS_STATUS_SUCCESS != vosStatus )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Set BSS Key failed with status %s (%d)",
-              WDI_getHALStatusMsgString(halStatus),
-              halStatus);
+              WDI_getHALStatusMsgString(vosStatus),
+              vosStatus);
      /* send the status to UMAC, don't return from here*/
   }
 
@@ -18505,7 +18482,7 @@ WDI_ProcessRemoveBssKeyRsp
 )
 {
   WDI_Status              wdiStatus;
-  eHalStatus              halStatus;
+  VOS_STATUS              vosStatus;
   WDI_RemoveBSSKeyRspCb   wdiRemoveBSSKeyRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18526,15 +18503,15 @@ WDI_ProcessRemoveBssKeyRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if ( eHAL_STATUS_SUCCESS != halStatus )
+  if ( VOS_STATUS_SUCCESS != vosStatus )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Remove BSS Key failed with status %s (%d )",
-              WDI_getHALStatusMsgString(halStatus),
-              halStatus);
+              WDI_getHALStatusMsgString(vosStatus),
+              vosStatus);
      /* send the status to UMAC, don't return from here*/
   }
 
@@ -18563,7 +18540,7 @@ WDI_ProcessSetStaKeyRsp
 )
 {
   WDI_Status            wdiStatus;
-  eHalStatus            halStatus;
+  VOS_STATUS            vosStatus;
   WDI_SetSTAKeyRspCb    wdiSetSTAKeyRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18584,15 +18561,15 @@ WDI_ProcessSetStaKeyRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if ( eHAL_STATUS_SUCCESS != halStatus )
+  if ( VOS_STATUS_SUCCESS != vosStatus )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Set STA Key failed with status %s (%d)",
-              WDI_getHALStatusMsgString(halStatus),
-              halStatus);
+              WDI_getHALStatusMsgString(vosStatus),
+              vosStatus);
      /* send the status to UMAC, don't return from here*/
   }
 
@@ -18620,7 +18597,7 @@ WDI_ProcessRemoveStaKeyRsp
 )
 {
   WDI_Status              wdiStatus;
-  eHalStatus              halStatus;
+  VOS_STATUS              vosStatus;
   WDI_RemoveSTAKeyRspCb   wdiRemoveSTAKeyRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18641,15 +18618,15 @@ WDI_ProcessRemoveStaKeyRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if ( eHAL_STATUS_SUCCESS != halStatus )
+  if ( VOS_STATUS_SUCCESS != vosStatus )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Remove STA Key failed with status %s (%d)",
-              WDI_getHALStatusMsgString(halStatus),
-              halStatus);
+              WDI_getHALStatusMsgString(vosStatus),
+              vosStatus);
      /* send the status to UMAC, don't return from here*/
   }
 
@@ -18677,7 +18654,7 @@ WDI_ProcessSetStaBcastKeyRsp
 )
 {
   WDI_Status            wdiStatus;
-  eHalStatus            halStatus;
+  VOS_STATUS            vosStatus;
   WDI_SetSTAKeyRspCb    wdiSetSTABcastKeyRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18698,18 +18675,18 @@ WDI_ProcessSetStaBcastKeyRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if ( eHAL_STATUS_SUCCESS != halStatus )
+  if ( VOS_STATUS_SUCCESS != vosStatus )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Set STA Key failed with status %s (%d)",
-              WDI_getHALStatusMsgString(halStatus),
-              halStatus);
+              WDI_getHALStatusMsgString(vosStatus),
+              vosStatus);
      /* send the status to UMAC, don't return from here*/
   }
 
@@ -18737,7 +18714,7 @@ WDI_ProcessRemoveStaBcastKeyRsp
 )
 {
   WDI_Status              wdiStatus;
-  eHalStatus              halStatus;
+  VOS_STATUS              vosStatus;
   WDI_RemoveSTAKeyRspCb   wdiRemoveSTABcastKeyRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18758,18 +18735,18 @@ WDI_ProcessRemoveStaBcastKeyRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if ( eHAL_STATUS_SUCCESS != halStatus )
+  if ( VOS_STATUS_SUCCESS != vosStatus )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Remove STA Key failed with status %s (%d)",
-              WDI_getHALStatusMsgString(halStatus),
-              halStatus);
+              WDI_getHALStatusMsgString(vosStatus),
+              vosStatus);
      /* send the status to UMAC, don't return from here*/
   }
 
@@ -18802,7 +18779,7 @@ WDI_ProcessAddTSpecRsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_AddTsRspCb   wdiAddTsRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18823,8 +18800,8 @@ WDI_ProcessAddTSpecRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiAddTsRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -18945,7 +18922,7 @@ WDI_ProcessDelTSpecRsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_DelTsRspCb   wdiDelTsRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -18966,8 +18943,8 @@ WDI_ProcessDelTSpecRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiDelTsRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -18993,7 +18970,7 @@ WDI_ProcessUpdateEDCAParamsRsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_UpdateEDCAParamsRspCb   wdiUpdateEDCAParamsRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -19014,8 +18991,8 @@ WDI_ProcessUpdateEDCAParamsRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiUpdateEDCAParamsRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -19108,7 +19085,7 @@ WDI_ProcessDelBARsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_DelBARspCb   wdiDelBARspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -19129,10 +19106,10 @@ WDI_ProcessDelBARsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if ( eHAL_STATUS_SUCCESS == halStatus )
+  if ( VOS_STATUS_SUCCESS == vosStatus )
   {
     /*! TO DO: I should notify the DAL Data Path that the BA was deleted*/
   }
@@ -19229,7 +19206,7 @@ WDI_ProcessFlushAcRsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_FlushAcRspCb wdiFlushAcRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -19250,11 +19227,11 @@ WDI_ProcessFlushAcRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiFlushAcRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -19280,7 +19257,7 @@ WDI_ProcessBtAmpEventRsp
 )
 {
    WDI_Status       wdiStatus;
-   eHalStatus       halStatus;
+   VOS_STATUS       vosStatus;
    WDI_BtAmpEventRspCb wdiBtAmpEventRspCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -19301,11 +19278,11 @@ WDI_ProcessBtAmpEventRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   wpalMemoryCopy( &halStatus,
+   wpalMemoryCopy( &vosStatus,
                    pEventData->pEventData,
-                   sizeof(halStatus));
+                   sizeof(vosStatus));
 
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiBtAmpEventRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -19400,7 +19377,7 @@ WDI_ProcessAddSTASelfRsp
   wdiAddSTAParam.ucSTAIdx = wdiAddSTASelfParams.ucSTASelfIdx;
 
   if(halAddStaSelfRsp.addStaSelfRspParams.status
-     != eHAL_STATUS_ADD_STA_SELF_IGNORED_REF_COUNT_NOT_ZERO)
+     != VOS_STATUS_E_EXISTS)
   {
      (void)WDI_STATableAddSta(pWDICtx,&wdiAddSTAParam);
   }
@@ -19464,8 +19441,8 @@ WDI_ProcessDelSTASelfRsp
     WDI_HAL_2_WDI_STATUS(delStaSelfRspParams.status);
 
   /* delStaSelfRspParams.status is not
-   eHAL_STATUS_DEL_STA_SELF_IGNORED_REF_COUNT_NOT_ZERO*/
-  if( eHAL_STATUS_SUCCESS == delStaSelfRspParams.status )
+   VOS_STATUS_E_PERM*/
+  if( VOS_STATUS_SUCCESS == delStaSelfRspParams.status )
   {
     WDI_Status wdiStatus;
     wdiStatus = WDI_STATableFindStaidByAddr(pWDICtx,
@@ -19858,7 +19835,7 @@ WDI_ProcessSetLinkStateRsp
 )
 {
   WDI_Status              wdiStatus;
-  eHalStatus              halStatus;
+  VOS_STATUS              vosStatus;
   WDI_SetLinkStateRspCb   wdiSetLinkStateRspCb;
 
   WDI_BSSSessionType*     pBSSSes              = NULL;
@@ -19944,11 +19921,11 @@ WDI_ProcessSetLinkStateRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiSetLinkStateRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -20113,7 +20090,7 @@ WDI_ProcessUpdateCfgRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_UpdateCfgRspCb   wdiUpdateCfgRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -20134,8 +20111,8 @@ WDI_ProcessUpdateCfgRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiUpdateCfgRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -20333,7 +20310,7 @@ WDI_ProcessUpdateBeaconParamsRsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_UpdateBeaconParamsRspCb   wdiUpdateBeaconParamsRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -20354,11 +20331,11 @@ WDI_ProcessUpdateBeaconParamsRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiUpdateBeaconParamsRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -20384,7 +20361,7 @@ WDI_ProcessSendBeaconParamsRsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_SendBeaconParamsRspCb   wdiSendBeaconParamsRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -20405,11 +20382,11 @@ WDI_ProcessSendBeaconParamsRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiSendBeaconParamsRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -20436,7 +20413,7 @@ WDI_ProcessUpdateProbeRspTemplateRsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_UpdateProbeRspTemplateRspCb   wdiUpdProbeRspTemplRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -20457,11 +20434,11 @@ WDI_ProcessUpdateProbeRspTemplateRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiUpdProbeRspTemplRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -20514,7 +20491,7 @@ WDI_ProcessSetMaxTxPowerRsp
                            pEventData->pEventData,
                            sizeof(halTxpowerrsp.setMaxTxPwrRspParams));
 
-  if ( eHAL_STATUS_SUCCESS != halTxpowerrsp.setMaxTxPwrRspParams.status )
+  if ( VOS_STATUS_SUCCESS != halTxpowerrsp.setMaxTxPwrRspParams.status )
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
               "Error status returned in Set Max Tx Power Response ");
@@ -20574,7 +20551,7 @@ WDI_ProcessSetTxPowerRsp
                  pEventData->pEventData,
                  sizeof(halTxpowerrsp.setTxPwrRspParams));
 
-  if (eHAL_STATUS_SUCCESS != halTxpowerrsp.setTxPwrRspParams.status)
+  if (VOS_STATUS_SUCCESS != halTxpowerrsp.setTxPwrRspParams.status)
   {
      WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
                  "Error status returned in Set Tx Power Response ");
@@ -20634,7 +20611,7 @@ WDI_ProcessSetMaxTxPowerPerBandRsp
                   pEventData->pEventData,
                   sizeof(halMaxTxPowerPerBandRsp.setMaxTxPwrPerBandRspParams));
 
-   if (eHAL_STATUS_SUCCESS !=
+   if (VOS_STATUS_SUCCESS !=
        halMaxTxPowerPerBandRsp.setMaxTxPwrPerBandRspParams.status)
    {
        WPAL_TRACE(eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
@@ -20670,7 +20647,7 @@ WDI_ProcessLinkEstablishReqRsp
   WDI_EventInfoType*     pEventData
 )
 {
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_SetTDLSLinkEstablishReqParamsRspCb   wdiTDLSLinkEstablishReqParamsRspCb;
   tTDLSLinkEstablishedRespMsg  halTdlsLinkEstablishedRespMsg;
   WDI_SetTdlsLinkEstablishReqResp    wdiSetTdlsLinkEstablishReqResp;
@@ -20701,11 +20678,11 @@ WDI_ProcessLinkEstablishReqRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiSetTdlsLinkEstablishReqResp.wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiSetTdlsLinkEstablishReqResp.wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
   wdiSetTdlsLinkEstablishReqResp.uStaIdx   =   halTdlsLinkEstablishedRespMsg.TDLSLinkEstablishedRespParams.staIdx;
 
   /*Notify UMAC*/
@@ -20733,7 +20710,7 @@ WDI_ProcessChanSwitchReqRsp
   WDI_EventInfoType*     pEventData
 )
 {
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_SetTDLSChanSwitchReqParamsRspCb   wdiTDLSChanSwitchReqParamsRspCb;
   tTDLSChanSwitchRespMsg                halTdlsChanSwitchRespMsg;
   WDI_SetTdlsChanSwitchReqResp          wdiSetTdlsChanSwitchReqResp;
@@ -20764,11 +20741,11 @@ WDI_ProcessChanSwitchReqRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiSetTdlsChanSwitchReqResp.wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiSetTdlsChanSwitchReqResp.wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
   wdiSetTdlsChanSwitchReqResp.uStaIdx   =  halTdlsChanSwitchRespMsg.tdlsChanSwitchRespParams.staIdx;
 
   /*Notify UMAC*/
@@ -20799,7 +20776,7 @@ WDI_ProcessP2PGONOARsp
 )
 {
   WDI_Status       wdiStatus;
-  eHalStatus       halStatus;
+  VOS_STATUS       vosStatus;
   WDI_SetP2PGONOAReqParamsRspCb   wdiP2PGONOAReqParamsRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -20820,11 +20797,11 @@ WDI_ProcessP2PGONOARsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  wpalMemoryCopy( &halStatus,
+  wpalMemoryCopy( &vosStatus,
                   pEventData->pEventData,
-                  sizeof(halStatus));
+                  sizeof(vosStatus));
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiP2PGONOAReqParamsRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -20849,7 +20826,7 @@ WDI_ProcessEnterImpsRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_EnterImpsRspCb   wdiEnterImpsRspCb;
   wpt_status wptStatus;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -20871,9 +20848,9 @@ WDI_ProcessEnterImpsRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
 
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /* If IMPS req failed, riva is not power collapsed Put the DXE in FULL state. 
    * Other module states are taken care by PMC.
@@ -20883,7 +20860,7 @@ WDI_ProcessEnterImpsRsp
 
      WPAL_TRACE(eWLAN_MODULE_DAL_CTRL, eWLAN_PAL_TRACE_LEVEL_FATAL,
                 "WDI Process Enter IMPS RSP failed With HAL Status Code: %d",
-                halStatus);
+                vosStatus);
      /* Call Back is not required as we are putting the DXE in FULL
       * and riva is already in full (IMPS RSP Failed)*/
      wptStatus = WDTS_SetPowerState(pWDICtx, WDTS_POWER_STATE_FULL, NULL);
@@ -20918,7 +20895,7 @@ WDI_ProcessExitImpsRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_ExitImpsRspCb    wdiExitImpsRspCb;
   wpt_status           wptStatus;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -20940,12 +20917,12 @@ WDI_ProcessExitImpsRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
-  if (halStatus != eHAL_STATUS_SUCCESS)
+  if (vosStatus != VOS_STATUS_SUCCESS)
     WPAL_TRACE(eWLAN_MODULE_DAL_CTRL, eWLAN_PAL_TRACE_LEVEL_ERROR,
-                "%s: Exit IMPS response is a failure with halStatus %d", __func__, halStatus);
+                "%s: Exit IMPS response is a failure with vosStatus %d", __func__, vosStatus);
 
   // notify DTS that we are entering Full power
   wptStatus = WDTS_SetPowerState(pWDICtx, WDTS_POWER_STATE_FULL, NULL);
@@ -20978,7 +20955,7 @@ WDI_ProcessEnterBmpsRsp
   WDI_EventInfoType*     pEventData
 )
 {
-  eHalStatus           halStatus = eHAL_STATUS_FAILURE;
+  VOS_STATUS           vosStatus = VOS_STATUS_E_FAILURE;
   tHalEnterBmpsRspParams halEnterBmpsRsp;
   WDI_EnterBmpsRspCb     wdiEnterBmpsRspCb;
   WDI_EnterBmpsRspParamsType wdiEnterBmpsRspparams;
@@ -21007,14 +20984,14 @@ WDI_ProcessEnterBmpsRsp
                        sizeof(halEnterBmpsRsp));
 
         //Used to print debug message
-        halStatus = halEnterBmpsRsp.status;
+        vosStatus = halEnterBmpsRsp.status;
         wdiEnterBmpsRspparams.wdiStatus = WDI_HAL_2_WDI_STATUS(halEnterBmpsRsp.status);
         wdiEnterBmpsRspparams.bssIdx = halEnterBmpsRsp.bssIdx;
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiEnterBmpsRspparams.wdiStatus = WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiEnterBmpsRspparams.wdiStatus = WDI_HAL_2_WDI_STATUS(vosStatus);
    }
 
   wdiEnterBmpsRspCb = (WDI_EnterBmpsRspCb)pWDICtx->pfncRspCB;
@@ -21028,7 +21005,7 @@ WDI_ProcessEnterBmpsRsp
 
        WPAL_TRACE(eWLAN_MODULE_DAL_CTRL, eWLAN_PAL_TRACE_LEVEL_FATAL,
                   "WDI Process Enter BMPS RSP failed With HAL Status Code: %d",
-                  halStatus); 
+                  vosStatus); 
        /* Call Back is not required as we are putting the DXE in FULL
         * and riva is already in FULL (BMPS RSP Failed)*/
        wptStatus = WDTS_SetPowerState(pWDICtx, WDTS_POWER_STATE_FULL, NULL);
@@ -21064,7 +21041,7 @@ WDI_ProcessExitBmpsRsp
   WDI_EventInfoType*     pEventData
 )
 {
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_ExitBmpsRspCb   wdiExitBmpsRspCb;
   tHalExitBmpsRspParams halExitBmpsRsp;
   WDI_ExitBmpsRspParamsType wdiExitBmpsRspParams;
@@ -21100,8 +21077,8 @@ WDI_ProcessExitBmpsRsp
   }
   else
   {
-      halStatus = *((eHalStatus*)pEventData->pEventData);
-      wdiExitBmpsRspParams.wdiStatus =  WDI_HAL_2_WDI_STATUS(halStatus);
+      vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+      wdiExitBmpsRspParams.wdiStatus =  WDI_HAL_2_WDI_STATUS(vosStatus);
   }
 
   // notify DTS that we are entering Full power
@@ -21137,7 +21114,7 @@ WDI_ProcessEnterUapsdRsp
   WDI_EventInfoType*     pEventData
 )
 {
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   tUapsdRspParams halEnterUapsdRsp;
   WDI_EnterUapsdRspCb   wdiEnterUapsdRspCb;
   WDI_EnterUapsdRspParamsType wdiEnterUapsdRspParams;
@@ -21172,8 +21149,8 @@ WDI_ProcessEnterUapsdRsp
   }
   else
   {
-      halStatus = *((eHalStatus*)pEventData->pEventData);
-      wdiEnterUapsdRspParams.wdiStatus  =  WDI_HAL_2_WDI_STATUS(halStatus);
+      vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+      wdiEnterUapsdRspParams.wdiStatus  =  WDI_HAL_2_WDI_STATUS(vosStatus);
   }
 
   if(WDI_STATUS_SUCCESS == wdiEnterUapsdRspParams.wdiStatus)
@@ -21213,7 +21190,7 @@ WDI_ProcessExitUapsdRsp
   WDI_EventInfoType*     pEventData
 )
 {
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_ExitUapsdRspCb   wdiExitUapsdRspCb;
   tHalExitUapsdRspParams halExitUapsdRsp;
   WDI_ExitUapsdRspParamsType wdiExitUapsdRspParams; 
@@ -21247,8 +21224,8 @@ WDI_ProcessExitUapsdRsp
   }
   else
   {
-      halStatus = *((eHalStatus*)pEventData->pEventData);
-      wdiExitUapsdRspParams.wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+      vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+      wdiExitUapsdRspParams.wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
   }
    // Restore back the DPU routing flag in the TxBD, for DPU to push the TxBDs to BTQM
    // directly instead of the FW WQ.
@@ -21283,7 +21260,7 @@ WDI_ProcessSetUapsdAcParamsRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_SetUapsdAcParamsCb   wdiSetUapsdAcParamsCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21304,8 +21281,8 @@ WDI_ProcessSetUapsdAcParamsRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiSetUapsdAcParamsCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21331,7 +21308,7 @@ WDI_ProcessUpdateUapsdParamsRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_UpdateUapsdParamsCb   wdiUpdateUapsdParamsCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21352,8 +21329,8 @@ WDI_ProcessUpdateUapsdParamsRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiUpdateUapsdParamsCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21379,7 +21356,7 @@ WDI_ProcessConfigureRxpFilterRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_ConfigureRxpFilterCb   wdiConfigureRxpFilterCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21400,8 +21377,8 @@ WDI_ProcessConfigureRxpFilterRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   wdiConfigureRxpFilterCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21427,7 +21404,7 @@ WDI_ProcessSetBeaconFilterRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_SetBeaconFilterCb   wdiBeaconFilterCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21448,8 +21425,8 @@ WDI_ProcessSetBeaconFilterRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiBeaconFilterCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21475,7 +21452,7 @@ WDI_ProcessRemBeaconFilterRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_RemBeaconFilterCb   wdiBeaconFilterCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21496,8 +21473,8 @@ WDI_ProcessRemBeaconFilterRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiBeaconFilterCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21523,7 +21500,7 @@ WDI_ProcessSetRSSIThresoldsRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_SetRSSIThresholdsCb   wdiRSSIThresholdsCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21544,8 +21521,8 @@ WDI_ProcessSetRSSIThresoldsRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiRSSIThresholdsCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21571,7 +21548,7 @@ WDI_ProcessHostOffloadRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_HostOffloadCb    wdiHostOffloadCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21592,8 +21569,8 @@ WDI_ProcessHostOffloadRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiHostOffloadCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21619,7 +21596,7 @@ WDI_ProcessKeepAliveRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_KeepAliveCb      wdiKeepAliveCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
    WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_INFO,
@@ -21643,8 +21620,8 @@ WDI_ProcessKeepAliveRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiKeepAliveCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -21669,7 +21646,7 @@ WDI_ProcessWowlAddBcPtrnRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_WowlAddBcPtrnCb    wdiWowlAddBcPtrnCb;
    tHalAddWowlBcastPtrnRspParams halAddWowlBcastPtrRsp;
    WDI_WowlAddBcPtrnRspParamsType wdiWowlAddBcPtrRsp;
@@ -21704,9 +21681,9 @@ WDI_ProcessWowlAddBcPtrnRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
        wdiWowlAddBcPtrRsp.wdiStatus = 
-                          WDI_HAL_2_WDI_STATUS(halStatus);
+                          WDI_HAL_2_WDI_STATUS(vosStatus);
    }
 
    /*Notify UMAC*/
@@ -21732,7 +21709,7 @@ WDI_ProcessWowlDelBcPtrnRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_WowlDelBcPtrnCb    wdiWowlDelBcPtrnCb;
    tHalDelWowlBcastPtrnRspParams halDelWowlBcastPtrRsp;
    WDI_WowlDelBcPtrnRspParamsType wdiWowlDelBcstPtrRsp;
@@ -21766,8 +21743,8 @@ WDI_ProcessWowlDelBcPtrnRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiWowlDelBcstPtrRsp.wdiStatus  =   WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiWowlDelBcstPtrRsp.wdiStatus  =   WDI_HAL_2_WDI_STATUS(vosStatus);
    }
    /*Notify UMAC*/
    wdiWowlDelBcPtrnCb( &wdiWowlDelBcstPtrRsp, pWDICtx->pRspCBUserData);
@@ -21792,7 +21769,7 @@ WDI_ProcessWowlEnterRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_WowlEnterReqCb   wdiWowlEnterCb;
    WDI_WowlEnterRspParamsType  wdiwowlEnterRsp;
    tHalEnterWowlRspParams  halEnterWowlRspParams;
@@ -21827,8 +21804,8 @@ WDI_ProcessWowlEnterRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiwowlEnterRsp.status   =   WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiwowlEnterRsp.status   =   WDI_HAL_2_WDI_STATUS(vosStatus);
    }
    /*Notify UMAC*/
    wdiWowlEnterCb( &wdiwowlEnterRsp, pWDICtx->pRspCBUserData);
@@ -21853,7 +21830,7 @@ WDI_ProcessWowlExitRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_WowlExitReqCb   wdiWowlExitCb;
    tHalExitWowlRspParams halExitWowlRspParams;
    WDI_WowlExitRspParamsType wdiWowlExitRsp;
@@ -21889,8 +21866,8 @@ WDI_ProcessWowlExitRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiWowlExitRsp.status  =   WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiWowlExitRsp.status  =   WDI_HAL_2_WDI_STATUS(vosStatus);
    }
    /*Notify UMAC*/
    wdiWowlExitCb( &wdiWowlExitRsp, pWDICtx->pRspCBUserData);
@@ -21917,7 +21894,7 @@ WDI_ProcessConfigureAppsCpuWakeupStateRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_ConfigureAppsCpuWakeupStateCb   wdiConfigureAppsCpuWakeupStateCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -21938,8 +21915,8 @@ WDI_ProcessConfigureAppsCpuWakeupStateRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiConfigureAppsCpuWakeupStateCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -22136,7 +22113,7 @@ WDI_ProcessSetTxPerTrackingRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_SetTxPerTrackingRspCb   pwdiSetTxPerTrackingRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -22157,8 +22134,8 @@ WDI_ProcessSetTxPerTrackingRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Notify UMAC*/
   pwdiSetTxPerTrackingRspCb( wdiStatus, pWDICtx->pRspCBUserData);
@@ -22309,7 +22286,7 @@ WDI_ProcessUnkAddrFrameInd
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_LowLevelIndType  wdiInd;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -22329,8 +22306,8 @@ WDI_ProcessUnkAddrFrameInd
     Extract indication and send it to UMAC
   -------------------------------------------------------------------------*/
   /*! TO DO: Parameters need to be unpacked according to HAL struct*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   /*Fill in the indication parameters*/
   wdiInd.wdiIndicationType = WDI_UNKNOWN_ADDR2_FRAME_RX_IND;
@@ -22437,7 +22414,7 @@ WDI_ProcessFatalErrorInd
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_LowLevelIndType  wdiInd;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -22458,11 +22435,11 @@ WDI_ProcessFatalErrorInd
   -------------------------------------------------------------------------*/
 
   /*! TO DO: Parameters need to be unpacked according to HAL struct*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   WPAL_TRACE( eWLAN_MODULE_DAL_CTRL,  eWLAN_PAL_TRACE_LEVEL_ERROR,
-              "Fatal failure received from device %d ", halStatus );
+              "Fatal failure received from device %d ", vosStatus );
 
   /*Fill in the indication parameters*/
   wdiInd.wdiIndicationType             = WDI_FATAL_ERROR_IND;
@@ -25155,26 +25132,26 @@ WDT_GetTransportDriverContext (void *pContext)
 WPT_STATIC WPT_INLINE WDI_Status
 WDI_HAL_2_WDI_STATUS
 (
-  eHalStatus halStatus
+  VOS_STATUS vosStatus
 )
 {
   /*Lightweight function - no sanity checks and no unecessary code to increase
     the chances of getting inlined*/
-  switch(  halStatus )
+  switch(  vosStatus )
   {
-  case eHAL_STATUS_SUCCESS:
-  case eHAL_STATUS_ADD_STA_SELF_IGNORED_REF_COUNT_NOT_ZERO:
-  case eHAL_STATUS_DEL_STA_SELF_IGNORED_REF_COUNT_NOT_ZERO:
+  case VOS_STATUS_SUCCESS:
+  case VOS_STATUS_E_PERM:
+  case VOS_STATUS_E_EXISTS:
     return WDI_STATUS_SUCCESS;
-  case eHAL_STATUS_FAILURE:
+  case VOS_STATUS_E_FAILURE:
     return WDI_STATUS_E_FAILURE;
-  case eHAL_STATUS_FAILED_ALLOC:
+  case VOS_STATUS_E_NOMEM:
     return WDI_STATUS_MEM_FAILURE;
    /*The rest of the HAL error codes must be kept hidden from the UMAC as
      they refer to specific internal modules of our device*/
   default:
      WPAL_TRACE(eWLAN_MODULE_DAL_CTRL, eWLAN_PAL_TRACE_LEVEL_ERROR,
-                "Fwr halStatus:%d", halStatus);
+                "Fwr vosStatus:%d", vosStatus);
     return WDI_STATUS_DEV_INTERNAL_FAILURE;
   }
 
@@ -28141,7 +28118,7 @@ WDI_ProcessRoamScanOffloadRsp
 )
 {
    WDI_Status                   wdiStatus;
-   eHalStatus                   halStatus;
+   VOS_STATUS                   vosStatus;
    WDI_RoamOffloadScanCb        wdiRoamOffloadScancb = NULL;
 
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
@@ -28163,8 +28140,8 @@ WDI_ProcessRoamScanOffloadRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiRoamOffloadScancb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -28177,7 +28154,7 @@ WDI_ProcessPERRoamScanOffloadRsp(WDI_ControlBlockType *pWDICtx,
                                  WDI_EventInfoType *pEventData)
 {
    WDI_Status                   wdiStatus;
-   eHalStatus                   halStatus;
+   VOS_STATUS                   vosStatus;
    WDI_PERRoamOffloadScanCb     wdiPERRoamOffloadScancb = NULL;
 
    if ((NULL == pWDICtx) || (NULL == pEventData) ||
@@ -28190,8 +28167,8 @@ WDI_ProcessPERRoamScanOffloadRsp(WDI_ControlBlockType *pWDICtx,
 
    wdiPERRoamOffloadScancb = (WDI_PERRoamOffloadScanCb)pWDICtx->pfncRspCB;
 
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiPERRoamOffloadScancb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -28207,7 +28184,7 @@ WDI_ProcessPERRoamScanTriggerRsp
 )
 {
    WDI_Status                   wdiStatus;
-   eHalStatus                   halStatus;
+   VOS_STATUS                   vosStatus;
    WDI_PERRoamOffloadScanCb     wdiPERRoamTriggerScancb = NULL;
 
    if ((NULL == pWDICtx) || (NULL == pEventData) ||
@@ -28220,8 +28197,8 @@ WDI_ProcessPERRoamScanTriggerRsp
 
    wdiPERRoamTriggerScancb = (WDI_PERRoamTriggerScanCb)pWDICtx->pfncRspCB;
 
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /* Notify UMAC */
    wdiPERRoamTriggerScancb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -28678,7 +28655,7 @@ WDI_ProcessSetPreferredNetworkRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_PNOScanCb       wdiPNOScanCb   = NULL;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -28700,8 +28677,8 @@ WDI_ProcessSetPreferredNetworkRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiPNOScanCb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -28727,7 +28704,7 @@ WDI_ProcessSetRssiFilterRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_RssiFilterCb     wdiRssiFilterCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -28748,8 +28725,8 @@ WDI_ProcessSetRssiFilterRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiRssiFilterCb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -29591,7 +29568,7 @@ WDI_Process8023MulticastListRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_8023MulticastListCb wdi8023MulticastListCb;
    tHalRcvFltPktSetMcListRspType halRcvFltPktSetMcListRsp;
    WDI_RcvFltPktSetMcListRspParamsType  wdiRcvFltPktSetMcListRspInfo;
@@ -29630,8 +29607,8 @@ WDI_Process8023MulticastListRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiRcvFltPktSetMcListRspInfo.wdiStatus = WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiRcvFltPktSetMcListRspInfo.wdiStatus = WDI_HAL_2_WDI_STATUS(vosStatus);
    }
 
    /*Notify UMAC*/
@@ -29657,7 +29634,7 @@ WDI_ProcessReceiveFilterSetFilterRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_ReceiveFilterSetFilterCb wdiReceiveFilterSetFilterCb;
    tHalSetPktFilterRspParams    halSetPktFilterRspParams;
    WDI_SetRcvPktFilterRspParamsType wdiSetRcvPktFilterRspInfo;
@@ -29695,8 +29672,8 @@ WDI_ProcessReceiveFilterSetFilterRsp
     }
    else
     {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiSetRcvPktFilterRspInfo.wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiSetRcvPktFilterRspInfo.wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
     }
    /*Notify UMAC*/
    wdiReceiveFilterSetFilterCb(&wdiSetRcvPktFilterRspInfo, pWDICtx->pRspCBUserData);
@@ -29720,7 +29697,7 @@ WDI_ProcessFilterMatchCountRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_FilterMatchCountCb   wdiFilterMatchCountCb;
    tHalRcvFltPktMatchRspParams  halRcvFltrPktMatachRsp;
    WDI_RcvFltPktMatchCntRspParamsType wdiRcvFltPktMatchRspParams;
@@ -29758,8 +29735,8 @@ WDI_ProcessFilterMatchCountRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiRcvFltPktMatchRspParams.wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiRcvFltPktMatchRspParams.wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
    }
 
    /*Notify UMAC*/
@@ -29784,7 +29761,7 @@ WDI_ProcessReceiveFilterClearFilterRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_ReceiveFilterClearFilterCb wdiReceiveFilterClearFilterCb;
    tHalRcvFltPktClearParam  halRcvFltPktClearRspMsg;
    WDI_RcvFltPktClearRspParamsType wdiRcvFltPktClearRspParamsType;
@@ -29824,8 +29801,8 @@ WDI_ProcessReceiveFilterClearFilterRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiRcvFltPktClearRspParamsType.wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiRcvFltPktClearRspParamsType.wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
     }
 
    /*Notify UMAC*/
@@ -30019,7 +29996,7 @@ WDI_ProcessSetPowerParamsRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_SetPowerParamsCb             wdiPowerParamsCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -30040,8 +30017,8 @@ WDI_ProcessSetPowerParamsRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiPowerParamsCb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -30707,7 +30684,7 @@ WDI_ProcessGtkOffloadRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_GtkOffloadCb    wdiGtkOffloadCb   = NULL;
    tHalGtkOffloadRspParams halGtkOffloadRspParams;
    WDI_GtkOffloadRspParams  wdiGtkOffloadRsparams;
@@ -30742,8 +30719,8 @@ WDI_ProcessGtkOffloadRsp
    }
    else
    {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiGtkOffloadRsparams.ulStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiGtkOffloadRsparams.ulStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
    }
 
    /*Notify UMAC*/
@@ -30768,7 +30745,7 @@ WDI_ProcessGTKOffloadGetInfoRsp
   WDI_EventInfoType*     pEventData
 )
 {
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_GtkOffloadGetInfoCb   wdiGtkOffloadGetInfoCb = NULL;
    tHalGtkOffloadGetInfoRspParams halGtkOffloadGetInfoRspParams;
    WDI_GtkOffloadGetInfoRspParams wdiGtkOffloadGetInfoRsparams;
@@ -30828,8 +30805,8 @@ WDI_ProcessGTKOffloadGetInfoRsp
     }
    else
     {
-       halStatus = *((eHalStatus*)pEventData->pEventData);
-       wdiGtkOffloadGetInfoRsparams.ulStatus   =   WDI_HAL_2_WDI_STATUS(halStatus); 
+       vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+       wdiGtkOffloadGetInfoRsparams.ulStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus); 
     }
    /*Notify UMAC*/
    //wdiUpdateScanParamsCb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -30945,7 +30922,7 @@ WDI_ProcessSetTmLevelRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_SetTmLevelCb     wdiSetTmLevelCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -30966,8 +30943,8 @@ WDI_ProcessSetTmLevelRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus); 
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus); 
 
    /*Notify UMAC*/
    wdiSetTmLevelCb(wdiStatus, pWDICtx->pRspCBUserData);
@@ -31309,7 +31286,7 @@ WDI_ProcessUpdateVHTOpModeRsp
 {
    WDI_UpdateVHTOpModeCb   wdiVHTOpModeCb = NULL;
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -31329,8 +31306,8 @@ WDI_ProcessUpdateVHTOpModeRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
    /*Notify UMAC*/
    wdiVHTOpModeCb( wdiStatus, pEventData->pUserData);
@@ -31744,7 +31721,7 @@ WDI_Status WDI_ProcessLphbCfgRsp
 )
 {
    WDI_Status           wdiStatus;
-   eHalStatus           halStatus;
+   VOS_STATUS           vosStatus;
    WDI_LphbCfgCb        wdiLphbCfgCb;
    /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -31765,8 +31742,8 @@ WDI_Status WDI_ProcessLphbCfgRsp
    /*-------------------------------------------------------------------------
      Extract response and send it to UMAC
    -------------------------------------------------------------------------*/
-   halStatus = *((eHalStatus*)pEventData->pEventData);
-   wdiStatus = WDI_HAL_2_WDI_STATUS(halStatus);
+   vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+   wdiStatus = WDI_HAL_2_WDI_STATUS(vosStatus);
 
    WPAL_TRACE(eWLAN_MODULE_DAL_CTRL, eWLAN_PAL_TRACE_LEVEL_ERROR,
               "LPHB Cfg Rsp Return status %d", wdiStatus);
@@ -33331,7 +33308,7 @@ WDI_ProcessUpdateChanRsp
 )
 {
   WDI_Status           wdiStatus;
-  eHalStatus           halStatus;
+  VOS_STATUS           vosStatus;
   WDI_UpdateChannelRspCb   wdiUpdateChanRspCb;
   /*- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - */
 
@@ -33352,8 +33329,8 @@ WDI_ProcessUpdateChanRsp
   /*-------------------------------------------------------------------------
     Extract response and send it to UMAC
   -------------------------------------------------------------------------*/
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus   =   WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus   =   WDI_HAL_2_WDI_STATUS(vosStatus);
 
   wdiUpdateChanRspCb( wdiStatus, pWDICtx->pRspCBUserData);
 
@@ -38247,7 +38224,7 @@ WDI_ProcessNanResponse
 )
 {
   WDI_Status wdiStatus;
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
 
   /*-------------------------------------------------------------------------
     Sanity check
@@ -38261,8 +38238,8 @@ WDI_ProcessNanResponse
      return WDI_STATUS_E_FAILURE;
   }
 
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus = WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus = WDI_HAL_2_WDI_STATUS(vosStatus);
 
   WPAL_TRACE( eWLAN_MODULE_DAL_CTRL, eWLAN_PAL_TRACE_LEVEL_INFO,
           "%s : Received NAN response, status : %d", __FUNCTION__, wdiStatus);
@@ -38437,7 +38414,7 @@ WDI_ProcessBlackListResp
 )
 {
   WDI_Status wdiStatus;
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
 
   /*-------------------------------------------------------------------------
     Sanity check
@@ -38450,8 +38427,8 @@ WDI_ProcessBlackListResp
        return WDI_STATUS_E_FAILURE;
   }
 
-  halStatus = *((eHalStatus*)pEventData->pEventData);
-  wdiStatus = WDI_HAL_2_WDI_STATUS(halStatus);
+  vosStatus = *((VOS_STATUS*)pEventData->pEventData);
+  wdiStatus = WDI_HAL_2_WDI_STATUS(vosStatus);
 
   VOS_TRACE(VOS_MODULE_ID_WDA, VOS_TRACE_LEVEL_INFO,
             "%s : Received BLACKLIST response, status : %d", __FUNCTION__, wdiStatus);

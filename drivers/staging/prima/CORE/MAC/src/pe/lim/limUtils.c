@@ -92,7 +92,7 @@ static const tANI_U8 aUnsortedChannelList[]= {52,56,60,64,100,104,108,112,116,
 #define DTIM_COUNT_DEFAULT  1
 static void
 limProcessChannelSwitchSuspendLink(tpAniSirGlobal pMac,
-                                    eHalStatus status,
+                                    VOS_STATUS status,
                                     tANI_U32 *ctx);
 /** -------------------------------------------------------------
 \fn limCheck11BRateBitmap
@@ -2722,7 +2722,7 @@ void limProcessChannelSwitchTimeout(tpAniSirGlobal pMac)
             else
             {
                 limProcessChannelSwitchSuspendLink(pMac,
-                    eHAL_STATUS_SUCCESS,
+                    VOS_STATUS_SUCCESS,
                     (tANI_U32*)psessionEntry);
             }
             break;
@@ -3487,7 +3487,7 @@ limUtilCountStaDel(
  * @param  psessionEntry      Session information 
  * @return NONE
  */
-void limSwitchChannelCback(tpAniSirGlobal pMac, eHalStatus status, 
+void limSwitchChannelCback(tpAniSirGlobal pMac, VOS_STATUS status, 
                            tANI_U32 *data, tpPESession psessionEntry)
 {
    tSirMsgQ    mmhMsg = {0};
@@ -6488,7 +6488,7 @@ tSirMsgQ msgQ;
   // we can only do BA on "hard" STAs
   if (!(IS_HWSTA_IDX(pSta->staIndex)))
   {
-    retCode = eHAL_STATUS_FAILURE;
+    retCode = VOS_STATUS_E_FAILURE;
     limLog( pMac, LOGE,
         FL( "Sta Id is not HW Sta Id, return code is %d " ), retCode);
     goto returnFailure;
@@ -6860,7 +6860,7 @@ limIsChannelValidForChannelSwitch(tpAniSirGlobal pMac, tANI_U8 channel)
 \param  type - Which way we want to stop/ resume tx.
 \param  mode - To stop/resume.
  -------------------------------------------------------*/
-static eHalStatus
+static VOS_STATUS
 __limFillTxControlParams(tpAniSirGlobal pMac, tpTxControlParams  pTxCtrlMsg,
                                         tLimQuietTxMode type, tLimControlTx mode)
 {
@@ -6897,10 +6897,10 @@ __limFillTxControlParams(tpAniSirGlobal pMac, tpTxControlParams  pTxCtrlMsg,
             //Fall thru...
         default:
             PELOGW(limLog(pMac, LOGW, FL("Invalid case: Not Handled"));)
-            return eHAL_STATUS_FAILURE;
+            return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /**
@@ -6924,7 +6924,7 @@ __limFillTxControlParams(tpAniSirGlobal pMac, tpTxControlParams  pTxCtrlMsg,
 void limFrameTransmissionControl(tpAniSirGlobal pMac, tLimQuietTxMode type, tLimControlTx mode)
 {
 
-    eHalStatus status = eHAL_STATUS_FAILURE;
+    VOS_STATUS status = VOS_STATUS_E_FAILURE;
     tpTxControlParams pTxCtrlMsg;
     tSirMsgQ          msgQ;
     tANI_U8           nBytes = 0;  // No of bytes required for station bitmap.
@@ -6943,7 +6943,7 @@ void limFrameTransmissionControl(tpAniSirGlobal pMac, tLimQuietTxMode type, tLim
     vos_mem_set((void *) pTxCtrlMsg,
                (sizeof(*pTxCtrlMsg) + nBytes), 0);
     status = __limFillTxControlParams(pMac, pTxCtrlMsg, type, mode);
-    if (status != eHAL_STATUS_SUCCESS)
+    if (status != VOS_STATUS_SUCCESS)
     {
         vos_mem_free(pTxCtrlMsg);
         limLog(pMac, LOGP, FL("__limFillTxControlParams failed, status = %d"), status);
@@ -8320,18 +8320,18 @@ void limPmfSaQueryTimerHandler(void *pMacGlobal, tANI_U32 param)
          print error log as well as restore back the
          pre-channelSwitch.
 \param   tpAniSirGlobal  pMac
-\param   eHalStatus   status
+\param   VOS_STATUS   status
 \param   tANI_U32        *ctx
 \return  None
  ------------------------------------------------------------*/
 static void
 limProcessChannelSwitchSuspendLink(tpAniSirGlobal pMac,
-                                    eHalStatus status,
+                                    VOS_STATUS status,
                                     tANI_U32 *ctx)
 {
     tpPESession         pSessionEntry = (tpPESession)ctx;
 
-    if ( eHAL_STATUS_SUCCESS != status )
+    if ( VOS_STATUS_SUCCESS != status )
     {
         limLog(pMac, LOGE,
             FL("Suspend link failed. still proceeding "));
@@ -8658,24 +8658,24 @@ void limDecrementPendingMgmtCount (tpAniSirGlobal pMac)
          limLog(pMac, LOGW, FL("Pending Management count going negative"));
 }
 
-eHalStatus limTxBdComplete(tpAniSirGlobal pMac, void *pData)
+VOS_STATUS limTxBdComplete(tpAniSirGlobal pMac, void *pData)
 {
     tpSirTxBdStatus pTxBdStatus;
 
     if (!pData)
     {
        limLog(pMac, LOGE, FL("pData is NULL"));
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
     }
 
     pTxBdStatus = (tpSirTxBdStatus) pData;
 
     limLog(pMac, LOG1, FL("txBdToken %u, txBdStatus %u"),
             pTxBdStatus->txBdToken, pTxBdStatus->txCompleteStatus);
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
-eHalStatus limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData)
+VOS_STATUS limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData)
 {
     tpSirTxBdStatus pTxBdStatus;
     tpDphHashNode pStaDs;
@@ -8687,7 +8687,7 @@ eHalStatus limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData)
     if (!pData)
     {
        limLog(pMac, LOGE, FL("pData is NULL"));
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
     }
 
     pTxBdStatus = (tpSirTxBdStatus) pData;
@@ -8723,7 +8723,7 @@ eHalStatus limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData)
 
     if (!pNode) {
         limLog(pMac, LOGE, FL("context is NULL"));
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
     psessionEntry = peFindSessionBySessionId(pMac, tmp_tx_context->psessionID);
     if (!psessionEntry) {
@@ -8731,7 +8731,7 @@ eHalStatus limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData)
         vos_list_remove_node(&pMac->assoc_rsp_completion_list,
                 pNode);
         vos_mem_free(tmp_tx_context);
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
     pStaDs = dphGetHashEntry(pMac, tmp_tx_context->staId,
                              &psessionEntry->dph.dphHashTable);
@@ -8743,7 +8743,7 @@ eHalStatus limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData)
                 pNode);
         vos_mem_free(tmp_tx_context);
 
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
 
     /* Receive path cleanup */
@@ -8752,7 +8752,7 @@ eHalStatus limAssocRspTxCompleteCnf(tpAniSirGlobal pMac, void *pData)
                 pNode);
     vos_mem_free(tmp_tx_context);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 /**
  * lim_is_robust_mgmt_action_frame() - Check if action catagory is

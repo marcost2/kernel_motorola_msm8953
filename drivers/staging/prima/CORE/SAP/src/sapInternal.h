@@ -354,7 +354,7 @@ typedef struct sWLAN_SAPEvent {
 
 ============================================================================*/
 
-eHalStatus sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
+VOS_STATUS sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
                                                 ptSapContext psapCtx);
 #endif
 
@@ -377,14 +377,14 @@ eHalStatus sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
     status: Status of scan -success, failure or abort 
    
   RETURN VALUE
-    The eHalStatus code associated with performing the operation  
+    The VOS_STATUS code associated with performing the operation  
 
-    eHAL_STATUS_SUCCESS:  Success
+    VOS_STATUS_SUCCESS:  Success
   
   SIDE EFFECTS 
 
 ============================================================================*/
-eHalStatus
+VOS_STATUS
 WLANSAP_ScanCallback
 (
   tHalHandle halHandle, 
@@ -414,14 +414,14 @@ WLANSAP_ScanCallback
       roamResult: is the result
    
   RETURN VALUE
-    The eHalStatus code associated with performing the operation  
+    The VOS_STATUS code associated with performing the operation  
 
-    eHAL_STATUS_SUCCESS:  Success
+    VOS_STATUS_SUCCESS:  Success
   
   SIDE EFFECTS 
   
 ============================================================================*/
-eHalStatus
+VOS_STATUS
 WLANSAP_RoamCallback
 (
   void *pContext, 
@@ -510,7 +510,7 @@ SapFsm
 
     IN
     callbackContext:  The user passed in a context to identify 
-    status:           The halStatus     
+    status:           The vosStatus     
    
   RETURN VALUE
     None
@@ -522,7 +522,7 @@ void
 WLANSAP_pmcFullPwrReqCB
 ( 
   void *callbackContext, 
-  eHalStatus status
+  VOS_STATUS status
 );
 
 /*==========================================================================
@@ -942,7 +942,7 @@ DESCRIPTION Function to check HT40 secondary channel is allowed or not
 SIDE EFFECTS
 ============================================================================*/
 
-eHalStatus sapCheckHT40SecondaryIsNotAllowed(ptSapContext psapCtx);
+VOS_STATUS sapCheckHT40SecondaryIsNotAllowed(ptSapContext psapCtx);
 #endif
 
 struct hdd_cache_sta_info *hdd_get_cache_stainfo(

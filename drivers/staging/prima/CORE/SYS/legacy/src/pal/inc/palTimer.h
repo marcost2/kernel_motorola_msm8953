@@ -65,21 +65,21 @@ typedef void (*palTimerCallback)(void *);
 #ifdef TIMER_MANAGER
 #define palTimerAlloc(hHdd, phPalTimer, pCallback, pContext) \
               palTimerAlloc_debug(hHdd, phPalTimer, pCallback, pContext, __FILE__, __LINE__)
-eHalStatus palTimerAlloc_debug( tHddHandle hHdd, tPalTimerHandle *phPalTimer, 
+VOS_STATUS palTimerAlloc_debug( tHddHandle hHdd, tPalTimerHandle *phPalTimer, 
                           palTimerCallback pCallback, void *pContext, char* fileName, v_U32_t lineNum  );              
 #else
-eHalStatus palTimerAlloc(tHddHandle hHdd, tPalTimerHandle *phPalTimer, palTimerCallback pCallback, void *pContext);
+VOS_STATUS palTimerAlloc(tHddHandle hHdd, tPalTimerHandle *phPalTimer, palTimerCallback pCallback, void *pContext);
 #endif
 //This function will free the timer
 //On Windows platform, it can only be called when device is unloading.
-eHalStatus palTimerFree(tHddHandle, tPalTimerHandle);
+VOS_STATUS palTimerFree(tHddHandle, tPalTimerHandle);
 //To start a timer
 //uExpireTime is the timer lapse before timer fires. If the timer is in running state and the fRestart is true,
 //uExpireTime is set so that it is the new interval, in units of microseconds
-eHalStatus palTimerStart(tHddHandle, tPalTimerHandle, tANI_U32 uExpireTime, tANI_BOOLEAN fRestart);
+VOS_STATUS palTimerStart(tHddHandle, tPalTimerHandle, tANI_U32 uExpireTime, tANI_BOOLEAN fRestart);
 //palTimerStop will cancel the timer but doesn't guarrantee the callback will not called afterwards
 //For Windows, if the driver is halting, the callback is not called after this function returns. 
-eHalStatus palTimerStop(tHddHandle, tPalTimerHandle); 
+VOS_STATUS palTimerStop(tHddHandle, tPalTimerHandle); 
 #endif
 
 #endif

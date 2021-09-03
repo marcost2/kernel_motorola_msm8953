@@ -115,7 +115,48 @@ typedef enum
    
    /// Request failed for some unknown reason.  Note don't use this
    /// status unless nothing else applies
-   VOS_STATUS_E_FAILURE   
+   VOS_STATUS_E_FAILURE,
+
+  // resource not initialized
+   VOS_STATUS_NOT_INITIALIZED,
+
+  // request is null
+   VOS_STATUS_E_NULL,
+
+  //request pending in pmc
+   VOS_STATUS_PMC_PENDING,
+
+  //pmc is disabled
+   VOS_STATUS_PMC_DISABLED,
+
+  //pmc not ready now
+   VOS_STATUS_PMC_NOT_NOW,
+
+  //pmc ac power
+   VOS_STATUS_PMC_AC_POWER,
+
+  // pmc system error
+   VOS_STATUS_SYS_ERROR,
+
+   VOS_STATUS_ALREADY_IN_IMPS,
+
+  //hearbeat timeout error
+   VOS_STATUS_HEARTBEAT_TMOUT,
+
+  //Nth beacon delivery
+   VOS_STATUS_NTH_BEACON_DELIVERY,
+
+  //csr in wrong state
+   VOS_STATUS_CSR_WRONG_STATE,
+
+  //ft preauth key success
+   VOS_STATUS_FT_PREAUTH_KEY_SUCCESS,
+
+  //ft preauth key failed
+   VOS_STATUS_FT_PREAUTH_KEY_FAILED,
+
+  //command not queued
+   VOS_STATUS_CMD_NOT_QUEUED
 
 } VOS_STATUS;
 

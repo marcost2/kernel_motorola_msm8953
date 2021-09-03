@@ -702,7 +702,7 @@ void
 limProcessEXTScanRealTimeData(tpAniSirGlobal pMac, tANI_U8 *pRxPacketInfo)
 {
     tpSirMacMgmtHdr       pHdr = NULL;
-    eHalStatus            status;
+    VOS_STATUS            status;
     void                  *pCallbackContext;
     tANI_U8               rfBand = 0;
     tANI_U8               rxChannelInBD = 0;
@@ -1358,9 +1358,9 @@ end:
  *NOTE:
  *
  * @param  pMac      Pointer to Global MAC structure
- * @return eHAL_STATUS_SUCCESS or eHAL_STATUS_FAILURE
+ * @return VOS_STATUS_SUCCESS or VOS_STATUS_E_FAILURE
  */
-eHalStatus limSendStopScanOffloadReq(tpAniSirGlobal pMac, tANI_U8 SessionId)
+VOS_STATUS limSendStopScanOffloadReq(tpAniSirGlobal pMac, tANI_U8 SessionId)
 {
     tSirMsgQ msg;
     tSirRetStatus rc = eSIR_SUCCESS;
@@ -1370,7 +1370,7 @@ eHalStatus limSendStopScanOffloadReq(tpAniSirGlobal pMac, tANI_U8 SessionId)
     if (NULL == pAbortScanParams)
     {
         limLog(pMac, LOGP, FL("Memory allocation failed for AbortScanParams"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pAbortScanParams->SessionId = SessionId;
@@ -1383,11 +1383,11 @@ eHalStatus limSendStopScanOffloadReq(tpAniSirGlobal pMac, tANI_U8 SessionId)
     {
         limLog(pMac, LOGE, FL("wdaPostCtrlMsg() return failure"));
         vos_mem_free(pAbortScanParams);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     limLog(pMac, LOG1, FL("Abort ongoing offload scan."));
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 
 }
 
@@ -1493,9 +1493,9 @@ void limMessageProcessor(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
 
 #ifdef FEATURE_OEM_DATA_SUPPORT
 
-void limOemDataRspHandleResumeLinkRsp(tpAniSirGlobal pMac, eHalStatus status, tANI_U32* mlmOemDataRsp)
+void limOemDataRspHandleResumeLinkRsp(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32* mlmOemDataRsp)
 {
-    if(status != eHAL_STATUS_SUCCESS)
+    if(status != VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOGE, FL("OEM Data Rsp failed to get the response for resume link"));
     }
@@ -1969,7 +1969,7 @@ limProcessMessages(tpAniSirGlobal pMac, tpSirMsgQ  limMsg)
                     p2pGOExists = 1;
                     vos_mem_copy(&psessionEntry->p2pGoPsNoaStartInd, limMsg->bodyptr,
                                  sizeof(tSirP2PNoaStart));
-                    if (psessionEntry->p2pGoPsNoaStartInd.status != eHAL_STATUS_SUCCESS)
+                    if (psessionEntry->p2pGoPsNoaStartInd.status != VOS_STATUS_SUCCESS)
                     {
                         limLog(pMac, LOGW, FL("GO NOA start failure status %d reported by FW."
                             " - still go ahead with deferred sme req. This is just info"),

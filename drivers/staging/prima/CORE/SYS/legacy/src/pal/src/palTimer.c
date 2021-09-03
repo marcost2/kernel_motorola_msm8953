@@ -71,10 +71,10 @@ v_VOID_t internalTimerCallback( v_PVOID_t userData )
 }
 
 #ifdef TIMER_MANAGER
-eHalStatus palTimerAlloc_debug( tHddHandle hHdd, tPalTimerHandle *phPalTimer, 
+VOS_STATUS palTimerAlloc_debug( tHddHandle hHdd, tPalTimerHandle *phPalTimer, 
                           palTimerCallback pCallback, void *pContext, char* fileName, v_U32_t lineNum  )
 {
-   eHalStatus halStatus = eHAL_STATUS_FAILURE;
+   VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
    tPalTimer *pPalTimer = NULL;
    VOS_STATUS vosStatus;
     
@@ -102,17 +102,17 @@ eHalStatus palTimerAlloc_debug( tHddHandle hHdd, tPalTimerHandle *phPalTimer,
       // return a 'handle' to the caller.
       *phPalTimer = pPalTimer;
       
-      halStatus = eHAL_STATUS_SUCCESS;
+      vosStatus = VOS_STATUS_SUCCESS;
       
    } while( 0 );   
        
-    return( halStatus );
+    return( vosStatus );
 }
 #else
-eHalStatus palTimerAlloc( tHddHandle hHdd, tPalTimerHandle *phPalTimer, 
+VOS_STATUS palTimerAlloc( tHddHandle hHdd, tPalTimerHandle *phPalTimer, 
                           palTimerCallback pCallback, void *pContext )
 {
-   eHalStatus halStatus = eHAL_STATUS_FAILURE;
+   VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
    tPalTimer *pPalTimer = NULL;
    VOS_STATUS vosStatus;
     
@@ -140,18 +140,18 @@ eHalStatus palTimerAlloc( tHddHandle hHdd, tPalTimerHandle *phPalTimer,
       // return a 'handle' to the caller.
       *phPalTimer = pPalTimer;
       
-      halStatus = eHAL_STATUS_SUCCESS;
+      vosStatus = VOS_STATUS_E_FAILURE;
       
    } while( 0 );   
        
-    return( halStatus );
+    return( vosStatus );
 }
 #endif
 
 
-eHalStatus palTimerFree( tHddHandle hHdd, tPalTimerHandle hPalTimer )
+VOS_STATUS palTimerFree( tHddHandle hHdd, tPalTimerHandle hPalTimer )
 {
-   eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+   VOS_STATUS status = VOS_STATUS_E_INVAL;
    VOS_STATUS vosStatus;
    tPalTimer *pPalTimer = (tPalTimer *)hPalTimer;
     
@@ -166,7 +166,7 @@ eHalStatus palTimerFree( tHddHandle hHdd, tPalTimerHandle hPalTimer )
       // Free the memory for the intrnal timer struct...
       vos_mem_free( pPalTimer );
       
-      status = eHAL_STATUS_SUCCESS;
+      status = VOS_STATUS_SUCCESS;
       
    } while( 0 );
     
@@ -174,9 +174,9 @@ eHalStatus palTimerFree( tHddHandle hHdd, tPalTimerHandle hPalTimer )
 }
 
 
-eHalStatus palTimerStart(tHddHandle hHdd, tPalTimerHandle hPalTimer, tANI_U32 uExpireTime, tANI_BOOLEAN fRestart)
+VOS_STATUS palTimerStart(tHddHandle hHdd, tPalTimerHandle hPalTimer, tANI_U32 uExpireTime, tANI_BOOLEAN fRestart)
 {
-   eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+   VOS_STATUS status = VOS_STATUS_E_INVAL;
    VOS_STATUS vosStatus;
    tANI_U32 expireTimeInMS = 0;
    
@@ -197,11 +197,11 @@ eHalStatus palTimerStart(tHddHandle hHdd, tPalTimerHandle hPalTimer, tANI_U32 uE
       vosStatus = vos_timer_start( &pPalTimer->vosTimer, expireTimeInMS );
       if ( !VOS_IS_STATUS_SUCCESS( vosStatus ) ) 
       {
-         status = eHAL_STATUS_FAILURE;
+         status = VOS_STATUS_E_FAILURE;
          break;
       }
       
-      status = eHAL_STATUS_SUCCESS;   
+      status = VOS_STATUS_SUCCESS;   
       
    } while( 0 );
     
@@ -209,9 +209,9 @@ eHalStatus palTimerStart(tHddHandle hHdd, tPalTimerHandle hPalTimer, tANI_U32 uE
 }
 
 
-eHalStatus palTimerStop(tHddHandle hHdd, tPalTimerHandle hPalTimer)
+VOS_STATUS palTimerStop(tHddHandle hHdd, tPalTimerHandle hPalTimer)
 {
-   eHalStatus status = eHAL_STATUS_INVALID_PARAMETER;
+   VOS_STATUS status = VOS_STATUS_E_INVAL;
    
    tPalTimer *pPalTimer = (tPalTimer *)hPalTimer;
     
@@ -224,7 +224,7 @@ eHalStatus palTimerStop(tHddHandle hHdd, tPalTimerHandle hPalTimer)
       // make sure the timer is not re-started.
       pPalTimer->fRestart = eANI_BOOLEAN_FALSE;
 
-      status = eHAL_STATUS_SUCCESS;
+      status = VOS_STATUS_SUCCESS;
 
    } while( 0 );   
    

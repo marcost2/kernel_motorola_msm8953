@@ -935,7 +935,7 @@ WDI_FillTxBd
         - original code from HAL is below - however WDI does not have access to a
         DPU index table - so it just stores the signature that it receives from HAL upon
         post assoc 
-        if(eHAL_STATUS_SUCCESS == halDpu_GetSignature(pMac, pSta->dpuIndex, &ucDpuSig))
+        if(VOS_STATUS_SUCCESS == halDpu_GetSignature(pMac, pSta->dpuIndex, &ucDpuSig))
             pBd->dpuSignature = ucDpuSig;
         else{   
             WPAL_TRACE( WPT_WDI_CONTROL_MODULE, WPT_MSG_LEVEL_HIGH, "halDpu_GetSignature() failed for dpuId = %d\n", pBd->dpuDescIdx));

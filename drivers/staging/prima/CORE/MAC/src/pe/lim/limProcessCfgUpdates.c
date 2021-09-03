@@ -759,7 +759,7 @@ limUpdateConfig(tpAniSirGlobal pMac,tpPESession psessionEntry)
     if( (!WDI_getFwWlanFeatCaps(SAP32STA)) && (val >= WNI_CFG_ASSOC_STA_LIMIT_STAMAX))
     {
         if(ccmCfgSetInt(pMac, WNI_CFG_ASSOC_STA_LIMIT, WNI_CFG_ASSOC_STA_LIMIT_STADEF,
-            NULL, eANI_BOOLEAN_FALSE) != eHAL_STATUS_SUCCESS)
+            NULL, eANI_BOOLEAN_FALSE) != VOS_STATUS_SUCCESS)
         {
            limLog( pMac, LOGP, FL( "cfg get assoc sta limit failed" ));
         }

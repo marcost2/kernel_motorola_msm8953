@@ -76,10 +76,10 @@ static inline int find_ptrn_len(const char* ptrn)
   return len;
 }
 
-static void hdd_wowl_callback( void *pContext, eHalStatus halStatus )
+static void hdd_wowl_callback( void *pContext, VOS_STATUS vosStatus )
 {
   VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO,
-      "%s: Return code = (%d)", __func__, halStatus );
+      "%s: Return code = (%d)", __func__, vosStatus );
 }
 
 #ifdef WLAN_WAKEUP_EVENTS
@@ -179,7 +179,7 @@ v_BOOL_t hdd_add_wowl_ptrn (hdd_adapter_t *pAdapter, const char * ptrn)
 {
   tSirWowlAddBcastPtrn localPattern;
   int i, first_empty_slot, len, offset;
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
   const char *temp;
   tHalHandle hHal = WLAN_HDD_GET_HAL_CTX(pAdapter);
   v_U8_t sessionId = pAdapter->sessionId;
@@ -309,12 +309,12 @@ v_BOOL_t hdd_add_wowl_ptrn (hdd_adapter_t *pAdapter, const char * ptrn)
     localPattern.ucPatternByteOffset = 0;
 
     // Register the pattern downstream
-    halStatus = sme_WowlAddBcastPattern( hHal, &localPattern, sessionId );
-    if ( !HAL_STATUS_SUCCESS( halStatus ) )
+    vosStatus = sme_WowlAddBcastPattern( hHal, &localPattern, sessionId );
+    if ( !HAL_STATUS_SUCCESS( vosStatus ) )
     {
       // Add failed, so invalidate the local storage
       VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR, 
-          "sme_WowlAddBcastPattern failed with error code (%d)", halStatus );
+          "sme_WowlAddBcastPattern failed with error code (%d)", vosStatus );
       kfree(g_hdd_wowl_ptrns[first_empty_slot]);
       g_hdd_wowl_ptrns[first_empty_slot] = NULL;
     }
@@ -349,7 +349,7 @@ v_BOOL_t hdd_del_wowl_ptrn (hdd_adapter_t *pAdapter, const char * ptrn)
   unsigned char id;
   tHalHandle hHal = WLAN_HDD_GET_HAL_CTX(pAdapter);
   v_BOOL_t patternFound = VOS_FALSE;
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
   v_U8_t sessionId = pAdapter->sessionId;
 
   // Detect pattern
@@ -366,8 +366,8 @@ v_BOOL_t hdd_del_wowl_ptrn (hdd_adapter_t *pAdapter, const char * ptrn)
   if(patternFound)
   {
     delPattern.ucPatternId = id;
-    halStatus = sme_WowlDelBcastPattern( hHal, &delPattern, sessionId );
-    if ( HAL_STATUS_SUCCESS( halStatus ) )
+    vosStatus = sme_WowlDelBcastPattern( hHal, &delPattern, sessionId );
+    if ( HAL_STATUS_SUCCESS( vosStatus ) )
     {
       // Remove from local storage as well
       VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR, 
@@ -399,7 +399,7 @@ v_BOOL_t hdd_add_wowl_ptrn_debugfs(hdd_adapter_t *pAdapter, v_U8_t pattern_idx,
                                    char *pattern_mask)
 {
   tSirWowlAddBcastPtrn localPattern;
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
   tHalHandle hHal = WLAN_HDD_GET_HAL_CTX(pAdapter);
   v_U8_t sessionId = pAdapter->sessionId;
   v_U16_t pattern_len, mask_len, i;
@@ -485,13 +485,13 @@ v_BOOL_t hdd_add_wowl_ptrn_debugfs(hdd_adapter_t *pAdapter, v_U8_t pattern_idx,
   }
 
   /* Register the pattern downstream */
-  halStatus = sme_WowlAddBcastPattern(hHal, &localPattern, sessionId);
+  vosStatus = sme_WowlAddBcastPattern(hHal, &localPattern, sessionId);
 
-  if (!HAL_STATUS_SUCCESS(halStatus))
+  if (!HAL_STATUS_SUCCESS(vosStatus))
   {
     VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                "%s: sme_WowlAddBcastPattern failed with error code (%d).",
-               __func__, halStatus);
+               __func__, vosStatus);
 
     return VOS_FALSE;
   }
@@ -522,7 +522,7 @@ v_BOOL_t hdd_del_wowl_ptrn_debugfs(hdd_adapter_t *pAdapter, v_U8_t pattern_idx)
 {
   tSirWowlDelBcastPtrn delPattern;
   tHalHandle hHal = WLAN_HDD_GET_HAL_CTX(pAdapter);
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
   v_U8_t sessionId = pAdapter->sessionId;
 
   if (pattern_idx > (WOWL_MAX_PTRNS_ALLOWED - 1))
@@ -544,13 +544,13 @@ v_BOOL_t hdd_del_wowl_ptrn_debugfs(hdd_adapter_t *pAdapter, v_U8_t pattern_idx)
   }
 
   delPattern.ucPatternId = pattern_idx;
-  halStatus = sme_WowlDelBcastPattern(hHal, &delPattern, sessionId);
+  vosStatus = sme_WowlDelBcastPattern(hHal, &delPattern, sessionId);
 
-  if (!HAL_STATUS_SUCCESS(halStatus))
+  if (!HAL_STATUS_SUCCESS(vosStatus))
   {
     VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                "%s: sme_WowlDelBcastPattern failed with error code (%d).",
-               __func__, halStatus);
+               __func__, vosStatus);
 
     return VOS_FALSE;
   }
@@ -574,7 +574,7 @@ v_BOOL_t hdd_del_wowl_ptrn_debugfs(hdd_adapter_t *pAdapter, v_U8_t pattern_idx)
 v_BOOL_t hdd_enter_wowl (hdd_adapter_t *pAdapter, v_BOOL_t enable_mp, v_BOOL_t enable_pbm)
 {
   tSirSmeWowlEnterParams wowParams;
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
   tHalHandle hHal = WLAN_HDD_GET_HAL_CTX(pAdapter);
 
   vos_mem_zero( &wowParams, sizeof( tSirSmeWowlEnterParams ) );
@@ -596,7 +596,7 @@ v_BOOL_t hdd_enter_wowl (hdd_adapter_t *pAdapter, v_BOOL_t enable_mp, v_BOOL_t e
 #endif // WLAN_WAKEUP_EVENTS
 
   // Request to put Libra into WoWL
-  halStatus = sme_EnterWowl( hHal, hdd_wowl_callback, 
+  vosStatus = sme_EnterWowl( hHal, hdd_wowl_callback, 
                              pAdapter,
 #ifdef WLAN_WAKEUP_EVENTS
                              hdd_wowl_wakeIndication_callback,
@@ -604,13 +604,13 @@ v_BOOL_t hdd_enter_wowl (hdd_adapter_t *pAdapter, v_BOOL_t enable_mp, v_BOOL_t e
 #endif // WLAN_WAKEUP_EVENTS
                              &wowParams, pAdapter->sessionId);
 
-  if ( !HAL_STATUS_SUCCESS( halStatus ) )
+  if ( !HAL_STATUS_SUCCESS( vosStatus ) )
   {
-    if ( eHAL_STATUS_PMC_PENDING != halStatus )
+    if ( VOS_STATUS_PMC_PENDING != vosStatus )
     {
       // We failed to enter WoWL
       VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR, 
-          "sme_EnterWowl failed with error code (%d)", halStatus );
+          "sme_EnterWowl failed with error code (%d)", vosStatus );
       return VOS_FALSE;
     }
   }
@@ -628,13 +628,13 @@ v_BOOL_t hdd_enter_wowl (hdd_adapter_t *pAdapter, v_BOOL_t enable_mp, v_BOOL_t e
 v_BOOL_t hdd_exit_wowl (hdd_adapter_t*pAdapter, tWowlExitSource wowlExitSrc)
 {
   tHalHandle hHal = WLAN_HDD_GET_HAL_CTX(pAdapter);
-  eHalStatus halStatus;
+  VOS_STATUS vosStatus;
 
-  halStatus = sme_ExitWowl( hHal, wowlExitSrc );
-  if ( !HAL_STATUS_SUCCESS( halStatus ) )
+  vosStatus = sme_ExitWowl( hHal, wowlExitSrc );
+  if ( !HAL_STATUS_SUCCESS( vosStatus ) )
   {
     VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
-      "sme_ExitWowl failed with error code (%d)", halStatus );
+      "sme_ExitWowl failed with error code (%d)", vosStatus );
     return VOS_FALSE;
   }
 

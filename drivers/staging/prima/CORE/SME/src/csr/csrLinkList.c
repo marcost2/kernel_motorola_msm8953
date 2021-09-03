@@ -245,15 +245,15 @@ tANI_BOOLEAN csrLLFindEntry( tDblLinkList *pList, tListElem *pEntryToFind )
 }
 
 
-eHalStatus csrLLOpen( tHddHandle hHdd, tDblLinkList *pList )
+VOS_STATUS csrLLOpen( tHddHandle hHdd, tDblLinkList *pList )
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     VOS_STATUS vosStatus;
     
     if( !pList) 
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_FATAL,"%s: Error!! pList is Null", __func__);
-        return eHAL_STATUS_FAILURE ; 
+        return VOS_STATUS_E_FAILURE ; 
     }
     
     if ( LIST_FLAG_OPEN != pList->Flag ) 
@@ -270,7 +270,7 @@ eHalStatus csrLLOpen( tHddHandle hHdd, tDblLinkList *pList )
         }
         else
         {
-           status = eHAL_STATUS_FAILURE;
+           status = VOS_STATUS_E_FAILURE;
         }
     }
     return (status);

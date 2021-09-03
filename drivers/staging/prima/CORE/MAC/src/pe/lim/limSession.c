@@ -376,7 +376,7 @@ void peDeleteSession(tpAniSirGlobal pMac, tpPESession psessionEntry)
     tANI_U16 i = 0;
     tANI_U16 n;
     TX_TIMER *timer_ptr;
-    eHalStatus lock_status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS lock_status = VOS_STATUS_SUCCESS;
 
     limLog(pMac, LOGW, FL("Trying to delete a session %d Opmode %d BssIdx %d"
            " BSSID: " MAC_ADDRESS_STR), psessionEntry->peSessionId,
@@ -437,7 +437,7 @@ void peDeleteSession(tpAniSirGlobal pMac, tpPESession psessionEntry)
     }
 
     lock_status =  pe_AcquireGlobalLock(&pMac->lim);
-    if (eHAL_STATUS_SUCCESS == lock_status)
+    if (VOS_STATUS_SUCCESS == lock_status)
     {
          if (psessionEntry->dph.dphHashTable.pHashTable != NULL)
          {

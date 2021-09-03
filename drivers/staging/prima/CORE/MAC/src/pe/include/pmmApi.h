@@ -95,9 +95,9 @@ tSirRetStatus pmmUapsdSendChangePwrSaveMsg (tpAniSirGlobal pMac, tANI_U8 mode);
 
 // handling of all idle mode power save messages
 void pmmEnterImpsRequestHandler(tpAniSirGlobal pMac);
-void pmmEnterImpsResponseHandler(tpAniSirGlobal pMac, eHalStatus rspStatus);
+void pmmEnterImpsResponseHandler(tpAniSirGlobal pMac, VOS_STATUS rspStatus);
 void pmmExitImpsRequestHandler(tpAniSirGlobal pMac);
-void pmmExitImpsResponseHandler(tpAniSirGlobal pMac, eHalStatus rspStatus);
+void pmmExitImpsResponseHandler(tpAniSirGlobal pMac, VOS_STATUS rspStatus);
 
 // handling WOWLAN messages
 void pmmSendWowlAddBcastPtrn(tpAniSirGlobal pMac, tpSirMsgQ pMsg);

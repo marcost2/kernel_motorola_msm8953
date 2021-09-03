@@ -172,7 +172,7 @@ void rrmIndicateNeighborReportResult(tpAniSirGlobal pMac, VOS_STATUS vosStatus)
   \return - 0 for success, non zero for failure
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_RrmSendBeaconReportXmitInd( tpAniSirGlobal pMac,
+static VOS_STATUS sme_RrmSendBeaconReportXmitInd( tpAniSirGlobal pMac,
                                                   tCsrScanResultInfo **pResultArr,
                                                   tANI_U8 measurementDone,
                                                   tANI_U8 bss_count )
@@ -182,7 +182,7 @@ static eHalStatus sme_RrmSendBeaconReportXmitInd( tpAniSirGlobal pMac,
    tANI_U16 length, ie_len;
    tANI_U8 bssCounter=0, msgCounter=0;
    tCsrScanResultInfo *pCurResult=NULL;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
    tpRrmSMEContext pSmeRrmContext = &pMac->rrm.rrmSmeContext;
 
 
@@ -193,7 +193,7 @@ static eHalStatus sme_RrmSendBeaconReportXmitInd( tpAniSirGlobal pMac,
    if( NULL == pResultArr && !measurementDone )
    {
       smsLog( pMac, LOGE, "Beacon report xmit Ind to PE Failed");
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    if (pResultArr)
@@ -206,7 +206,7 @@ static eHalStatus sme_RrmSendBeaconReportXmitInd( tpAniSirGlobal pMac,
        if ( NULL == pBeaconRep )
        {
           smsLog( pMac, LOGP, "Unable to allocate memory for beacon report");
-          return eHAL_STATUS_FAILED_ALLOC;
+          return VOS_STATUS_E_NOMEM;
        }
        vos_mem_zero( pBeaconRep, length );
 #if defined WLAN_VOWIFI_DEBUG
@@ -304,14 +304,14 @@ static eHalStatus sme_RrmSendBeaconReportXmitInd( tpAniSirGlobal pMac,
   \return - 0 for success, non zero for failure
 
   --------------------------------------------------------------------------*/
-static eHalStatus sme_EseSendBeaconReqScanResults(tpAniSirGlobal pMac,
+static VOS_STATUS sme_EseSendBeaconReqScanResults(tpAniSirGlobal pMac,
                                                   tANI_U32       sessionId,
                                                   tANI_U8        channel,
                                                   tCsrScanResultInfo **pResultArr,
                                                   tANI_U8        measurementDone,
                                                   tANI_U8        bss_count)
 {
-   eHalStatus              status         = eHAL_STATUS_FAILURE;
+   VOS_STATUS              status         = VOS_STATUS_E_FAILURE;
    tSirRetStatus           fillIeStatus;
    tpSirBssDescription     pBssDesc       = NULL;
    tANI_U32                ie_len         = 0;
@@ -329,13 +329,13 @@ static eHalStatus sme_EseSendBeaconReqScanResults(tpAniSirGlobal pMac,
    if (NULL == pSmeRrmContext)
    {
        smsLog( pMac, LOGE, "pSmeRrmContext is NULL");
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
 
    if (NULL == pResultArr && !measurementDone)
    {
       smsLog( pMac, LOGE, "Beacon report xmit Ind to HDD Failed");
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    if (pResultArr)
@@ -457,7 +457,7 @@ static eHalStatus sme_EseSendBeaconReqScanResults(tpAniSirGlobal pMac,
   \return - 0 for success, non zero for failure
   
   --------------------------------------------------------------------------*/
-static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
+static VOS_STATUS sme_RrmSendScanResult( tpAniSirGlobal pMac,
                                          tANI_U8 num_chan,
                                          tANI_U8* chanList,
                                          tANI_U8 measurementDone )
@@ -466,7 +466,7 @@ static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
    tScanResultHandle pResult;
    tCsrScanResultInfo *pScanResult, *pNextResult;
    tCsrScanResultInfo *pScanResultsArr[SIR_BCN_REPORT_MAX_BSS_DESC];
-   eHalStatus status;
+   VOS_STATUS status;
    tANI_U8 counter=0;
    tpRrmSMEContext pSmeRrmContext = &pMac->rrm.rrmSmeContext;
    tANI_U32 sessionId;
@@ -488,7 +488,7 @@ static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
       if( filter.SSIDs.SSIDList == NULL )
       {
          smsLog( pMac, LOGP, FL("vos_mem_malloc failed:") );
-         return eHAL_STATUS_FAILURE;
+         return VOS_STATUS_E_FAILURE;
       }
 #if defined WLAN_VOWIFI_DEBUG
       smsLog( pMac, LOGE, FL("Allocated memory for SSIDList"));
@@ -584,7 +584,7 @@ static eHalStatus sme_RrmSendScanResult( tpAniSirGlobal pMac,
           roam_info = vos_mem_malloc(sizeof(*roam_info));
           if (NULL == roam_info) {
               smsLog(pMac, LOGW, FL("vos_mem_malloc failed:"));
-              status =  eHAL_STATUS_FAILED_ALLOC;
+              status =  VOS_STATUS_E_NOMEM;
               goto rrm_send_scan_results_done;
           }
           vos_mem_zero(roam_info, sizeof(*roam_info));
@@ -651,7 +651,7 @@ rrm_send_scan_results_done:
   
   --------------------------------------------------------------------------*/
 
-static eHalStatus sme_RrmScanRequestCallback(tHalHandle halHandle, void *pContext,
+static VOS_STATUS sme_RrmScanRequestCallback(tHalHandle halHandle, void *pContext,
                          tANI_U32 scanId, eCsrScanStatus status)
 {
 
@@ -694,7 +694,7 @@ static eHalStatus sme_RrmScanRequestCallback(tHalHandle halHandle, void *pContex
 #endif
    }
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 /*--------------------------------------------------------------------------
@@ -703,14 +703,14 @@ static eHalStatus sme_RrmScanRequestCallback(tHalHandle halHandle, void *pContex
   
   \param  pMac  - pMac global pointer
   
-  \return eHAL_STATUS_SUCCESS - Validation is successful.
+  \return VOS_STATUS_SUCCESS - Validation is successful.
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_RrmIssueScanReq( tpAniSirGlobal pMac )
+VOS_STATUS sme_RrmIssueScanReq( tpAniSirGlobal pMac )
 {
-   eHalStatus status = eHAL_STATUS_SUCCESS;
+   VOS_STATUS status = VOS_STATUS_SUCCESS;
    tpRrmSMEContext pSmeRrmContext = &pMac->rrm.rrmSmeContext;
    tSirScanType scanType;
 
@@ -747,7 +747,7 @@ eHalStatus sme_RrmIssueScanReq( tpAniSirGlobal pMac )
           if (NULL == scanRequest.SSIDs.SSIDList)
           {
               smsLog( pMac, LOGP, FL("vos_mem_malloc failed:") );
-              return eHAL_STATUS_FAILURE;
+              return VOS_STATUS_E_FAILURE;
           }
 #if defined WLAN_VOWIFI_DEBUG
           smsLog( pMac, LOGE, FL("Allocated memory for pSSIDList"));
@@ -848,7 +848,7 @@ eHalStatus sme_RrmIssueScanReq( tpAniSirGlobal pMac )
                    on the message type.
                    The beginning of the buffer can always map to tSirSmeRsp.
   
-  \return eHAL_STATUS_SUCCESS - Validation is successful.
+  \return VOS_STATUS_SUCCESS - Validation is successful.
   
   \sa
   
@@ -968,7 +968,7 @@ void sme_RrmProcessBeaconReportReqInd(tpAniSirGlobal pMac, void *pMsgBuf)
   \param sessionId - session identifier on which the request should be made.       
   \param pNeighborReq - a pointer to a neighbor report request.
   
-  \return eHAL_STATUS_SUCCESS - Validation is successful.
+  \return VOS_STATUS_SUCCESS - Validation is successful.
   
   \sa
   
@@ -976,7 +976,7 @@ void sme_RrmProcessBeaconReportReqInd(tpAniSirGlobal pMac, void *pMsgBuf)
 VOS_STATUS sme_RrmNeighborReportRequest(tpAniSirGlobal pMac, tANI_U8 sessionId, 
                                     tpRrmNeighborReq pNeighborReq, tpRrmNeighborRspCallbackInfo callbackInfo)
 {
-   eHalStatus status = eHAL_STATUS_SUCCESS;
+   VOS_STATUS status = VOS_STATUS_SUCCESS;
    tpSirNeighborReportReqInd pMsg;
    tCsrRoamSession *pSession;
 
@@ -1023,7 +1023,7 @@ VOS_STATUS sme_RrmNeighborReportRequest(tpAniSirGlobal pMac, tANI_U8 sessionId,
    vos_mem_copy( &pMsg->ucSSID, &pNeighborReq->ssid, sizeof(tSirMacSSid));
 
    status = palSendMBMessage(pMac->hHdd, pMsg);
-   if( status != eHAL_STATUS_SUCCESS )
+   if( status != VOS_STATUS_SUCCESS )
       return VOS_STATUS_E_FAILURE;
 
    /* Neighbor report request message sent successfully to PE. Now register the callbacks */
@@ -1177,14 +1177,14 @@ void rrmStoreNeighborRptByRoamScore(tpAniSirGlobal pMac, tpRrmNeighborReportDesc
                    on the message type.
                    The beginning of the buffer can always map to tSirSmeRsp.
   
-  \return eHAL_STATUS_SUCCESS - Validation is successful.
+  \return VOS_STATUS_SUCCESS - Validation is successful.
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_RrmProcessNeighborReport(tpAniSirGlobal pMac, void *pMsgBuf)
+VOS_STATUS sme_RrmProcessNeighborReport(tpAniSirGlobal pMac, void *pMsgBuf)
 {
-   eHalStatus status = eHAL_STATUS_SUCCESS;
+   VOS_STATUS status = VOS_STATUS_SUCCESS;
    tpSirNeighborReportInd pNeighborRpt = (tpSirNeighborReportInd) pMsgBuf;
    tpRrmNeighborReportDesc  pNeighborReportDesc;
    tANI_U8 i = 0;
@@ -1205,7 +1205,7 @@ eHalStatus sme_RrmProcessNeighborReport(tpAniSirGlobal pMac, void *pMsgBuf)
        if (NULL == pNeighborReportDesc)
        {
            smsLog( pMac, LOGE, "Failed to allocate memory for RRM Neighbor report desc");
-           status = eHAL_STATUS_FAILED_ALLOC;
+           status = VOS_STATUS_E_NOMEM;
            goto end;
             
        }
@@ -1216,7 +1216,7 @@ eHalStatus sme_RrmProcessNeighborReport(tpAniSirGlobal pMac, void *pMsgBuf)
        {
            smsLog( pMac, LOGE, "Failed to allocate memory for RRM Neighbor report BSS Description");
            vos_mem_free(pNeighborReportDesc);
-           status = eHAL_STATUS_FAILED_ALLOC;
+           status = VOS_STATUS_E_NOMEM;
            goto end;
        }
        vos_mem_zero(pNeighborReportDesc->pNeighborBssDescription, sizeof(tSirNeighborBssDescription));
@@ -1265,12 +1265,12 @@ end:
                    on the message type.
                    The beginning of the buffer can always map to tSirSmeRsp.
   
-  \return eHAL_STATUS_SUCCESS - Validation is successful.
+  \return VOS_STATUS_SUCCESS - Validation is successful.
   
   \sa
   
   --------------------------------------------------------------------------*/
-eHalStatus sme_RrmMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
+VOS_STATUS sme_RrmMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
                                 void *pMsgBuf)
 {
    VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO_HIGH, 
@@ -1295,7 +1295,7 @@ eHalStatus sme_RrmMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type,
          break;
    }
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -1317,7 +1317,7 @@ eHalStatus sme_RrmMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type,
 void rrmIterMeasTimerHandle( v_PVOID_t userData )
 {
    tpAniSirGlobal pMac = (tpAniSirGlobal) userData;
-   eHalStatus status = eHAL_STATUS_FAILURE;
+   VOS_STATUS status = VOS_STATUS_E_FAILURE;
 
 #if defined WLAN_VOWIFI_DEBUG
    smsLog( pMac, LOGE, "Randomization timer expired...send on next channel ");
@@ -1376,7 +1376,6 @@ VOS_STATUS rrmOpen (tpAniSirGlobal pMac)
 
    VOS_STATUS vosStatus;
    tpRrmSMEContext pSmeRrmContext = &pMac->rrm.rrmSmeContext;
-   eHalStatus   halStatus = eHAL_STATUS_SUCCESS;
 
    pSmeRrmContext->rrmConfig.maxRandnInterval = 50; //ms
 
@@ -1412,8 +1411,8 @@ VOS_STATUS rrmOpen (tpAniSirGlobal pMac)
 
    pSmeRrmContext->neighborReqControlInfo.isNeighborRspPending = eANI_BOOLEAN_FALSE;
 
-   halStatus = csrLLOpen(pMac->hHdd, &pSmeRrmContext->neighborReportCache);
-   if (eHAL_STATUS_SUCCESS != halStatus)
+   vosStatus = csrLLOpen(pMac->hHdd, &pSmeRrmContext->neighborReportCache);
+   if (VOS_STATUS_SUCCESS != vosStatus)
    {
        VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "rrmOpen: Fail to open neighbor cache result");
        return VOS_STATUS_E_FAILURE;

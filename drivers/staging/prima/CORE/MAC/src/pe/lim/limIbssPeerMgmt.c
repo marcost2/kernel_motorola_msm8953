@@ -1264,7 +1264,7 @@ limIbssAddStaRsp(
         return eSIR_FAILURE;
     }
 
-    if (pAddStaParams->status != eHAL_STATUS_SUCCESS)
+    if (pAddStaParams->status != VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOGE,
           FL("IBSS: ADD_STA_RSP error (%x) from MAC: " MAC_ADDRESS_STR),
@@ -1312,7 +1312,7 @@ void limIbssDelBssRspWhenCoalescing(tpAniSirGlobal  pMac,  void *msg,tpPESession
         goto end;
     }
 
-    if (pDelBss->status != eHAL_STATUS_SUCCESS)
+    if (pDelBss->status != VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOGE, FL("IBSS: DEL_BSS_RSP(coalesce) error (%x) Bss %d "),
                pDelBss->status, pDelBss->bssIdx);
@@ -1411,7 +1411,7 @@ limIbssDelBssRsp(
 
 
 
-    if (pDelBss->status != eHAL_STATUS_SUCCESS)
+    if (pDelBss->status != VOS_STATUS_SUCCESS)
     {
         PELOGE(limLog(pMac, LOGE, FL("IBSS: DEL_BSS_RSP error (%x) Bss %d "),
                pDelBss->status, pDelBss->bssIdx);)

@@ -209,7 +209,7 @@ void lim_add_bss_info(tpDphHashNode sta_ds,
  * @return None
  */
 static void limSendSmeJoinReassocRspAfterResume( tpAniSirGlobal pMac, 
-                                       eHalStatus status, tANI_U32 *ctx)
+                                       VOS_STATUS status, tANI_U32 *ctx)
 {
     tSirMsgQ         mmhMsg;
     tpSirSmeJoinRsp  pSirSmeJoinRsp = (tpSirSmeJoinRsp) ctx;
@@ -565,7 +565,7 @@ limSendSmeJoinReassocRsp(tpAniSirGlobal pMac, tANI_U16 msgType,
     }
     else
     {
-        limSendSmeJoinReassocRspAfterResume( pMac, eHAL_STATUS_SUCCESS,
+        limSendSmeJoinReassocRspAfterResume( pMac, VOS_STATUS_SUCCESS,
                                               (tANI_U32*) pSirSmeJoinRsp );
     }
 } /*** end limSendSmeJoinReassocRsp() ***/

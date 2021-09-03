@@ -54,7 +54,7 @@
 
 
 //APIs
-eHalStatus sme_RrmMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
+VOS_STATUS sme_RrmMsgProcessor( tpAniSirGlobal pMac,  v_U16_t msg_type, 
                                 void *pMsgBuf);
 
 VOS_STATUS rrmClose (tpAniSirGlobal pMac);

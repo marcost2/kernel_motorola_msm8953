@@ -105,7 +105,7 @@ static v_S31_t hdd_TranslateABGRateToMbpsRate(v_U8_t *pFcRate)
 }
 
 
-static eHalStatus hdd_AddIwStreamEvent(int cmd, int length, char* data, hdd_scan_info_t *pscanInfo, char **last_event, char **current_event )
+static VOS_STATUS hdd_AddIwStreamEvent(int cmd, int length, char* data, hdd_scan_info_t *pscanInfo, char **last_event, char **current_event )
 {
     struct iw_event event;
 
@@ -142,7 +142,7 @@ static eHalStatus hdd_AddIwStreamEvent(int cmd, int length, char* data, hdd_scan
 
 
 /* Extract the WPA and/or RSN IEs */
-static eHalStatus hdd_GetWPARSNIEs( v_U8_t *ieFields, v_U16_t ie_length, char **last_event, char **current_event, hdd_scan_info_t *pscanInfo )
+static VOS_STATUS hdd_GetWPARSNIEs( v_U8_t *ieFields, v_U16_t ie_length, char **last_event, char **current_event, hdd_scan_info_t *pscanInfo )
 {
     v_U8_t eid, elen, *element;
     v_U16_t tie_length=0;
@@ -198,7 +198,7 @@ static eHalStatus hdd_GetWPARSNIEs( v_U8_t *ieFields, v_U16_t ie_length, char **
 
   --------------------------------------------------------------------------*/
 #define MAX_CUSTOM_LEN 64
-static eHalStatus hdd_IndicateScanResult(hdd_scan_info_t *scanInfo, tCsrScanResultInfo *scan_result)
+static VOS_STATUS hdd_IndicateScanResult(hdd_scan_info_t *scanInfo, tCsrScanResultInfo *scan_result)
 {
    hdd_adapter_t *pAdapter = WLAN_HDD_GET_PRIV_PTR(scanInfo->dev) ;
    tHalHandle hHal = WLAN_HDD_GET_HAL_CTX(pAdapter);
@@ -581,7 +581,7 @@ void __hdd_processSpoofMacAddrRequest(struct work_struct *work)
         pHddCtx->spoofMacAddr.isReqDeferred = FALSE;
         hddLog(LOG1, FL("Processing Spoof request now"));
         /* Inform SME about spoof mac addr request*/
-        if ( eHAL_STATUS_SUCCESS != sme_SpoofMacAddrReq(pHddCtx->hHal,
+        if ( VOS_STATUS_SUCCESS != sme_SpoofMacAddrReq(pHddCtx->hHal,
                 &pHddCtx->spoofMacAddr.randomMacAddr, true))
         {
             hddLog(LOGE, FL("Sending Spoof request failed - Disable spoofing"));
@@ -622,7 +622,7 @@ void hdd_processSpoofMacAddrRequest(struct work_struct *work)
 
   --------------------------------------------------------------------------*/
 
-static eHalStatus hdd_ScanRequestCallback(tHalHandle halHandle, void *pContext,
+static VOS_STATUS hdd_ScanRequestCallback(tHalHandle halHandle, void *pContext,
                          tANI_U32 scanId, eCsrScanStatus status)
 {
     struct net_device *dev = (struct net_device *) pContext;
@@ -646,7 +646,7 @@ static eHalStatus hdd_ScanRequestCallback(tHalHandle halHandle, void *pContext,
     {
        hddLog(LOGW, "%s: device mismatch %pK vs %pK",
                __func__, pAdapter->dev, dev);
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
 
     /* Check the scanId */
@@ -670,7 +670,7 @@ static eHalStatus hdd_ScanRequestCallback(tHalHandle halHandle, void *pContext,
 
     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO, "%s: exit !!!",__func__);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /**---------------------------------------------------------------------------
@@ -697,7 +697,7 @@ int __iw_set_scan(struct net_device *dev, struct iw_request_info *info,
    hdd_wext_state_t *pwextBuf;
    tCsrScanRequest scanRequest;
    v_U32_t scanId = 0;
-   eHalStatus status = eHAL_STATUS_SUCCESS;
+   VOS_STATUS status = VOS_STATUS_SUCCESS;
    struct iw_scan_req *scanReq = (struct iw_scan_req *)extra;
    int ret = 0;
 
@@ -731,13 +731,13 @@ int __iw_set_scan(struct net_device *dev, struct iw_request_info *info,
    if( VOS_TRUE == WLANBAP_AmpSessionOn() ) 
    {
        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR, "%s: No scanning when AMP is on",__func__);
-       return eHAL_STATUS_SUCCESS;
+       return VOS_STATUS_SUCCESS;
    }
 #endif
    if(pHddCtx->scan_info.mScanPending == TRUE)
    {
        VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_FATAL, "%s:mScanPending is TRUE !!!",__func__);
-       return eHAL_STATUS_SUCCESS;
+       return VOS_STATUS_SUCCESS;
    }
 
    vos_mem_zero( &scanRequest, sizeof(scanRequest));
@@ -856,7 +856,7 @@ int __iw_set_scan(struct net_device *dev, struct iw_request_info *info,
              &pHddCtx->spoofMacAddr.randomMacAddr,
              &pAdapter->macAddressCurrent);
 
-        if (status != eHAL_STATUS_SUCCESS)
+        if (status != VOS_STATUS_SUCCESS)
         {
            hddLog(LOGE, FL("Failed to update MAC Spoof Addr in TL"));
            goto error;
@@ -917,7 +917,7 @@ int __iw_get_scan(struct net_device *dev,
    hdd_context_t *pHddCtx;
    tHalHandle hHal;
    tCsrScanResultInfo *pScanResult;
-   eHalStatus status = eHAL_STATUS_SUCCESS;
+   VOS_STATUS status = VOS_STATUS_SUCCESS;
    hdd_scan_info_t scanInfo;
    tScanResultHandle pResult;
    int i = 0, ret = 0;
@@ -1009,7 +1009,7 @@ int iw_get_scan(struct net_device *dev,
 }
 
 #if 0
-static eHalStatus hdd_CscanRequestCallback(tHalHandle halHandle, void *pContext,
+static VOS_STATUS hdd_CscanRequestCallback(tHalHandle halHandle, void *pContext,
                          tANI_U32 scanId, eCsrScanStatus status)
 {
     struct net_device *dev = (struct net_device *) pContext;
@@ -1053,7 +1053,7 @@ static eHalStatus hdd_CscanRequestCallback(tHalHandle halHandle, void *pContext,
     EXIT();
     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_INFO, "%s: exit !!!",__func__);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 #endif
 
@@ -1065,7 +1065,7 @@ int iw_set_cscan(struct net_device *dev, struct iw_request_info *info,
     hdd_wext_state_t *pwextBuf = WLAN_HDD_GET_WEXT_STATE_PTR(pAdapter);
     tCsrScanRequest scanRequest;
     v_U32_t scanId = 0;
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     v_U8_t channelIdx;
 
     ENTER();
@@ -1076,14 +1076,14 @@ int iw_set_cscan(struct net_device *dev, struct iw_request_info *info,
     if( VOS_TRUE == WLANBAP_AmpSessionOn() )
     {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR, "%s: No scanning when AMP is on",__func__);
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
 #endif
 
     if ((WLAN_HDD_GET_CTX(pAdapter))->isLogpInProgress)
     {
         VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_FATAL, "%s:LOGP in Progress. Ignore!!!",__func__);
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
 
     vos_mem_zero( &scanRequest, sizeof(scanRequest));
@@ -1113,7 +1113,7 @@ int iw_set_cscan(struct net_device *dev, struct iw_request_info *info,
             if(WEXT_SCAN_PENDING_GIVEUP == scanPendingOption)
             {
                 pHddCtx->scan_info.waitScanResult = FALSE;
-                return eHAL_STATUS_SUCCESS; 
+                return VOS_STATUS_SUCCESS; 
             }
             /* If any scan pending, wait till finish current scan,
                and try this scan request when previous scan finish */
@@ -1125,14 +1125,14 @@ int iw_set_cscan(struct net_device *dev, struct iw_request_info *info,
                                           WEXT_CSCAN_SCAN_DONE_WAIT_TIME))
                 {
                     hddLog(LOG1,"%s: Previous SCAN does not finished on time",__func__);
-                    return eHAL_STATUS_SUCCESS; 
+                    return VOS_STATUS_SUCCESS; 
                 }
             }
             /* Piggyback previous scan result */
             else if(WEXT_SCAN_PENDING_PIGGYBACK == scanPendingOption)
             {
                 pHddCtx->scan_info.waitScanResult = TRUE;
-                return eHAL_STATUS_SUCCESS; 
+                return VOS_STATUS_SUCCESS; 
             }
         }
         pHddCtx->scan_info.waitScanResult = FALSE;

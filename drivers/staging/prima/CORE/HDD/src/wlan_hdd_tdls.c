@@ -1030,7 +1030,7 @@ void wlan_hdd_tdls_btCoex_cb(void *data, int indType)
 void  wlan_hdd_tdls_init(hdd_context_t *pHddCtx )
 {
     v_U8_t staIdx;
-    eHalStatus status;
+    VOS_STATUS status;
 
     pHddCtx->connected_peer_count = 0;
 
@@ -1046,7 +1046,7 @@ void  wlan_hdd_tdls_init(hdd_context_t *pHddCtx )
 
     status = sme_RegisterBtCoexTDLSCallback(pHddCtx->hHal,
                                             wlan_hdd_tdls_btCoex_cb);
-    if (status != eHAL_STATUS_SUCCESS) {
+    if (status != VOS_STATUS_SUCCESS) {
         hddLog(VOS_TRACE_LEVEL_ERROR, FL("Failed to register BT Coex TDLS callback"));
     }
 

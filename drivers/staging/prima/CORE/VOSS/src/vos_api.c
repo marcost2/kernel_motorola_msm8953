@@ -1827,7 +1827,7 @@ VOS_STATUS __vos_fatal_event_logs_req( uint32_t is_fatal,
                         bool dump_vos_trace)
 {
     VOS_STATUS vosStatus;
-    eHalStatus status;
+    VOS_STATUS status;
     VosContextType *vos_context;
     hdd_context_t *pHddCtx = NULL;
 
@@ -2999,7 +2999,7 @@ VOS_STATUS  vos_randomize_n_bytes(void *start_addr, tANI_U32 n)
 
     get_random_bytes( start_addr, n);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /**---------------------------------------------------------------------------

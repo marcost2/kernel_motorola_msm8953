@@ -85,7 +85,7 @@ VOS_STATUS sme_NanRequest(tHalHandle hHalHandle, tpNanRequestReq input,
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                 FL("Failed to get command buffer for nan req"));
-        return eHAL_STATUS_RESOURCES;
+        return VOS_STATUS_E_RESOURCES;
     }
 
     data_len = sizeof(tNanRequest) - sizeof(pNanReq->request_data)
@@ -97,7 +97,7 @@ VOS_STATUS sme_NanRequest(tHalHandle hHalHandle, tpNanRequestReq input,
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                 FL("Memory allocation failure, size : %zu"), data_len);
         csrReleaseCommand(pMac, pCommand);
-        return eHAL_STATUS_RESOURCES;
+        return VOS_STATUS_E_RESOURCES;
     }
 
     smsLog(pMac, LOG1, "Posting NAN command to csr queue");

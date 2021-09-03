@@ -230,7 +230,7 @@ void pmmInitBmpsResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg )
 
     //if response is success, then set PMM to BMPS_SLEEP state and send response back to PMC.
     //If response is failure, then send the response back to PMC and reset its state.
-    if(pEnterBmpsParams->status == eHAL_STATUS_SUCCESS)
+    if(pEnterBmpsParams->status == VOS_STATUS_SUCCESS)
     {
         pmmLog(pMac, LOG1,
             FL("pmmBmps: Received successful response from HAL to enter BMPS_POWER_SAVE "));
@@ -839,7 +839,7 @@ returnFailure:
 void pmmExitBmpsResponseHandler(tpAniSirGlobal pMac,  tpSirMsgQ limMsg)
 {
     tpExitBmpsParams  pExitBmpsRsp;
-    eHalStatus  rspStatus;
+    VOS_STATUS  rspStatus;
     tANI_U8 PowersavesessionId;
     tpPESession psessionEntry;
     tSirResultCodes retStatus = eSIR_SME_SUCCESS;
@@ -887,7 +887,7 @@ void pmmExitBmpsResponseHandler(tpAniSirGlobal pMac,  tpSirMsgQ limMsg)
      */
     switch (rspStatus)
     {
-        case eHAL_STATUS_SUCCESS:
+        case VOS_STATUS_SUCCESS:
             retStatus = eSIR_SME_SUCCESS;
             pMac->pmm.gPmmState = ePMM_STATE_BMPS_WAKEUP;
             /* Update wakeup statistics */
@@ -1044,7 +1044,7 @@ void pmmMissedBeaconHandler(tpAniSirGlobal pMac)
  * @return none.
  */
 
-void pmmExitBmpsIndicationHandler(tpAniSirGlobal pMac, tANI_U8 mode, eHalStatus rspStatus)
+void pmmExitBmpsIndicationHandler(tpAniSirGlobal pMac, tANI_U8 mode, VOS_STATUS rspStatus)
 {
 
     tANI_U32 beaconInterval = 0;
@@ -1093,7 +1093,7 @@ void pmmExitBmpsIndicationHandler(tpAniSirGlobal pMac, tANI_U8 mode, eHalStatus 
          * The PE should start taking action against this as soon as it identifies
          * that the SoftMAC has identified heart-beat miss
          */
-        case eHAL_STATUS_HEARTBEAT_TMOUT:
+        case VOS_STATUS_HEARTBEAT_TMOUT:
             {
                 pmmLog(pMac, LOG1,
                               FL("pmmBmps: The device woke up due to HeartBeat Timeout"));
@@ -1141,7 +1141,7 @@ void pmmExitBmpsIndicationHandler(tpAniSirGlobal pMac, tANI_U8 mode, eHalStatus 
             }
             break;
 
-        case eHAL_STATUS_NTH_BEACON_DELIVERY:
+        case VOS_STATUS_NTH_BEACON_DELIVERY:
             break;
 
         default:
@@ -1217,7 +1217,7 @@ void pmmProcessMessage(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
             break;
 
         case WDA_EXIT_BMPS_IND:
-            pmmExitBmpsIndicationHandler(pMac, SIR_PM_ACTIVE_MODE, (eHalStatus)pMsg->bodyval);
+            pmmExitBmpsIndicationHandler(pMac, SIR_PM_ACTIVE_MODE, (VOS_STATUS)pMsg->bodyval);
             break;
 
         case eWNI_PMC_ENTER_IMPS_REQ:
@@ -1225,7 +1225,7 @@ void pmmProcessMessage(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
             break;
 
         case WDA_ENTER_IMPS_RSP:
-            pmmEnterImpsResponseHandler(pMac, (eHalStatus)pMsg->bodyval);
+            pmmEnterImpsResponseHandler(pMac, (VOS_STATUS)pMsg->bodyval);
             break;
 
         case eWNI_PMC_EXIT_IMPS_REQ:
@@ -1233,7 +1233,7 @@ void pmmProcessMessage(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
             break;
 
         case WDA_EXIT_IMPS_RSP:
-            pmmExitImpsResponseHandler(pMac, (eHalStatus)pMsg->bodyval);
+            pmmExitImpsResponseHandler(pMac, (VOS_STATUS)pMsg->bodyval);
             break;
 
         case eWNI_PMC_ENTER_UAPSD_REQ:
@@ -1539,7 +1539,7 @@ failure:
  * @param   Global handle to MAC, Status code
  * @return  None
  */
-void pmmEnterImpsResponseHandler (tpAniSirGlobal pMac, eHalStatus rspStatus)
+void pmmEnterImpsResponseHandler (tpAniSirGlobal pMac, VOS_STATUS rspStatus)
 {
     tPmmState nextState = pMac->pmm.gPmmState;
     tSirResultCodes resultCode = eSIR_SME_SUCCESS;
@@ -1562,7 +1562,7 @@ void pmmEnterImpsResponseHandler (tpAniSirGlobal pMac, eHalStatus rspStatus)
         goto failure;
     }
 
-    if(eHAL_STATUS_SUCCESS == rspStatus)
+    if(VOS_STATUS_SUCCESS == rspStatus)
     {
         //if success, change the state to IMPS sleep mode
         pMac->pmm.gPmmState = ePMM_STATE_IMPS_SLEEP;
@@ -1693,7 +1693,7 @@ failure:
  * @param  Global handle to MAC
  * @return None
  */
-void pmmExitImpsResponseHandler(tpAniSirGlobal pMac, eHalStatus rspStatus)
+void pmmExitImpsResponseHandler(tpAniSirGlobal pMac, VOS_STATUS rspStatus)
 {
     tSirResultCodes resultCode = eSIR_SME_SUCCESS;
 
@@ -1714,7 +1714,7 @@ void pmmExitImpsResponseHandler(tpAniSirGlobal pMac, eHalStatus rspStatus)
 
     switch(rspStatus)
     {
-    case eHAL_STATUS_SUCCESS:
+    case VOS_STATUS_SUCCESS:
         {
             resultCode = eSIR_SME_SUCCESS;
             pMac->pmm.gPmmState = ePMM_STATE_IMPS_WAKEUP;
@@ -1864,7 +1864,7 @@ void pmmEnterUapsdResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
         return;
     }
 
-    if(pUapsdRspMsg->status == eHAL_STATUS_SUCCESS)
+    if(pUapsdRspMsg->status == VOS_STATUS_SUCCESS)
     {
         PELOGW(pmmLog(pMac, LOGW,
             FL("pmmUapsd: Received successful response from HAL to enter UAPSD mode "));)
@@ -2004,7 +2004,7 @@ void pmmExitUapsdResponseHandler(tpAniSirGlobal pMac,  tpSirMsgQ limMsg)
     }
     switch(pUapsdExitRspParams->status)
     {
-        case eHAL_STATUS_SUCCESS:
+        case VOS_STATUS_SUCCESS:
             resultCode = eSIR_SME_SUCCESS;
             PELOGW(pmmLog(pMac, LOGW,
                 FL("Received SIR_HAL_EXIT_UAPSD_RSP with Successful response "));)
@@ -2323,7 +2323,7 @@ tSirRetStatus pmmSendWowlEnterRequest(tpAniSirGlobal pMac, tpSirHalWowlEnterPara
 void pmmEnterWowlanResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
 {
     tpSirHalWowlEnterParams  pWowlEnterParams;
-    eHalStatus               rspStatus;
+    VOS_STATUS               rspStatus;
     tSirResultCodes          smeRspCode = eSIR_SME_SUCCESS;
 
     /* we need to process all the deferred messages enqueued
@@ -2341,7 +2341,7 @@ void pmmEnterWowlanResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
     {
         rspStatus = pWowlEnterParams->status;
 
-        if(rspStatus == eHAL_STATUS_SUCCESS)
+        if(rspStatus == VOS_STATUS_SUCCESS)
         {
             pmmLog(pMac, LOGW, FL("Rcv successful response from HAL to enter WOWLAN "));
             pMac->pmm.gPmmState = ePMM_STATE_WOWLAN;
@@ -2471,7 +2471,7 @@ void pmmExitWowlanResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
 {
 
     tpSirHalWowlExitParams  pHalWowlRspMsg;
-    eHalStatus   rspStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS   rspStatus = VOS_STATUS_E_FAILURE;
     tpPESession psessionEntry = NULL;
     tANI_U8 smeSessionId = 0;
 
@@ -2498,7 +2498,7 @@ void pmmExitWowlanResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
         }
     }
 
-    if( rspStatus == eHAL_STATUS_SUCCESS)
+    if( rspStatus == VOS_STATUS_SUCCESS)
     {
         pmmLog(pMac, LOGW, FL("Rcvd successful rsp from HAL to exit WOWLAN "));
         limSendSmeRsp(pMac, eWNI_PMC_EXIT_WOWL_RSP, eSIR_SME_SUCCESS, smeSessionId, 0);
@@ -3017,7 +3017,7 @@ void pmmSendMessageToLim(tpAniSirGlobal pMac,
 void pmmFilterMatchCountResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
 {
     tpSirRcvFltPktMatchRsp  pRcvFltPktMatchCntRsp;
-    eHalStatus              rspStatus;
+    VOS_STATUS              rspStatus;
     tSirResultCodes         smeRspCode = eSIR_SME_SUCCESS;
 
     /* we need to process all the deferred messages enqueued
@@ -3035,7 +3035,7 @@ void pmmFilterMatchCountResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
     else
     {
         rspStatus = pRcvFltPktMatchCntRsp->status;
-        if (eHAL_STATUS_SUCCESS == rspStatus)
+        if (VOS_STATUS_SUCCESS == rspStatus)
         {
             pmmLog(pMac, LOGE, FL("Rcv successful response from HAL to get "
                 "Packet Coalescing Filter Match Count"));
@@ -3058,7 +3058,7 @@ void pmmFilterMatchCountResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
 void pmmGTKOffloadGetInfoResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
 {
     tpSirGtkOffloadGetInfoRspParams  pGtkOffloadGetInfoRspParams;
-    eHalStatus                       rspStatus;
+    VOS_STATUS                       rspStatus;
     tSirResultCodes                  smeRspCode = eSIR_SME_SUCCESS;
 
     /* we need to process all the deferred messages enqueued
@@ -3075,7 +3075,7 @@ void pmmGTKOffloadGetInfoResponseHandler(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
     else
     {
         rspStatus = pGtkOffloadGetInfoRspParams->ulStatus;
-        if(rspStatus == eHAL_STATUS_SUCCESS)
+        if(rspStatus == VOS_STATUS_SUCCESS)
         {
             pmmLog(pMac, LOGW, FL("Rcv successful response from HAL to get GTK Offload Information"));
         }

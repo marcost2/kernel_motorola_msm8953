@@ -251,7 +251,7 @@ void sap_ht2040_timer_cb(v_PVOID_t usrDataForCallback)
 {
     v_U8_t cbMode;
     tHalHandle hHal;
-    eHalStatus halStatus = eHAL_STATUS_SUCCESS;
+    VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
     ptSapContext sapContext = (ptSapContext)usrDataForCallback;
     eSapPhyMode sapPhyMode;
 
@@ -298,9 +298,9 @@ void sap_ht2040_timer_cb(v_PVOID_t usrDataForCallback)
         else if (cbMode == eCSR_INI_DOUBLE_CHANNEL_LOW_PRIMARY)
             cbMode = PHY_DOUBLE_CHANNEL_LOW_PRIMARY;
 
-        halStatus = sme_SetHT2040Mode(hHal, sapContext->sessionId, cbMode);
+        vosStatus = sme_SetHT2040Mode(hHal, sapContext->sessionId, cbMode);
 
-        if (halStatus == eHAL_STATUS_FAILURE )
+        if (vosStatus == VOS_STATUS_E_FAILURE )
         {
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                               FL("Failed to change HT20/40 mode"));
@@ -324,9 +324,9 @@ void sap_ht2040_timer_cb(v_PVOID_t usrDataForCallback)
     tpSirHT2040CoexInfoInd : 20/40 Coex info
 
   RETURN VALUE
-    The eHalStatus code associated with performing the operation
+    The VOS_STATUS code associated with performing the operation
 
-    eHAL_STATUS_SUCCESS: Success
+    VOS_STATUS_SUCCESS: Success
 
   SIDE EFFECTS
 ============================================================================*/
@@ -337,7 +337,6 @@ void sapCheckHT2040CoexAction(ptSapContext psapCtx,
     v_U8_t isHT40Allowed = 1;
     tHalHandle hHal;
     v_U8_t cbMode;
-    eHalStatus halStatus;
     VOS_STATUS  vosStatus = VOS_STATUS_SUCCESS;
     unsigned int delay;
 
@@ -428,9 +427,9 @@ void sapCheckHT2040CoexAction(ptSapContext psapCtx,
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
                    FL("Move SAP from HT40 to HT20"));
 
-            halStatus = sme_SetHT2040Mode(hHal, psapCtx->sessionId,
+            vosStatus = sme_SetHT2040Mode(hHal, psapCtx->sessionId,
                                             PHY_SINGLE_CHANNEL_CENTERED);
-            if (halStatus == eHAL_STATUS_FAILURE)
+            if (vosStatus == VOS_STATUS_E_FAILURE)
             {
                 VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                         FL("Failed to change HT20/40 mode"));
@@ -500,13 +499,13 @@ void sapCheckHT2040CoexAction(ptSapContext psapCtx,
   SIDE EFFECTS
 ============================================================================*/
 
-eHalStatus sapCheckFor20MhzObss(v_U8_t channelNumber,
+VOS_STATUS sapCheckFor20MhzObss(v_U8_t channelNumber,
                             tpSirProbeRespBeacon  pBeaconStruct,
                             ptSapContext psapCtx)
 {
 
     v_U16_t secondaryChannelOffset;
-    eHalStatus halStatus = eHAL_STATUS_SUCCESS;
+    VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
 
     VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
              FL("channelNumber: %d BSS: %s"), channelNumber,
@@ -519,7 +518,7 @@ eHalStatus sapCheckFor20MhzObss(v_U8_t channelNumber,
                 FL("channelNumber: %d out of Affetced Channel Range: [%d,%d]"),
                 channelNumber, psapCtx->affected_start,
                 psapCtx->affected_end);
-        return halStatus;
+        return vosStatus;
     }
 
     if (!pBeaconStruct->HTCaps.present)
@@ -527,8 +526,8 @@ eHalStatus sapCheckFor20MhzObss(v_U8_t channelNumber,
         VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
                    FL("Found overlapping legacy BSS: %s on Channel : %d"),
                    pBeaconStruct->ssId.ssId, channelNumber);
-        halStatus = eHAL_STATUS_FAILURE;
-        return halStatus;
+        vosStatus = VOS_STATUS_E_FAILURE;
+        return vosStatus;
     }
 
     if (pBeaconStruct->HTInfo.present)
@@ -543,11 +542,11 @@ eHalStatus sapCheckFor20MhzObss(v_U8_t channelNumber,
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
                    FL("Found overlapping 20 MHz HT BSS: %s on Channel : %d"),
                    pBeaconStruct->ssId.ssId, channelNumber);
-            halStatus = eHAL_STATUS_FAILURE;
-            return halStatus;
+            vosStatus = VOS_STATUS_E_FAILURE;
+            return vosStatus;
         }
      }
-     return halStatus;
+     return vosStatus;
 }
 
 /*==========================================================================
@@ -614,11 +613,11 @@ void sapGetPrimarySecondaryChannelOfBss(tpSirProbeRespBeacon pBeaconStruct,
   SIDE EFFECTS
 ============================================================================*/
 
-eHalStatus sapCheckHT40SecondaryIsNotAllowed(ptSapContext psapCtx)
+VOS_STATUS sapCheckHT40SecondaryIsNotAllowed(ptSapContext psapCtx)
 {
     v_U8_t count;
     v_U8_t fValidChannel = 0;
-    eHalStatus halStatus = eHAL_STATUS_SUCCESS;
+    VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
 #ifdef FEATURE_WLAN_CH_AVOID
     int i;
     v_U16_t unsafeChannelList[NUM_20MHZ_RF_CHANNELS];
@@ -667,11 +666,11 @@ eHalStatus sapCheckHT40SecondaryIsNotAllowed(ptSapContext psapCtx)
                    FL("HT40 In Secondary Channel : %d not allowed"),
                    psapCtx->sap_sec_chan);
 
-        halStatus = eHAL_STATUS_FAILURE;
-        return halStatus;
+        vosStatus = VOS_STATUS_E_FAILURE;
+        return vosStatus;
     }
 
-    return halStatus;
+    return vosStatus;
 }
 
 /*==========================================================================
@@ -696,7 +695,7 @@ eHalStatus sapCheckHT40SecondaryIsNotAllowed(ptSapContext psapCtx)
   SIDE EFFECTS
 ============================================================================*/
 
-eHalStatus sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
+VOS_STATUS sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
                                           ptSapContext psapCtx)
 {
 
@@ -704,7 +703,7 @@ eHalStatus sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
     v_U32_t pri_freq, sec_freq;
     v_U32_t affected_start_freq, affected_end_freq;
     eSapPhyMode sapPhyMode;
-    eHalStatus halStatus;
+    VOS_STATUS vosStatus;
 
     pri_freq = vos_chan_to_freq(psapCtx->channel);
 
@@ -767,16 +766,16 @@ eHalStatus sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
 
         psapCtx->sap_sec_chan = vos_freq_to_chan(sec_freq);
 
-        halStatus = eHAL_STATUS_SUCCESS;
-        return halStatus;
+        vosStatus = VOS_STATUS_SUCCESS;
+        return vosStatus;
     }
     else
     {
         psapCtx->affected_start = 0;
         psapCtx->affected_end = 0;
         psapCtx->sap_sec_chan = 0;
-        halStatus = eHAL_STATUS_FAILURE;
-        return halStatus;
+        vosStatus = VOS_STATUS_E_FAILURE;
+        return vosStatus;
     }
 }
 
@@ -802,7 +801,7 @@ eHalStatus sapGet24GOBSSAffectedChannel(tHalHandle halHandle,
   SIDE EFFECTS
 ============================================================================*/
 
-eHalStatus sapCheck40Mhz24G(tHalHandle halHandle, ptSapContext psapCtx,
+VOS_STATUS sapCheck40Mhz24G(tHalHandle halHandle, ptSapContext psapCtx,
                                          tScanResultHandle pResult)
 {
     v_U32_t pri_chan, sec_chan;
@@ -811,18 +810,18 @@ eHalStatus sapCheck40Mhz24G(tHalHandle halHandle, ptSapContext psapCtx,
     tSirProbeRespBeacon *pBeaconStruct;
     tCsrScanResultInfo *pScanResult;
     tpAniSirGlobal  pMac = (tpAniSirGlobal) halHandle;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
 
     if ( (0 == psapCtx->affected_start) && (0 == psapCtx->affected_end)
        && (0 == psapCtx->sap_sec_chan))
     {
-        if (eHAL_STATUS_SUCCESS !=
+        if (VOS_STATUS_SUCCESS !=
                  sapGet24GOBSSAffectedChannel(halHandle, psapCtx))
         {
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                 FL("Failed to get OBSS Affected Channel Range for Channel: %d"),
                                 psapCtx->channel);
-            return halStatus;
+            return vosStatus;
         }
     }
 
@@ -839,7 +838,7 @@ eHalStatus sapCheck40Mhz24G(tHalHandle halHandle, ptSapContext psapCtx,
     {
         VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                    FL("Unable to allocate memory "));
-        return halStatus;
+        return vosStatus;
     }
 
     /* Check neighboring BSSes from scan result to see whether 40 MHz is
@@ -875,14 +874,14 @@ eHalStatus sapCheck40Mhz24G(tHalHandle halHandle, ptSapContext psapCtx,
                      (tANI_U8 *)( pScanResult->BssDescriptor.ieFields), ieLen)))
             {
                 /* Check Peer BSS is HT20 or Legacy AP */
-                if (eHAL_STATUS_SUCCESS !=
+                if (VOS_STATUS_SUCCESS !=
                           sapCheckFor20MhzObss(channelNumber, pBeaconStruct,
                                                                     psapCtx))
                 {
                     VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
                               FL("Overlapping 20 MHz BSS is found"));
                     vos_mem_free(pBeaconStruct);
-                    return halStatus;
+                    return vosStatus;
                 }
 
                 sapGetPrimarySecondaryChannelOfBss(pBeaconStruct,
@@ -924,7 +923,7 @@ eHalStatus sapCheck40Mhz24G(tHalHandle halHandle, ptSapContext psapCtx,
                                   psapCtx->channel, psapCtx->sap_sec_chan,
                                   pBeaconStruct->ssId.ssId, pri_chan, sec_chan);
                          vos_mem_free(pBeaconStruct);
-                         return halStatus;
+                         return vosStatus;
                     }
                 }
 
@@ -939,7 +938,7 @@ eHalStatus sapCheck40Mhz24G(tHalHandle halHandle, ptSapContext psapCtx,
                                       pBeaconStruct->ssId.ssId,
                                       channelNumber);
                         vos_mem_free(pBeaconStruct);
-                        return halStatus;
+                        return vosStatus;
                     }
                 }
             }
@@ -962,18 +961,18 @@ NextResult:
 
     if (psapCtx->sap_sec_chan)
     {
-        if (eHAL_STATUS_SUCCESS == sapCheckHT40SecondaryIsNotAllowed(psapCtx))
+        if (VOS_STATUS_SUCCESS == sapCheckHT40SecondaryIsNotAllowed(psapCtx))
         {
             VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
                        FL("Start SAP/P2P GO in HT 40MHz "
                        "Primary & Secondary Channel: [%d %d]"),
                        psapCtx->channel, psapCtx->sap_sec_chan);
-            halStatus = eHAL_STATUS_SUCCESS;
-            return halStatus;
+            vosStatus = VOS_STATUS_SUCCESS;
+            return vosStatus;
         }
     }
 
-    return halStatus;
+    return vosStatus;
 }
 #endif
 
@@ -995,13 +994,13 @@ NextResult:
     status      : Status of scan -success, failure or abort
 
   RETURN VALUE
-    The eHalStatus code associated with performing the operation
+    The VOS_STATUS code associated with performing the operation
 
-    eHAL_STATUS_SUCCESS: Success
+    VOS_STATUS_SUCCESS: Success
 
   SIDE EFFECTS
 ============================================================================*/
-eHalStatus
+VOS_STATUS
 WLANSAP_ScanCallback
 (
   tHalHandle halHandle,
@@ -1011,7 +1010,7 @@ WLANSAP_ScanCallback
 )
 {
     tScanResultHandle pResult = NULL;
-    eHalStatus scanGetResultStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS scanGetResultStatus = VOS_STATUS_E_FAILURE;
     ptSapContext psapContext = (ptSapContext)pContext;
     void *pTempHddCtx;
     tWLAN_SAPEvent sapEvent; /* State machine event */
@@ -1028,7 +1027,7 @@ WLANSAP_ScanCallback
     {
         VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_FATAL,
                    "HDD context is NULL");
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
@@ -1050,8 +1049,8 @@ WLANSAP_ScanCallback
 
             event = eSAP_MAC_SCAN_COMPLETE;
 
-            if ((scanGetResultStatus != eHAL_STATUS_SUCCESS)
-               && (scanGetResultStatus != eHAL_STATUS_E_NULL_VALUE))
+            if ((scanGetResultStatus != VOS_STATUS_SUCCESS)
+               && (scanGetResultStatus != VOS_STATUS_E_NULL))
             {
                 // No scan results
                 VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
@@ -1073,7 +1072,7 @@ WLANSAP_ScanCallback
             if ((psapContext->channel <= SIR_11B_CHANNEL_END)
                && (psapContext->channel > 0))
             {
-                if (eHAL_STATUS_SUCCESS !=
+                if (VOS_STATUS_SUCCESS !=
                          sapCheck40Mhz24G(halHandle, psapContext, pResult))
                 {
                     VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
@@ -1249,13 +1248,13 @@ static VOS_STATUS sap_roam_process_ch_change_resp(ptSapContext sap_ctx,
       roamResult    : Result
    
   RETURN VALUE
-    The eHalStatus code associated with performing the operation  
+    The VOS_STATUS code associated with performing the operation  
 
-    eHAL_STATUS_SUCCESS: Success
+    VOS_STATUS_SUCCESS: Success
   
   SIDE EFFECTS 
 ============================================================================*/
-eHalStatus
+VOS_STATUS
 WLANSAP_RoamCallback
 (
     void *pContext,           /* Opaque SAP handle */ 
@@ -1269,7 +1268,6 @@ WLANSAP_RoamCallback
     ptSapContext sapContext = (ptSapContext) pContext; 
     tWLAN_SAPEvent sapEvent; /* State machine event */
     VOS_STATUS  vosStatus = VOS_STATUS_SUCCESS;
-    eHalStatus halStatus = eHAL_STATUS_SUCCESS;
 
     VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
                       FL("Before switch on roamStatus = %d"),
@@ -1288,14 +1286,14 @@ WLANSAP_RoamCallback
             {
                VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                           "In %s invalid hHal", __func__);
-               halStatus = eHAL_STATUS_FAILED_ALLOC;
+               vosStatus = VOS_STATUS_E_NOMEM;
             }
             else
             {
                VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
                           "In %s calling sme_RoamConnect with eCSR_BSS_TYPE_INFRA_AP", __func__);
                sapContext->isSapSessionOpen = eSAP_TRUE;
-               halStatus = sme_RoamConnect(hHal, sapContext->sessionId,
+               vosStatus = sme_RoamConnect(hHal, sapContext->sessionId,
                                            &sapContext->csrRoamProfile,
                                            &sapContext->csrRoamId);
             }
@@ -1318,7 +1316,7 @@ WLANSAP_RoamCallback
                 vosStatus = sapFsm(sapContext, &sapEvent);
                 if(!VOS_IS_STATUS_SUCCESS(vosStatus))
                 {
-                    halStatus = eHAL_STATUS_FAILURE;
+                    vosStatus = VOS_STATUS_E_FAILURE;
                 }
             }
             break;
@@ -1440,26 +1438,26 @@ WLANSAP_RoamCallback
                 {
                    VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                               "In %s invalid hHal", __func__);
-                   halStatus = eHAL_STATUS_FAILED_ALLOC;
+                   vosStatus = VOS_STATUS_E_NOMEM;
                    break;
                 }
                 vosStatus = sap_roam_process_ecsa_bcn_tx_ind(hal, sapContext);
                 if (!VOS_IS_STATUS_SUCCESS(vosStatus))
-                    halStatus = eHAL_STATUS_FAILURE;
+                    vosStatus = VOS_STATUS_E_FAILURE;
                 break;
            }
         case eCSR_ROAM_ECSA_CHAN_CHANGE_RSP:
             vosStatus = sap_roam_process_ch_change_resp(sapContext,
                                                         pCsrRoamInfo);
             if (!VOS_IS_STATUS_SUCCESS(vosStatus))
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             break;
         case eCSR_ROAM_LOSTLINK_DETECTED:
             if (pCsrRoamInfo) {
                 sapSignalHDDevent(sapContext, pCsrRoamInfo,
                                   eSAP_STA_LOSTLINK_DETECTED,
                                   (v_PVOID_t)eSAP_STATUS_SUCCESS);
-                return eHAL_STATUS_SUCCESS;
+                return VOS_STATUS_SUCCESS;
            }
 
         default:
@@ -1480,7 +1478,7 @@ WLANSAP_RoamCallback
             if (!pCsrRoamInfo) {
                    VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                              FL("pCsrRoamInfo NULL " ));
-                    halStatus = eHAL_STATUS_FAILURE;
+                    vosStatus = VOS_STATUS_E_FAILURE;
                     break;
              }
             sapContext->nStaWPARSnReqIeLength = pCsrRoamInfo->rsnIELen;
@@ -1507,7 +1505,7 @@ WLANSAP_RoamCallback
                              MAC_ADDRESS_STR") fail"),
                              roamResult,
                              MAC_ADDR_ARRAY(pCsrRoamInfo->peerMac));
-                    halStatus = eHAL_STATUS_FAILURE;
+                    vosStatus = VOS_STATUS_E_FAILURE;
                 }
             }
             else
@@ -1517,7 +1515,7 @@ WLANSAP_RoamCallback
                           MAC_ADDRESS_STR") not allowed"),
                           roamResult,
                           MAC_ADDR_ARRAY(pCsrRoamInfo->peerMac));
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             } 
 
             break;
@@ -1530,7 +1528,7 @@ WLANSAP_RoamCallback
                 if (!pCsrRoamInfo) {
                        VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                                   FL("pCsrRoamInfo NULL " ));
-                        halStatus = eHAL_STATUS_FAILURE;
+                        vosStatus = VOS_STATUS_E_FAILURE;
                         break;
                  }
 
@@ -1550,7 +1548,7 @@ WLANSAP_RoamCallback
             vosStatus = sapSignalHDDevent( sapContext, pCsrRoamInfo, eSAP_STA_ASSOC_EVENT, (v_PVOID_t)eSAP_STATUS_SUCCESS);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
 #ifdef WLAN_FEATURE_AP_HT40_24G
             else
@@ -1577,7 +1575,7 @@ WLANSAP_RoamCallback
             vosStatus = sapSignalHDDevent( sapContext, pCsrRoamInfo, eSAP_STA_DISASSOC_EVENT, (v_PVOID_t)eSAP_STATUS_SUCCESS);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
             break;
 
@@ -1591,13 +1589,13 @@ WLANSAP_RoamCallback
                 if (!pCsrRoamInfo) {
                        VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                                   FL("pCsrRoamInfo NULL " ));
-                        halStatus = eHAL_STATUS_FAILURE;
+                        vosStatus = VOS_STATUS_E_FAILURE;
                         break;
                  }
                 vosStatus = sapSignalHDDevent( sapContext, pCsrRoamInfo, eSAP_STA_MIC_FAILURE_EVENT,(v_PVOID_t) NULL);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
             break;
 
@@ -1611,13 +1609,13 @@ WLANSAP_RoamCallback
                 if (!pCsrRoamInfo) {
                        VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                                   FL("pCsrRoamInfo NULL " ));
-                        halStatus = eHAL_STATUS_FAILURE;
+                        vosStatus = VOS_STATUS_E_FAILURE;
                         break;
                  }
                 vosStatus = sapSignalHDDevent( sapContext, pCsrRoamInfo, eSAP_STA_MIC_FAILURE_EVENT,(v_PVOID_t) NULL);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
             break;
 
@@ -1630,7 +1628,7 @@ WLANSAP_RoamCallback
             sapSignalHDDevent( sapContext, pCsrRoamInfo,eSAP_STA_SET_KEY_EVENT, (v_PVOID_t)eSAP_STATUS_SUCCESS);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
             break;
 
@@ -1658,7 +1656,7 @@ WLANSAP_RoamCallback
             vosStatus = sapFsm(sapContext, &sapEvent);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
             break;
 
@@ -1677,7 +1675,7 @@ WLANSAP_RoamCallback
             vosStatus = sapFsm(sapContext, &sapEvent);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
             break;
 
@@ -1691,13 +1689,13 @@ WLANSAP_RoamCallback
                 if (!pCsrRoamInfo) {
                        VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                                   FL("pCsrRoamInfo NULL " ));
-                        halStatus = eHAL_STATUS_FAILURE;
+                        vosStatus = VOS_STATUS_E_FAILURE;
                         break;
                  }
                 vosStatus = sapSignalHDDevent( sapContext, pCsrRoamInfo, eSAP_WPS_PBC_PROBE_REQ_EVENT,(v_PVOID_t) NULL);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
             break;
 
@@ -1742,7 +1740,7 @@ WLANSAP_RoamCallback
             vosStatus = sapSignalHDDevent(sapContext, pCsrRoamInfo, eSAP_MAX_ASSOC_EXCEEDED, (v_PVOID_t)NULL);
             if(!VOS_IS_STATUS_SUCCESS(vosStatus))
             {
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
             }
 
             break;
@@ -1754,5 +1752,5 @@ WLANSAP_RoamCallback
             break;
     }
 
-    return halStatus;
+    return vosStatus;
 }

@@ -375,7 +375,7 @@ limCheckAndAddBssDescription(tpAniSirGlobal pMac,
     tLimScanResultNode   *pBssDescr;
     tANI_U32              frameLen, ieLen = 0;
     tANI_U8               rxChannelInBeacon = 0;
-    eHalStatus            status;
+    VOS_STATUS            status;
     tANI_U8               dontUpdateAll = 0;
     tANI_U8               rfBand = 0;
     tANI_U8               rxChannelInBD = 0;
@@ -631,7 +631,7 @@ limCheckAndAddBssDescription(tpAniSirGlobal pMac,
         }
     }//(eANI_BOOLEAN_TRUE == fScanning)
 
-    if( eHAL_STATUS_SUCCESS != status )
+    if( VOS_STATUS_SUCCESS != status )
     {
         vos_mem_free( pBssDescr );
     }
@@ -698,7 +698,7 @@ limInitHashTable(tpAniSirGlobal pMac)
         pMac->lim.gLimCachedScanHashTable[i] = NULL;
 } /****** end limInitHashTable() ******/
 
-eHalStatus
+VOS_STATUS
 limLookupNaddHashEntry(tpAniSirGlobal pMac,
                        tLimScanResultNode *pBssDescr, tANI_U8 action,
                        tANI_U8 dontUpdateAll, tANI_U32 ie_len,
@@ -720,7 +720,7 @@ limLookupNaddHashEntry(tpAniSirGlobal pMac,
     if ((ssidLen > ie_len) || (ssidLen > DOT11F_IE_SSID_MAX_LEN)) {
         limLog(pMac, LOGE, FL("SSID length %d, IE overall Length %d"),
                ssidLen, ie_len);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     pSirCap = (tSirMacCapabilityInfo *)&pBssDescr->bssDescription.capabilityInfo;
 
@@ -774,7 +774,7 @@ limLookupNaddHashEntry(tpAniSirGlobal pMac,
                         if (elem_len > len) {
                             limLog(pMac, LOGW, FL("Invalid eid: %d elem_len: %d left: %d"),
                                    elem_id, elem_len, len);
-                            return eHAL_STATUS_FAILURE;
+                            return VOS_STATUS_E_FAILURE;
                         }
                         if ((elem_id == DOT11F_EID_WSCPROBERES) &&
                             (elem_len >= DOT11F_IE_WSCPROBERES_MIN_LEN) &&
@@ -830,7 +830,7 @@ limLookupNaddHashEntry(tpAniSirGlobal pMac,
                    if((pMac->lim.gpLimMlmScanReq->numSsid)&&
                       ( limIsNullSsid((tSirMacSSid *)((tANI_U8 *)
                       &pBssDescr->bssDescription.ieFields + 1))))
-                      return eHAL_STATUS_FAILURE;
+                      return VOS_STATUS_E_FAILURE;
                 }
 
                 // Delete this entry
@@ -882,7 +882,7 @@ limLookupNaddHashEntry(tpAniSirGlobal pMac,
     // Mesg - eWNI_SME_WM_STATUS_CHANGE_NTF
     // Status change code - eSIR_SME_CB_LEGACY_BSS_FOUND_BY_AP
     //
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -970,7 +970,7 @@ limInitLfrHashTable(tpAniSirGlobal pMac)
  * @return None
  */
 
-eHalStatus
+VOS_STATUS
 limLookupNaddLfrHashEntry(tpAniSirGlobal pMac,
                           tLimScanResultNode *pBssDescr, tANI_U8 action,
                           tANI_U8 dontUpdateAll, tANI_U32 ie_len)
@@ -990,7 +990,7 @@ limLookupNaddLfrHashEntry(tpAniSirGlobal pMac,
     if ((ssidLen > ie_len) || (ssidLen > DOT11F_IE_SSID_MAX_LEN)) {
         limLog(pMac, LOGE, FL("SSID length %d, IE overall Length %d"),
                ssidLen, ie_len);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     pSirCap = (tSirMacCapabilityInfo *)&pBssDescr->bssDescription.capabilityInfo;
 
@@ -1060,7 +1060,7 @@ limLookupNaddLfrHashEntry(tpAniSirGlobal pMac,
                    if((pMac->lim.gpLimMlmScanReq->numSsid)&&
                       ( limIsNullSsid((tSirMacSSid *)((tANI_U8 *)
                       &pBssDescr->bssDescription.ieFields + 1))))
-                      return eHAL_STATUS_FAILURE;
+                      return VOS_STATUS_E_FAILURE;
                 }
 
                 // Delete this entry
@@ -1108,7 +1108,7 @@ limLookupNaddLfrHashEntry(tpAniSirGlobal pMac,
     // Mesg - eWNI_SME_WM_STATUS_CHANGE_NTF
     // Status change code - eSIR_SME_CB_LEGACY_BSS_FOUND_BY_AP
     //
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 

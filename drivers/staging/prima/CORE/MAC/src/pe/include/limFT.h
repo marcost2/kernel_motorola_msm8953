@@ -50,12 +50,12 @@ extern void limFTOpen(tpAniSirGlobal pMac);
 extern void limFTCleanup(tpAniSirGlobal pMac);
 extern void limFTInit(tpAniSirGlobal pMac);
 extern int  limProcessFTPreAuthReq(tpAniSirGlobal pMac, tpSirMsgQ pMsg);
-extern void limPerformFTPreAuth(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data, 
+extern void limPerformFTPreAuth(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data, 
                 tpPESession psessionEntry);
 void limFTSetupAuthSession(tpAniSirGlobal pMac, tpPESession psessionEntry);
-void        limPerformPostFTPreAuth(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data, 
+void        limPerformPostFTPreAuth(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data, 
                 tpPESession psessionEntry);
-void        limFTResumeLinkCb(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data);
+void        limFTResumeLinkCb(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data);
 void        limPostFTPreAuthRsp(tpAniSirGlobal pMac, tSirRetStatus status,
                 tANI_U8 *auth_rsp, tANI_U16  auth_rsp_length,
                 tpPESession psessionEntry);

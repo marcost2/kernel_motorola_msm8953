@@ -94,7 +94,7 @@ static void
 limProcessBtampAddBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ ,tpPESession psessionEntry);
 
 void limSwitchChannelResumeLinkRsp(tpAniSirGlobal pMac,
-                            eHalStatus status, tANI_U32* mlmAddBssRsp);
+                            VOS_STATUS status, tANI_U32* mlmAddBssRsp);
 
 /**
  * limProcessMlmRspMessages()
@@ -2024,7 +2024,7 @@ void limProcessStaMlmAddStaRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ ,tpPESess
       PELOGE(limLog(pMac, LOGE,
            FL("Received Deauth frame in ADD_STA_RESP state"));)
 
-      if (eHAL_STATUS_SUCCESS == pAddStaParams->status)
+      if (VOS_STATUS_SUCCESS == pAddStaParams->status)
       {
           PELOGE(limLog(pMac, LOGE,
               FL("ADD_STA success, send update result code with"
@@ -2044,7 +2044,7 @@ void limProcessStaMlmAddStaRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ ,tpPESess
       }
     }
 
-    if ( eHAL_STATUS_SUCCESS == pAddStaParams->status )
+    if ( VOS_STATUS_SUCCESS == pAddStaParams->status )
     {
         if ( eLIM_MLM_WT_ADD_STA_RSP_STATE != psessionEntry->limMlmState)
         {
@@ -2193,7 +2193,7 @@ void limProcessStaMlmDelBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ,tpPESessi
         limLog( pMac, LOGE, FL( "Invalid body pointer in message"));
         goto end;
     }
-    if( eHAL_STATUS_SUCCESS == pDelBssParams->status )
+    if( VOS_STATUS_SUCCESS == pDelBssParams->status )
     {
         PELOGW(limLog( pMac, LOGW,
                       FL( "STA received the DEL_BSS_RSP for BSSID: %X."),pDelBssParams->bssIdx);)
@@ -2290,7 +2290,7 @@ void limProcessBtAmpApMlmDelBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ,tpPES
             rc = eSIR_SME_REFUSED;
            goto end;
     }
-    if (pDelBss->status != eHAL_STATUS_SUCCESS)
+    if (pDelBss->status != VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOGE, FL("BSS: DEL_BSS_RSP error (%x) Bss %d "),
                pDelBss->status, pDelBss->bssIdx);
@@ -2388,7 +2388,7 @@ void limProcessBtAmpApMlmDelStaRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ,tpPES
     limLog( pMac, LOG1,
             FL( "Received del Sta Rsp in StaD MlmState : %d"),
                  pStaDs->mlmStaContext.mlmState);
-    if( eHAL_STATUS_SUCCESS == pDelStaParams->status )
+    if( VOS_STATUS_SUCCESS == pDelStaParams->status )
     {
         limLog( pMac, LOGW,
                    FL( "AP received the DEL_STA_RSP for assocID: %d."), pDelStaParams->assocId);
@@ -2477,7 +2477,7 @@ void limProcessStaMlmDelStaRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ,tpPESessi
     limLog(pMac, LOG1, FL("Del STA RSP received. Status:%d AssocID:%d"),
            pDelStaParams->status, pDelStaParams->assocId);
 
-    if (eHAL_STATUS_SUCCESS != pDelStaParams->status)
+    if (VOS_STATUS_SUCCESS != pDelStaParams->status)
     {
         limLog(pMac, LOGE, FL("Del STA failed! Status:%d, still proceeding"
                "with Del BSS"), pDelStaParams->status);
@@ -2557,7 +2557,7 @@ void limProcessBtAmpApMlmAddStaRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ,tpPES
                 pStaDs->mlmStaContext.mlmState);
         goto end;
     }
-    if(eHAL_STATUS_SUCCESS != pAddStaParams->status)
+    if(VOS_STATUS_SUCCESS != pAddStaParams->status)
     {
         PELOGE(limLog(pMac, LOGE, FL("Error! rcvd delSta rsp from HAL with status %d"),pAddStaParams->status);)
         limRejectAssociation(pMac, pStaDs->staAddr,
@@ -2661,9 +2661,9 @@ limProcessApMlmAddBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ)
     }
     /* Update PE session Id*/
     mlmStartCnf.sessionId = pAddBssParams->sessionId;
-    if( eHAL_STATUS_SUCCESS == pAddBssParams->status )
+    if( VOS_STATUS_SUCCESS == pAddBssParams->status )
     {
-        limLog(pMac, LOG1, FL("WDA_ADD_BSS_RSP returned with eHAL_STATUS_SUCCESS"));
+        limLog(pMac, LOG1, FL("WDA_ADD_BSS_RSP returned with VOS_STATUS_SUCCESS"));
         if (limSetLinkState(pMac, eSIR_LINK_AP_STATE,psessionEntry->bssId,
               psessionEntry->selfMacAddr, NULL, NULL) != eSIR_SUCCESS )
             goto end;
@@ -2775,9 +2775,9 @@ limProcessIbssMlmAddBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ ,tpPESession 
         limLog( pMac, LOGE, FL( "Invalid body pointer in message"));
         goto end;
     }
-    if( eHAL_STATUS_SUCCESS == pAddBssParams->status )
+    if( VOS_STATUS_SUCCESS == pAddBssParams->status )
     {
-        limLog(pMac, LOG1, FL("WDA_ADD_BSS_RSP returned with eHAL_STATUS_SUCCESS"));
+        limLog(pMac, LOG1, FL("WDA_ADD_BSS_RSP returned with VOS_STATUS_SUCCESS"));
         if (limSetLinkState(pMac, eSIR_LINK_IBSS_STATE,psessionEntry->bssId,
              psessionEntry->selfMacAddr, NULL, NULL) != eSIR_SUCCESS )
             goto end;
@@ -2856,7 +2856,7 @@ limProcessStaMlmAddBssRspPreAssoc( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ, tpPES
         limLog( pMac, LOGE, FL( "Invalid body pointer in message"));
         goto joinFailure;
     }
-    if( eHAL_STATUS_SUCCESS == pAddBssParams->status )
+    if( VOS_STATUS_SUCCESS == pAddBssParams->status )
     {
             if ((pStaDs = dphAddHashEntry(pMac, pAddBssParams->staContext.staMac, DPH_STA_HASH_INDEX_PEER, &psessionEntry->dph.dphHashTable)) == NULL)
             {
@@ -3115,7 +3115,7 @@ limProcessStaMlmAddBssRspFT(tpAniSirGlobal pMac, tpSirMsgQ limMsgQ, tpPESession 
     // pAddStaParams->assocId = psessionEntry->limAID;
 
     pAddStaParams->staType = STA_ENTRY_SELF;
-    pAddStaParams->status = eHAL_STATUS_SUCCESS;
+    pAddStaParams->status = VOS_STATUS_SUCCESS;
     pAddStaParams->respReqd = 1;
 
     /* Update  PE session ID */
@@ -3287,7 +3287,7 @@ limProcessStaMlmAddBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ,tpPESession ps
     if(pAddBssParams == 0)
         goto end;
 
-    if( eHAL_STATUS_SUCCESS == pAddBssParams->status )
+    if( VOS_STATUS_SUCCESS == pAddBssParams->status )
     {
 #if defined(WLAN_FEATURE_VOWIFI_11R) || defined(FEATURE_WLAN_ESE) || defined(FEATURE_WLAN_LFR)
         if( eLIM_MLM_WT_ADD_BSS_RSP_FT_REASSOC_STATE == psessionEntry->limMlmState )
@@ -3768,7 +3768,7 @@ void limProcessMlmRemoveKeyRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ )
 void limProcessInitScanRsp(tpAniSirGlobal pMac,  void *body)
 {
     tpInitScanParams    pInitScanParam;
-    eHalStatus          status;
+    VOS_STATUS          status;
     SET_LIM_PROCESS_DEFD_MESGS(pMac, true);
     pInitScanParam = (tpInitScanParams) body;
     status = pInitScanParam->status;
@@ -3785,7 +3785,7 @@ void limProcessInitScanRsp(tpAniSirGlobal pMac,  void *body)
         //Set the resume channel to Any valid channel (invalid). 
         //This will instruct HAL to set it to any previous valid channel.
         peSetResumeChannel(pMac, 0, 0);
-        if (status != eHAL_STATUS_SUCCESS)
+        if (status != VOS_STATUS_SUCCESS)
         {
            PELOGW(limLog(pMac, LOGW, FL("InitScnRsp failed status=%d"),status);)
            pMac->lim.gLimHalScanState = eLIM_HAL_IDLE_SCAN_STATE;
@@ -3802,7 +3802,7 @@ void limProcessInitScanRsp(tpAniSirGlobal pMac,  void *body)
     switch(pMac->lim.gLimHalScanState)
     {
         case eLIM_HAL_INIT_SCAN_WAIT_STATE:
-            if (status != (tANI_U32) eHAL_STATUS_SUCCESS)
+            if (status != (tANI_U32) VOS_STATUS_SUCCESS)
             {
                PELOGW(limLog(pMac, LOGW, FL("InitScanRsp with failed status= %d"), status);)
                pMac->lim.gLimHalScanState = eLIM_HAL_IDLE_SCAN_STATE;
@@ -3817,7 +3817,7 @@ void limProcessInitScanRsp(tpAniSirGlobal pMac,  void *body)
                limCompleteMlmScan(pMac, eSIR_SME_HAL_SCAN_INIT_FAILED);
                 return;
             }
-            else if (status == eHAL_STATUS_SUCCESS)
+            else if (status == VOS_STATUS_SUCCESS)
             {
                 /* since we have successfully triggered a background scan,
                  * reset the "consecutive bkgnd scan failure" count to 0
@@ -3832,7 +3832,7 @@ void limProcessInitScanRsp(tpAniSirGlobal pMac,  void *body)
         case eLIM_HAL_SUSPEND_LINK_WAIT_STATE:
             if( pMac->lim.gpLimSuspendCallback )
             {
-               if( eHAL_STATUS_SUCCESS == status )
+               if( VOS_STATUS_SUCCESS == status )
                {
                   pMac->lim.gLimHalScanState = eLIM_HAL_SUSPEND_LINK_STATE;
                }
@@ -3881,7 +3881,7 @@ void limProcessInitScanRsp(tpAniSirGlobal pMac,  void *body)
  *
  * @return None
  */
-static void limProcessSwitchChannelReAssocReq(tpAniSirGlobal pMac, tpPESession psessionEntry, eHalStatus status)
+static void limProcessSwitchChannelReAssocReq(tpAniSirGlobal pMac, tpPESession psessionEntry, VOS_STATUS status)
 {
     tLimMlmReassocCnf       mlmReassocCnf;
     tLimMlmReassocReq       *pMlmReassocReq;
@@ -3896,7 +3896,7 @@ static void limProcessSwitchChannelReAssocReq(tpAniSirGlobal pMac, tpPESession p
         goto end;
     }
 
-    if(status != eHAL_STATUS_SUCCESS)
+    if(status != VOS_STATUS_SUCCESS)
     {
         PELOGE(limLog(pMac, LOGE, FL("Change channel failed!!"));)
         mlmReassocCnf.resultCode = eSIR_SME_CHANNEL_SWITCH_FAIL;
@@ -3986,12 +3986,12 @@ end:
  *
  * @return None
  */
-static void limProcessSwitchChannelJoinReq(tpAniSirGlobal pMac, tpPESession psessionEntry, eHalStatus status)
+static void limProcessSwitchChannelJoinReq(tpAniSirGlobal pMac, tpPESession psessionEntry, VOS_STATUS status)
 {
     tANI_U32            val;
     tSirMacSSid         ssId;
     tLimMlmJoinCnf      mlmJoinCnf;
-    if(status != eHAL_STATUS_SUCCESS)
+    if(status != VOS_STATUS_SUCCESS)
     {
         PELOGE(limLog(pMac, LOGE, FL("Change channel failed!!"));)
         goto error;
@@ -4134,7 +4134,7 @@ error:
 void limProcessSwitchChannelRsp(tpAniSirGlobal pMac,  void *body)
 {
     tpSwitchChannelParams pChnlParams = NULL;
-    eHalStatus status;
+    VOS_STATUS status;
     tANI_U16 channelChangeReasonCode;
     tANI_U8 peSessionId;
     tpPESession psessionEntry;
@@ -4235,7 +4235,7 @@ void limProcessSwitchChannelRsp(tpAniSirGlobal pMac,  void *body)
 void limProcessStartScanRsp(tpAniSirGlobal pMac,  void *body)
 {
     tpStartScanParams       pStartScanParam;
-    eHalStatus              status;
+    VOS_STATUS              status;
     SET_LIM_PROCESS_DEFD_MESGS(pMac, true);
     pStartScanParam = (tpStartScanParams) body;
     status = pStartScanParam->status;
@@ -4262,7 +4262,7 @@ void limProcessStartScanRsp(tpAniSirGlobal pMac,  void *body)
     switch(pMac->lim.gLimHalScanState)
     {
         case eLIM_HAL_START_SCAN_WAIT_STATE:
-            if (status != (tANI_U32) eHAL_STATUS_SUCCESS)
+            if (status != (tANI_U32) VOS_STATUS_SUCCESS)
             {
                PELOGW(limLog(pMac, LOGW, FL("StartScanRsp with failed status= %d"), status);)
                //
@@ -4292,7 +4292,7 @@ void limProcessStartScanRsp(tpAniSirGlobal pMac,  void *body)
 void limProcessEndScanRsp(tpAniSirGlobal pMac,  void *body)
 {
     tpEndScanParams     pEndScanParam;
-    eHalStatus          status;
+    VOS_STATUS          status;
     SET_LIM_PROCESS_DEFD_MESGS(pMac, true);
     pEndScanParam = (tpEndScanParams) body;
     status = pEndScanParam->status;
@@ -4301,7 +4301,7 @@ void limProcessEndScanRsp(tpAniSirGlobal pMac,  void *body)
     switch(pMac->lim.gLimHalScanState)
     {
         case eLIM_HAL_END_SCAN_WAIT_STATE:
-            if (status != (tANI_U32) eHAL_STATUS_SUCCESS)
+            if (status != (tANI_U32) VOS_STATUS_SUCCESS)
             {
                PELOGW(limLog(pMac, LOGW, FL("EndScanRsp with failed status= %d"), status);)
                pMac->lim.gLimHalScanState = eLIM_HAL_IDLE_SCAN_STATE;
@@ -4383,7 +4383,7 @@ limStartQuietOnSession (tpAniSirGlobal pMac)
 void limProcessFinishScanRsp(tpAniSirGlobal pMac,  void *body)
 {
     tpFinishScanParams      pFinishScanParam;
-    eHalStatus              status;
+    VOS_STATUS              status;
     SET_LIM_PROCESS_DEFD_MESGS(pMac, true);
     pFinishScanParam = (tpFinishScanParams) body;
     status = pFinishScanParam->status;
@@ -4419,7 +4419,7 @@ void limProcessFinishScanRsp(tpAniSirGlobal pMac,  void *body)
                 */
                 limStartQuietOnSession(pMac);
             }
-            if (status != (tANI_U32) eHAL_STATUS_SUCCESS)
+            if (status != (tANI_U32) VOS_STATUS_SUCCESS)
             {
                PELOGW(limLog(pMac, LOGW, FL("EndScanRsp with failed status= %d"), status);)
             }
@@ -4507,7 +4507,7 @@ void limProcessMlmHalAddBARsp( tpAniSirGlobal pMac,
      pMlmAddBACnf->baTimeout = pAddBAParams->baTimeout;
      pMlmAddBACnf->baDirection = pAddBAParams->baDirection;
      pMlmAddBACnf->sessionId = psessionEntry->peSessionId;
-     if(eHAL_STATUS_SUCCESS == pAddBAParams->status)
+     if(VOS_STATUS_SUCCESS == pAddBAParams->status)
         pMlmAddBACnf->addBAResultCode = eSIR_MAC_SUCCESS_STATUS;
      else
         pMlmAddBACnf->addBAResultCode = eSIR_MAC_UNSPEC_FAILURE_STATUS;
@@ -4963,9 +4963,9 @@ limProcessBtampAddBssRsp( tpAniSirGlobal pMac, tpSirMsgQ limMsgQ ,tpPESession ps
         limLog( pMac, LOGE, FL( "Invalid body pointer in message"));
         goto end;
     }
-    if( eHAL_STATUS_SUCCESS == pAddBssParams->status )
+    if( VOS_STATUS_SUCCESS == pAddBssParams->status )
     {
-        limLog(pMac, LOG2, FL("WDA_ADD_BSS_RSP returned with eHAL_STATUS_SUCCESS"));
+        limLog(pMac, LOG2, FL("WDA_ADD_BSS_RSP returned with VOS_STATUS_SUCCESS"));
          if (psessionEntry->bssType == eSIR_BTAMP_AP_MODE)
          {
              if (limSetLinkState(pMac, eSIR_LINK_BTAMP_AP_STATE, psessionEntry->bssId,
@@ -5336,10 +5336,10 @@ void limProcessMlmSpoofMacAddrRsp(tpAniSirGlobal pMac, tSirRetStatus rspStatus)
 }
 
 void limSwitchChannelResumeLinkRsp(tpAniSirGlobal pMac,
-                         eHalStatus status,
+                         VOS_STATUS status,
                          tANI_U32* mlmAddBssRsp)
 {
-    if (status != eHAL_STATUS_SUCCESS)
+    if (status != VOS_STATUS_SUCCESS)
     {
         limLog(pMac, LOGE,
             FL(" CSA failed to get the response for resume link"));

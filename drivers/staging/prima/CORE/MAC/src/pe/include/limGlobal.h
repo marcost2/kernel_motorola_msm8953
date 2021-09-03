@@ -222,7 +222,7 @@ typedef enum eLimDot11hChanSwStates
 #ifdef GEN4_SCAN
 
 //WLAN_SUSPEND_LINK Related
-typedef void (*SUSPEND_RESUME_LINK_CALLBACK)(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data);
+typedef void (*SUSPEND_RESUME_LINK_CALLBACK)(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data);
 
 // LIM to HAL SCAN Management Message Interface states
 typedef enum eLimHalScanState

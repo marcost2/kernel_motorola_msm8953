@@ -9684,7 +9684,7 @@ VOS_STATUS WDA_ProcessAggrAddTSReq(tWDA_CbContext *pWDA,
       /* send the failure response back to PE*/
       for( i = 0; i < HAL_QOS_NUM_AC_MAX; i++ )
       {
-         pAggrAddTsReqParams->status[i] = eHAL_STATUS_FAILURE ;
+         pAggrAddTsReqParams->status[i] = VOS_STATUS_E_FAILURE ;
       }
 
       WDA_SendMsg(pWdaParams->pWdaContext, WDA_AGGR_QOS_RSP, 
@@ -10062,7 +10062,7 @@ void WDA_EnterBmpsRespCallback(WDI_EnterBmpsRspParamsType *pwdiEnterBmpsRsp, voi
 
    vos_mem_free(pWdaParams->wdaWdiApiMsgParam) ;
    vos_mem_free(pWdaParams) ;
-   if (eHAL_STATUS_SUCCESS != pEnterBmpsRspParams->status)
+   if (VOS_STATUS_SUCCESS != pEnterBmpsRspParams->status)
    {
        pWDA->failureCounts.enterBmpsFailureCount++;
        if (BMPS_IMPS_FAILURE_REPORT_THRESHOLD ==
@@ -15043,7 +15043,7 @@ VOS_STATUS WDA_TxPacket(tWDA_CbContext *pWDA,
            VOS_TRACE( VOS_MODULE_ID_WDA, VOS_TRACE_LEVEL_INFO,
                    "Tx Complete Timer Start Failed ");
            pWDA->pAckTxCbFunc = NULL;
-           return eHAL_STATUS_FAILURE;
+           return VOS_STATUS_E_FAILURE;
        }
    } 
    /* Reset the event to be not signalled */
@@ -19570,14 +19570,14 @@ void WDA_ProcessTxCompleteTimeOutInd(tWDA_CbContext* pWDA)
 /*
  * WDA Set REG Domain to VOS NV
  */
-eHalStatus WDA_SetRegDomain(void * clientCtxt, v_REGDOMAIN_t regId,
+VOS_STATUS WDA_SetRegDomain(void * clientCtxt, v_REGDOMAIN_t regId,
                                                 tAniBool sendRegHint)
 {
    if(VOS_STATUS_SUCCESS != vos_nv_setRegDomain(clientCtxt, regId, sendRegHint))
    {
-      return eHAL_STATUS_INVALID_PARAMETER;
+      return VOS_STATUS_E_INVAL;
    }
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 #ifdef FEATURE_WLAN_SCAN_PNO

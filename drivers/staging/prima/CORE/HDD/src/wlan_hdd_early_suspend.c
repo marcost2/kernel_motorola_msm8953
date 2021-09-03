@@ -101,8 +101,8 @@
 #define NS_DEFAULT_SLOT_INDEX 4
 #define NS_EXTENDED_SLOT_INDEX 18
 
-static eHalStatus g_full_pwr_status;
-static eHalStatus g_standby_status;
+static VOS_STATUS g_full_pwr_status;
+static VOS_STATUS g_standby_status;
 
 extern VOS_STATUS hdd_post_voss_start_config(hdd_context_t* pHddCtx);
 extern void hdd_wlan_initial_scan(hdd_adapter_t *pAdapter);
@@ -157,13 +157,13 @@ void hdd_wlan_offload_event(uint8_t type, uint8_t state)
 #endif /* FEATURE_WLAN_DIAG_SUPPORT */
 
 //Callback invoked by PMC to report status of standby request
-void hdd_suspend_standby_cbk (void *callbackContext, eHalStatus status)
+void hdd_suspend_standby_cbk (void *callbackContext, VOS_STATUS status)
 {
    hdd_context_t *pHddCtx = (hdd_context_t*)callbackContext;
    hddLog(VOS_TRACE_LEVEL_INFO, "%s: Standby status = %d", __func__, status);
    g_standby_status = status; 
 
-   if(eHAL_STATUS_SUCCESS == status)
+   if(VOS_STATUS_SUCCESS == status)
    {
       pHddCtx->hdd_ps_state = eHDD_SUSPEND_STANDBY;
    }
@@ -176,13 +176,13 @@ void hdd_suspend_standby_cbk (void *callbackContext, eHalStatus status)
 }
 
 //Callback invoked by PMC to report status of full power request
-void hdd_suspend_full_pwr_callback(void *callbackContext, eHalStatus status)
+void hdd_suspend_full_pwr_callback(void *callbackContext, VOS_STATUS status)
 {
    hdd_context_t *pHddCtx = (hdd_context_t*)callbackContext;
    hddLog(VOS_TRACE_LEVEL_INFO, "%s: Full Power status = %d", __func__, status);
    g_full_pwr_status = status;
 
-   if(eHAL_STATUS_SUCCESS == status)
+   if(VOS_STATUS_SUCCESS == status)
    {
       pHddCtx->hdd_ps_state = eHDD_SUSPEND_NONE;
    }
@@ -194,19 +194,19 @@ void hdd_suspend_full_pwr_callback(void *callbackContext, eHalStatus status)
    complete(&pHddCtx->full_pwr_comp_var);
 }
 
-eHalStatus hdd_exit_standby(hdd_context_t *pHddCtx)
+VOS_STATUS hdd_exit_standby(hdd_context_t *pHddCtx)
 {  
-    eHalStatus status = VOS_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     long ret;
 
     hddLog(VOS_TRACE_LEVEL_INFO, "%s: WLAN being resumed from standby",__func__);
     INIT_COMPLETION(pHddCtx->full_pwr_comp_var);
 
-   g_full_pwr_status = eHAL_STATUS_FAILURE;
+   g_full_pwr_status = VOS_STATUS_E_FAILURE;
     status = sme_RequestFullPower(pHddCtx->hHal, hdd_suspend_full_pwr_callback, pHddCtx,
       eSME_FULL_PWR_NEEDED_BY_HDD);
 
-   if(status == eHAL_STATUS_PMC_PENDING)
+   if(status == VOS_STATUS_PMC_PENDING)
    {
       //Block on a completion variable. Can't wait forever though
       ret = wait_for_completion_interruptible_timeout(
@@ -218,14 +218,14 @@ eHalStatus hdd_exit_standby(hdd_context_t *pHddCtx)
                  __func__, ret);
       }
       status = g_full_pwr_status;
-      if(g_full_pwr_status != eHAL_STATUS_SUCCESS)
+      if(g_full_pwr_status != VOS_STATUS_SUCCESS)
       {
          hddLog(VOS_TRACE_LEVEL_FATAL,"%s: sme_RequestFullPower failed",__func__);
          VOS_ASSERT(0);
          goto failure;
       }
     }
-    else if(status != eHAL_STATUS_SUCCESS)
+    else if(status != VOS_STATUS_SUCCESS)
     {
       hddLog(VOS_TRACE_LEVEL_FATAL,"%s: sme_RequestFullPower failed - status %d",
          __func__, status);
@@ -245,7 +245,6 @@ failure:
 //Helper routine to put the chip into standby
 VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx)
 {
-   eHalStatus halStatus = eHAL_STATUS_SUCCESS;
    VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
    long ret;
 
@@ -263,11 +262,11 @@ VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx)
    //Core s/w needs to be optimized to handle this. Until then we request full
    //power before issuing request for standby.
    INIT_COMPLETION(pHddCtx->full_pwr_comp_var);
-   g_full_pwr_status = eHAL_STATUS_FAILURE;
-   halStatus = sme_RequestFullPower(pHddCtx->hHal, hdd_suspend_full_pwr_callback, 
+   g_full_pwr_status = VOS_STATUS_E_FAILURE;
+   vosStatus = sme_RequestFullPower(pHddCtx->hHal, hdd_suspend_full_pwr_callback, 
        pHddCtx, eSME_FULL_PWR_NEEDED_BY_HDD);
 
-   if(halStatus == eHAL_STATUS_PMC_PENDING)
+   if(vosStatus == VOS_STATUS_PMC_PENDING)
    {
       //Block on a completion variable. Can't wait forever though
       ret = wait_for_completion_interruptible_timeout(
@@ -279,7 +278,7 @@ VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx)
                 __func__, ret);
       }
 
-      if(g_full_pwr_status != eHAL_STATUS_SUCCESS)
+      if(g_full_pwr_status != VOS_STATUS_SUCCESS)
       {
          hddLog(VOS_TRACE_LEVEL_FATAL,"%s: sme_RequestFullPower Failed",__func__);
          VOS_ASSERT(0);
@@ -287,12 +286,11 @@ VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx)
          goto failure;
       }
    }
-   else if(halStatus != eHAL_STATUS_SUCCESS)
+   else if(vosStatus != VOS_STATUS_SUCCESS)
    {
       hddLog(VOS_TRACE_LEVEL_FATAL,"%s: sme_RequestFullPower failed - status %d",
-         __func__, halStatus);
+         __func__, vosStatus);
       VOS_ASSERT(0);
-      vosStatus = VOS_STATUS_E_FAILURE;
       goto failure;
    }
 
@@ -303,14 +301,14 @@ VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx)
 
    //Request standby. Standby will cause the STA to disassociate first. TX queues
    //will be disabled (by HDD) when STA disconnects. You do not want to disable TX
-   //queues here. Also do not assert if the failure code is eHAL_STATUS_PMC_NOT_NOW as PMC
+   //queues here. Also do not assert if the failure code is VOS_STATUS_PMC_NOT_NOW as PMC
    //will send this failure code in case of concurrent sessions. Power Save cannot be supported
    //when there are concurrent sessions.
    INIT_COMPLETION(pHddCtx->standby_comp_var);
-   g_standby_status = eHAL_STATUS_FAILURE;
-   halStatus = sme_RequestStandby(pHddCtx->hHal, hdd_suspend_standby_cbk, pHddCtx);
+   g_standby_status = VOS_STATUS_E_FAILURE;
+   vosStatus = sme_RequestStandby(pHddCtx->hHal, hdd_suspend_standby_cbk, pHddCtx);
 
-   if (halStatus == eHAL_STATUS_PMC_PENDING) 
+   if (vosStatus == VOS_STATUS_PMC_PENDING) 
    {
       //Wait till WLAN device enters standby mode
       ret = wait_for_completion_timeout(&pHddCtx->standby_comp_var,
@@ -320,7 +318,7 @@ VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx)
          hddLog(VOS_TRACE_LEVEL_ERROR,
                  FL("wait on standby_comp_var failed %ld"), ret);
       }
-      if (g_standby_status != eHAL_STATUS_SUCCESS && g_standby_status != eHAL_STATUS_PMC_NOT_NOW)
+      if (g_standby_status != VOS_STATUS_SUCCESS && g_standby_status != VOS_STATUS_PMC_NOT_NOW)
       {
          hddLog(VOS_TRACE_LEVEL_FATAL,"%s: sme_RequestStandby failed",__func__);
          VOS_ASSERT(0);
@@ -328,11 +326,10 @@ VOS_STATUS hdd_enter_standby(hdd_context_t *pHddCtx)
          goto failure;
       }
    }
-   else if (halStatus != eHAL_STATUS_SUCCESS && halStatus != eHAL_STATUS_PMC_NOT_NOW) {
+   else if (vosStatus != VOS_STATUS_SUCCESS && vosStatus != VOS_STATUS_PMC_NOT_NOW) {
       hddLog(VOS_TRACE_LEVEL_FATAL,"%s: sme_RequestStandby failed - status %d",
-         __func__, halStatus);
+         __func__, vosStatus);
       VOS_ASSERT(0);
-      vosStatus = VOS_STATUS_E_FAILURE;
       goto failure;
    }
    else
@@ -354,7 +351,6 @@ failure:
 //Helper routine for Deep sleep entry
 VOS_STATUS hdd_enter_deep_sleep(hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter)
 {
-   eHalStatus halStatus;
    VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
    long ret;
 
@@ -370,11 +366,11 @@ VOS_STATUS hdd_enter_deep_sleep(hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter)
 
    //Ensure that device is in full power as we will touch H/W during vos_Stop
    INIT_COMPLETION(pHddCtx->full_pwr_comp_var);
-   g_full_pwr_status = eHAL_STATUS_FAILURE;
-   halStatus = sme_RequestFullPower(pHddCtx->hHal, hdd_suspend_full_pwr_callback, 
+   g_full_pwr_status = VOS_STATUS_E_FAILURE;
+   vosStatus = sme_RequestFullPower(pHddCtx->hHal, hdd_suspend_full_pwr_callback, 
        pHddCtx, eSME_FULL_PWR_NEEDED_BY_HDD);
 
-   if(halStatus == eHAL_STATUS_PMC_PENDING)
+   if(vosStatus == VOS_STATUS_PMC_PENDING)
    {
       //Block on a completion variable. Can't wait forever though
       ret = wait_for_completion_interruptible_timeout(
@@ -385,12 +381,12 @@ VOS_STATUS hdd_enter_deep_sleep(hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter)
          hddLog(VOS_TRACE_LEVEL_ERROR,
                 FL("wait on full_pwr_comp_var failed %ld"), ret);
       }
-      if(g_full_pwr_status != eHAL_STATUS_SUCCESS){
+      if(g_full_pwr_status != VOS_STATUS_SUCCESS){
          hddLog(VOS_TRACE_LEVEL_FATAL,"%s: sme_RequestFullPower failed",__func__);
          VOS_ASSERT(0);
       }
    }
-   else if(halStatus != eHAL_STATUS_SUCCESS)
+   else if(vosStatus != VOS_STATUS_SUCCESS)
    {
       hddLog(VOS_TRACE_LEVEL_FATAL,"%s: Request for Full Power failed",__func__);
       VOS_ASSERT(0);
@@ -399,10 +395,10 @@ VOS_STATUS hdd_enter_deep_sleep(hdd_context_t *pHddCtx, hdd_adapter_t *pAdapter)
    //Issue a disconnect. This is required to inform the supplicant that
    //STA is getting disassociated and for GUI to be updated properly
    INIT_COMPLETION(pAdapter->disconnect_comp_var);
-   halStatus = sme_RoamDisconnect(pHddCtx->hHal, pAdapter->sessionId, eCSR_DISCONNECT_REASON_UNSPECIFIED);
+   vosStatus = sme_RoamDisconnect(pHddCtx->hHal, pAdapter->sessionId, eCSR_DISCONNECT_REASON_UNSPECIFIED);
 
    //Success implies disconnect command got queued up successfully
-   if(halStatus == eHAL_STATUS_SUCCESS)
+   if(vosStatus == VOS_STATUS_SUCCESS)
    {
       //Block on a completion variable. Can't wait forever though.
       ret = wait_for_completion_interruptible_timeout(
@@ -754,7 +750,7 @@ void hdd_conf_ns_offload(hdd_adapter_t *pAdapter, int fenable)
 
     int i = 0, slot = 0;
     int ret = 0;
-    eHalStatus returnStatus;
+    VOS_STATUS returnStatus;
 
     ENTER();
     hddLog(LOG1, FL(" fenable = %d"), fenable);
@@ -945,7 +941,7 @@ void hdd_conf_ns_offload(hdd_adapter_t *pAdapter, int fenable)
                     //Configure the Firmware with this
                     returnStatus = sme_SetHostOffload(halHandle,
                                     pAdapter->sessionId, &offLoadRequest);
-                    if(eHAL_STATUS_SUCCESS != returnStatus)
+                    if(VOS_STATUS_SUCCESS != returnStatus)
                     {
                         hddLog(VOS_TRACE_LEVEL_ERROR,
                         FL("Failed to enable HostOffload feature with"
@@ -975,7 +971,7 @@ void hdd_conf_ns_offload(hdd_adapter_t *pAdapter, int fenable)
         {
             hddLog(VOS_TRACE_LEVEL_INFO, FL("Disable Slot= %d"), i);
             offLoadRequest.nsOffloadInfo.slotIdx = i;
-            if (eHAL_STATUS_SUCCESS !=
+            if (VOS_STATUS_SUCCESS !=
                  sme_SetHostOffload(WLAN_HDD_GET_HAL_CTX(pAdapter),
                  pAdapter->sessionId, &offLoadRequest))
             {
@@ -1209,7 +1205,7 @@ VOS_STATUS hdd_conf_arp_offload(hdd_adapter_t *pAdapter, int fenable)
                   offLoadRequest.params.hostIpv4Addr[2],
                   offLoadRequest.params.hostIpv4Addr[3]);
 
-          if (eHAL_STATUS_SUCCESS !=
+          if (VOS_STATUS_SUCCESS !=
                     sme_SetHostOffload(WLAN_HDD_GET_HAL_CTX(pAdapter),
                     pAdapter->sessionId, &offLoadRequest))
           {
@@ -1233,7 +1229,7 @@ VOS_STATUS hdd_conf_arp_offload(hdd_adapter_t *pAdapter, int fenable)
        offLoadRequest.offloadType =  SIR_IPV4_ARP_REPLY_OFFLOAD;
        hdd_wlan_offload_event(SIR_IPV4_ARP_REPLY_OFFLOAD,
                                            SIR_OFFLOAD_DISABLE);
-       if (eHAL_STATUS_SUCCESS !=
+       if (VOS_STATUS_SUCCESS !=
                  sme_SetHostOffload(WLAN_HDD_GET_HAL_CTX(pAdapter),
                  pAdapter->sessionId, &offLoadRequest))
        {
@@ -1293,7 +1289,7 @@ void hdd_mcbc_filter_modification(hdd_context_t* pHddCtx,
 
 void hdd_conf_mcastbcast_filter(hdd_context_t* pHddCtx, v_BOOL_t setfilter)
 {
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
     tpSirWlanSetRxpFilters wlanRxpFilterParam =
                      vos_mem_malloc(sizeof(tSirWlanSetRxpFilters));
     if (NULL == wlanRxpFilterParam)
@@ -1317,9 +1313,9 @@ void hdd_conf_mcastbcast_filter(hdd_context_t* pHddCtx, v_BOOL_t setfilter)
     }
 
     wlanRxpFilterParam->setMcstBcstFilter = setfilter;
-    halStatus = sme_ConfigureRxpFilter(pHddCtx->hHal, wlanRxpFilterParam);
+    vosStatus = sme_ConfigureRxpFilter(pHddCtx->hHal, wlanRxpFilterParam);
 
-    if (setfilter && (eHAL_STATUS_SUCCESS == halStatus))
+    if (setfilter && (VOS_STATUS_SUCCESS == vosStatus))
     {
        pHddCtx->hdd_mcastbcast_filter_set = TRUE;
     }
@@ -1327,27 +1323,27 @@ void hdd_conf_mcastbcast_filter(hdd_context_t* pHddCtx, v_BOOL_t setfilter)
     hddLog(VOS_TRACE_LEVEL_INFO, "%s to post set/reset filter to"
            "lower mac with status %d"
            "configuredMcstBcstFilterSetting = %d"
-           "setMcstBcstFilter = %d",(eHAL_STATUS_SUCCESS != halStatus) ?
-           "Failed" : "Success", halStatus,
+           "setMcstBcstFilter = %d",(VOS_STATUS_SUCCESS != vosStatus) ?
+           "Failed" : "Success", vosStatus,
            wlanRxpFilterParam->configuredMcstBcstFilterSetting,
            wlanRxpFilterParam->setMcstBcstFilter);
 
-    if (eHAL_STATUS_SUCCESS != halStatus)
+    if (VOS_STATUS_SUCCESS != vosStatus)
         vos_mem_free(wlanRxpFilterParam);
 }
 
 /*
  * Enable/Disable McAddrList cfg item in fwr.
  */
-eHalStatus hdd_set_mc_list_cfg_item(hdd_context_t* pHddCtx,
+VOS_STATUS hdd_set_mc_list_cfg_item(hdd_context_t* pHddCtx,
                 bool value)
 {
-    eHalStatus ret_val;
+    VOS_STATUS ret_val;
 
     if (ccmCfgSetInt(pHddCtx->hHal, WNI_CFG_ENABLE_MC_ADDR_LIST,
-        value, NULL, eANI_BOOLEAN_FALSE) == eHAL_STATUS_FAILURE)
+        value, NULL, eANI_BOOLEAN_FALSE) == VOS_STATUS_E_FAILURE)
     {
-       ret_val = eHAL_STATUS_FAILURE;
+       ret_val = VOS_STATUS_E_FAILURE;
        hddLog(LOGE,
            FL("offload: can't pass WNI_CFG_ENABLE_MC_ADDR_LIST to CCM"));
        return ret_val;
@@ -1364,7 +1360,7 @@ eHalStatus hdd_set_mc_list_cfg_item(hdd_context_t* pHddCtx,
     }
     /* cache the value configured in fwr */
     pHddCtx->mc_list_cfg_in_fwr = value;
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 bool is_mc_list_cfg_disable_required(hdd_context_t* pHddCtx)
@@ -1488,7 +1484,7 @@ static void hdd_suspend_ind_callback(void *context, VOS_STATUS status)
 static void hdd_conf_suspend_ind(hdd_context_t* pHddCtx,
                                  hdd_adapter_t *pAdapter)
 {
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
     tpSirWlanSuspendParam wlanSuspendParam =
       vos_mem_malloc(sizeof(tSirWlanSuspendParam));
 
@@ -1537,20 +1533,20 @@ static void hdd_conf_suspend_ind(hdd_context_t* pHddCtx,
 
     }
 
-    halStatus = sme_ConfigureSuspendInd(pHddCtx->hHal, wlanSuspendParam);
-    if(eHAL_STATUS_SUCCESS == halStatus)
+    vosStatus = sme_ConfigureSuspendInd(pHddCtx->hHal, wlanSuspendParam);
+    if(VOS_STATUS_SUCCESS == vosStatus)
     {
         pHddCtx->hdd_mcastbcast_filter_set = TRUE;
     } else {
         hddLog(VOS_TRACE_LEVEL_ERROR,
-            FL("sme_ConfigureSuspendInd returned failure %d"), halStatus);
+            FL("sme_ConfigureSuspendInd returned failure %d"), vosStatus);
         vos_mem_free(wlanSuspendParam);
     }
 }
 
 static void hdd_conf_resume_ind(hdd_adapter_t *pAdapter)
 {
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
     hdd_context_t* pHddCtx = WLAN_HDD_GET_CTX(pAdapter);
     tpSirWlanResumeParam wlanResumeParam;
 
@@ -1571,11 +1567,11 @@ static void hdd_conf_resume_ind(hdd_adapter_t *pAdapter)
 
     wlanResumeParam->configuredMcstBcstFilterSetting =
                                pHddCtx->configuredMcastBcastFilter;
-    halStatus = sme_ConfigureResumeReq(pHddCtx->hHal, wlanResumeParam);
-    if (eHAL_STATUS_SUCCESS != halStatus)
+    vosStatus = sme_ConfigureResumeReq(pHddCtx->hHal, wlanResumeParam);
+    if (VOS_STATUS_SUCCESS != vosStatus)
     {
         hddLog(VOS_TRACE_LEVEL_ERROR,
-              "%s: sme_ConfigureResumeReq return failure %d", __func__, halStatus);
+              "%s: sme_ConfigureResumeReq return failure %d", __func__, vosStatus);
         vos_mem_free(wlanResumeParam);
     }
 
@@ -1891,7 +1887,7 @@ void hdd_unregister_mcast_bcast_filter(hdd_context_t *pHddCtx)
 #ifdef WLAN_FEATURE_GTK_OFFLOAD
 void hdd_conf_gtk_offload(hdd_adapter_t *pAdapter, v_BOOL_t fenable)
 {
-    eHalStatus ret;
+    VOS_STATUS ret;
     tSirGtkOffloadParams hddGtkOffloadReqParams;
     hdd_station_ctx_t *pHddStaCtx = WLAN_HDD_GET_STATION_CTX_PTR(pAdapter);
 
@@ -1906,7 +1902,7 @@ void hdd_conf_gtk_offload(hdd_adapter_t *pAdapter, v_BOOL_t fenable)
 
             ret = sme_SetGTKOffload(WLAN_HDD_GET_HAL_CTX(pAdapter),
                           &hddGtkOffloadReqParams, pAdapter->sessionId);
-            if (eHAL_STATUS_SUCCESS != ret)
+            if (VOS_STATUS_SUCCESS != ret)
             {
                 VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                        "%s: sme_SetGTKOffload failed, returned %d",
@@ -1931,7 +1927,7 @@ void hdd_conf_gtk_offload(hdd_adapter_t *pAdapter, v_BOOL_t fenable)
             ret = sme_GetGTKOffload(WLAN_HDD_GET_HAL_CTX(pAdapter),
                                 wlan_hdd_cfg80211_update_replayCounterCallback,
                                 pAdapter, pAdapter->sessionId);
-            if (eHAL_STATUS_SUCCESS != ret)
+            if (VOS_STATUS_SUCCESS != ret)
 
             {
                 VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
@@ -1951,7 +1947,7 @@ void hdd_conf_gtk_offload(hdd_adapter_t *pAdapter, v_BOOL_t fenable)
                 hddGtkOffloadReqParams.ulFlags = GTK_OFFLOAD_DISABLE;
                 ret = sme_SetGTKOffload(WLAN_HDD_GET_HAL_CTX(pAdapter),
                                 &hddGtkOffloadReqParams, pAdapter->sessionId);
-                if (eHAL_STATUS_SUCCESS != ret)
+                if (VOS_STATUS_SUCCESS != ret)
                 {
                     VOS_TRACE(VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
                             "%s: failed to dissable GTK offload, returned %d",
@@ -2575,7 +2571,6 @@ VOS_STATUS hdd_wlan_re_init(void)
    VOS_STATUS       vosStatus;
    v_CONTEXT_t      pVosContext = NULL;
    hdd_context_t    *pHddCtx = NULL;
-   eHalStatus       halStatus;
 #ifdef HAVE_WCNSS_CAL_DOWNLOAD
    int              max_retries = 0;
 #endif
@@ -2675,13 +2670,13 @@ VOS_STATUS hdd_wlan_re_init(void)
 
    /* Set the MAC Address, currently this is used by HAL to add self sta.
     * Remove this once self sta is added as part of session open. */
-   halStatus = cfgSetStr(pHddCtx->hHal, WNI_CFG_STA_ID,
+   vosStatus = cfgSetStr(pHddCtx->hHal, WNI_CFG_STA_ID,
          (v_U8_t *)&pHddCtx->cfg_ini->intfMacAddr[0],
            sizeof(pHddCtx->cfg_ini->intfMacAddr[0]));
-   if (!HAL_STATUS_SUCCESS(halStatus))
+   if (!HAL_STATUS_SUCCESS(vosStatus))
    {
       hddLog(VOS_TRACE_LEVEL_ERROR,"%s: Failed to set MAC Address. "
-            "HALStatus is %08d [x%08x]",__func__, halStatus, halStatus);
+            "HALStatus is %08d [x%08x]",__func__, vosStatus, vosStatus);
       goto err_vosclose;
    }
 

@@ -529,7 +529,7 @@ static tANI_U32 limPrepareTdlsFrameHeader(tpAniSirGlobal pMac, tANI_U8* pFrame,
 /*
  * TX Complete for Management frames
  */
- eHalStatus limMgmtTXComplete(tpAniSirGlobal pMac,
+ VOS_STATUS limMgmtTXComplete(tpAniSirGlobal pMac,
                                    void *pData)
 {
     tANI_U32 txCompleteSuccess = 0;
@@ -538,7 +538,7 @@ static tANI_U32 limPrepareTdlsFrameHeader(tpAniSirGlobal pMac, tANI_U8* pFrame,
     if (!pData)
     {
         limLog(pMac, LOGE, FL("pData is NULL"));
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
     }
 
     if (IS_FEATURE_SUPPORTED_BY_FW(ENHANCED_TXBD_COMPLETION))
@@ -560,7 +560,7 @@ static tANI_U32 limPrepareTdlsFrameHeader(tpAniSirGlobal pMac, tANI_U8* pFrame,
                                    txCompleteSuccess);
         pMac->lim.mgmtFrameSessionId = 0xff;
     }
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /*
@@ -578,7 +578,7 @@ tSirRetStatus limSendTdlsDisReqFrame(tpAniSirGlobal pMac, tSirMacAddr peer_mac,
     tANI_U32            header_offset = 0 ;
     tANI_U8            *pFrame;
     void               *pPacket;
-    eHalStatus          halstatus;
+    VOS_STATUS          halstatus;
 #ifndef NO_PAD_TDLS_MIN_8023_SIZE
     tANI_U32            padLen = 0;
 #endif
@@ -821,7 +821,7 @@ static tSirRetStatus limSendTdlsDisRspFrame(tpAniSirGlobal pMac,
     tANI_U32            nBytes = 0 ;
     tANI_U8            *pFrame;
     void               *pPacket;
-    eHalStatus          halstatus;
+    VOS_STATUS          halstatus;
     uint32              selfDot11Mode;
 //  Placeholder to support different channel bonding mode of TDLS than AP.
 //  Today, WNI_CFG_CHANNEL_BONDING_MODE will be overwritten when connecting to AP
@@ -990,7 +990,7 @@ static tSirRetStatus limSendTdlsDisRspFrame(tpAniSirGlobal pMac,
 
         if(TX_SUCCESS != tx_timer_activate(&pMac->hal.txCompTimer)) 
         {
-            status = eHAL_STATUS_FAILURE;
+            status = VOS_STATUS_E_FAILURE;
             return status;
                 
         }
@@ -1088,7 +1088,7 @@ tSirRetStatus limSendTdlsLinkSetupReqFrame(tpAniSirGlobal pMac,
     tANI_U32            header_offset = 0 ;
     tANI_U8            *pFrame;
     void               *pPacket;
-    eHalStatus          halstatus;
+    VOS_STATUS          halstatus;
     uint32              selfDot11Mode;
     tpSirMacCapabilityInfo pCapInfo;
 //  Placeholder to support different channel bonding mode of TDLS than AP.
@@ -1360,7 +1360,7 @@ tSirRetStatus limSendTdlsTeardownFrame(tpAniSirGlobal pMac,
     tANI_U32            header_offset = 0 ;
     tANI_U8            *pFrame;
     void               *pPacket;
-    eHalStatus          halstatus;
+    VOS_STATUS          halstatus;
 #ifndef NO_PAD_TDLS_MIN_8023_SIZE
     tANI_U32            padLen = 0;
 #endif
@@ -1489,7 +1489,7 @@ tSirRetStatus limSendTdlsTeardownFrame(tpAniSirGlobal pMac,
         pMac->hal.pCBackFnTxComp = (tpCBackFnTxComp)limTdlsTeardownTxComplete;
         if(TX_SUCCESS != tx_timer_activate(&pMac->hal.txCompTimer))
         {
-            status = eHAL_STATUS_FAILURE;
+            status = VOS_STATUS_E_FAILURE;
             return status;
                 
         }
@@ -1570,7 +1570,7 @@ static tSirRetStatus limSendTdlsSetupRspFrame(tpAniSirGlobal pMac,
     tANI_U32            nBytes = 0 ;
     tANI_U8            *pFrame;
     void               *pPacket;
-    eHalStatus          halstatus;
+    VOS_STATUS          halstatus;
     uint32             selfDot11Mode;
     tpSirMacCapabilityInfo pCapInfo;
 //  Placeholder to support different channel bonding mode of TDLS than AP.
@@ -1833,7 +1833,7 @@ tSirRetStatus limSendTdlsLinkSetupCnfFrame(tpAniSirGlobal pMac, tSirMacAddr peer
     tANI_U32            header_offset = 0 ;
     tANI_U8            *pFrame;
     void               *pPacket;
-    eHalStatus          halstatus;
+    VOS_STATUS          halstatus;
 #ifndef NO_PAD_TDLS_MIN_8023_SIZE
     tANI_U32            padLen = 0;
 #endif
@@ -2000,7 +2000,7 @@ tSirRetStatus limSendTdlsLinkSetupCnfFrame(tpAniSirGlobal pMac, tSirMacAddr peer
         pMac->hal.pCBackFnTxComp = (tpCBackFnTxComp)limTdlsSetupCnfTxComplete;
         if(TX_SUCCESS != tx_timer_activate(&pMac->hal.txCompTimer)) 
         {
-            status = eHAL_STATUS_FAILURE;
+            status = VOS_STATUS_E_FAILURE;
             return status;
                 
         }
@@ -2720,7 +2720,7 @@ static tpDphHashNode limTdlsDelSta(tpAniSirGlobal pMac, tSirMacAddr peerMac,
 /* 
  * Once Link is setup with PEER, send Add STA ind to SME
  */
-static eHalStatus limSendSmeTdlsAddStaRsp(tpAniSirGlobal pMac, 
+static VOS_STATUS limSendSmeTdlsAddStaRsp(tpAniSirGlobal pMac, 
                    tANI_U8 sessionId, tSirMacAddr peerMac, tANI_U8 updateSta,
                    tDphHashNode  *pStaDs, tANI_U8 status)
 {
@@ -2766,7 +2766,7 @@ static eHalStatus limSendSmeTdlsAddStaRsp(tpAniSirGlobal pMac,
 /* 
  * STA RSP received from HAL
  */
-eHalStatus limProcessTdlsAddStaRsp(tpAniSirGlobal pMac, void *msg, 
+VOS_STATUS limProcessTdlsAddStaRsp(tpAniSirGlobal pMac, void *msg, 
                                                    tpPESession psessionEntry)
 {
     tAddStaParams  *pAddStaParams = (tAddStaParams *) msg ;
@@ -2779,7 +2779,7 @@ eHalStatus limProcessTdlsAddStaRsp(tpAniSirGlobal pMac, void *msg,
                        pAddStaParams->staIdx,
                        MAC_ADDR_ARRAY(pAddStaParams->staMac));
 
-    if (pAddStaParams->status != eHAL_STATUS_SUCCESS)
+    if (pAddStaParams->status != VOS_STATUS_SUCCESS)
     {
         VOS_ASSERT(0) ;
         limLog(pMac, LOGE, FL("Add sta failed "));
@@ -3143,7 +3143,7 @@ void limSendSmeTdlsChanSwitchReqRsp(tpAniSirGlobal pMac,
 /*
  * Once link is teardown, send Del Peer Ind to SME
  */
-static eHalStatus limSendSmeTdlsDelStaRsp(tpAniSirGlobal pMac, 
+static VOS_STATUS limSendSmeTdlsDelStaRsp(tpAniSirGlobal pMac, 
                     tANI_U8 sessionId, tSirMacAddr peerMac, tDphHashNode   *pStaDs,
                     tANI_U8 status)
 {

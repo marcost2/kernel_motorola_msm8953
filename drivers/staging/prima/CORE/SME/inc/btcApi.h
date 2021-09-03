@@ -395,7 +395,7 @@ VOS_STATUS btcGetConfig (tHalHandle hHal, tpSmeBtcConfig pSmeBtcConfig);
             VOS_FALSE -- certain BT event is active, cannot enter UAPSD
 */
 v_BOOL_t btcIsReadyForUapsd( tHalHandle hHal );
-eHalStatus btcHandleCoexInd(tHalHandle hHal, void* pMsg);
+VOS_STATUS btcHandleCoexInd(tHalHandle hHal, void* pMsg);
 #endif /* End of WLAN_MDM_CODE_REDUCTION_OPT */
 
 #endif

@@ -483,7 +483,7 @@ WLANSAP_CleanCB
 
     IN
     callbackContext:  The user passed in a context to identify
-    status:           The halStatus
+    status:           The vosStatus
 
   RETURN VALUE
     None
@@ -494,7 +494,7 @@ void
 WLANSAP_pmcFullPwrReqCB
 (
     void *callbackContext,
-    eHalStatus status
+    VOS_STATUS status
 )
 {
     if(HAL_STATUS_SUCCESS(status))
@@ -1349,7 +1349,6 @@ WLANSAP_DeauthSta
     struct tagCsrDelStaParams *pDelStaParams
 )
 {
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
     VOS_STATUS vosStatus = VOS_STATUS_E_FAULT;
     ptSapContext  pSapCtx = VOS_GET_SAP_CB(pvosGCtx);
 
@@ -1364,10 +1363,10 @@ WLANSAP_DeauthSta
         return vosStatus;
     }
 
-    halStatus = sme_RoamDeauthSta(VOS_GET_HAL_CB(pSapCtx->pvosGCtx),
+    vosStatus = sme_RoamDeauthSta(VOS_GET_HAL_CB(pSapCtx->pvosGCtx),
                                   pSapCtx->sessionId, pDelStaParams);
 
-    if (halStatus == eHAL_STATUS_SUCCESS)
+    if (vosStatus == VOS_STATUS_SUCCESS)
     {
         vosStatus = VOS_STATUS_SUCCESS;
     }
@@ -1528,14 +1527,14 @@ WLANSAP_SetChannelRange(tHalHandle hHal,v_U8_t startChannel, v_U8_t endChannel,
     }
 
     if (ccmCfgSetInt(hHal, WNI_CFG_SAP_CHANNEL_SELECT_OPERATING_BAND,
-       operatingBand, NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
+       operatingBand, NULL, eANI_BOOLEAN_FALSE)==VOS_STATUS_E_FAILURE)
     {
          VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
           "Could not pass on WNI_CFG_SAP_CHANNEL_SELECT_OPERATING_BAND to CCn");
          return VOS_STATUS_E_FAULT;
     }
     if (ccmCfgSetInt(hHal, WNI_CFG_SAP_CHANNEL_SELECT_START_CHANNEL,
-        startChannel, NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
+        startChannel, NULL, eANI_BOOLEAN_FALSE)==VOS_STATUS_E_FAILURE)
     {
 
        VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
@@ -1544,7 +1543,7 @@ WLANSAP_SetChannelRange(tHalHandle hHal,v_U8_t startChannel, v_U8_t endChannel,
 
     }
     if (ccmCfgSetInt(hHal, WNI_CFG_SAP_CHANNEL_SELECT_END_CHANNEL,
-       endChannel, NULL, eANI_BOOLEAN_FALSE)==eHAL_STATUS_FAILURE)
+       endChannel, NULL, eANI_BOOLEAN_FALSE)==VOS_STATUS_E_FAILURE)
     {
 
        VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
@@ -1641,7 +1640,6 @@ WLANSAP_SetKeySta
     VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
     ptSapContext  pSapCtx = NULL;
     v_PVOID_t hHal = NULL;
-        eHalStatus halStatus = eHAL_STATUS_FAILURE;
         v_U32_t roamId=0xFF;
 
     if (VOS_STA_SAP_MODE == vos_get_conparam ( ))
@@ -1660,15 +1658,7 @@ WLANSAP_SetKeySta
                        "%s: Invalid HAL pointer from pvosGCtx", __func__);
             return VOS_STATUS_E_FAULT;
         }
-        halStatus = sme_RoamSetKey(hHal, pSapCtx->sessionId, pSetKeyInfo, &roamId);
-
-        if (halStatus == eHAL_STATUS_SUCCESS)
-        {
-            vosStatus = VOS_STATUS_SUCCESS;
-        } else
-        {
-            vosStatus = VOS_STATUS_E_FAULT;
-        }
+        vosStatus = sme_RoamSetKey(hHal, pSapCtx->sessionId, pSetKeyInfo, &roamId);
     }
     else
         vosStatus = VOS_STATUS_E_FAULT;
@@ -1708,7 +1698,6 @@ WLANSAP_DelKeySta
     VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
     ptSapContext  pSapCtx = NULL;
     v_PVOID_t hHal = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
     v_U32_t roamId=0xFF;
     tCsrRoamRemoveKey RemoveKeyInfo;
 
@@ -1735,16 +1724,7 @@ WLANSAP_DelKeySta
         vos_mem_copy(RemoveKeyInfo.peerMac, pRemoveKeyInfo->peerMac, WNI_CFG_BSSID_LEN);
         RemoveKeyInfo.keyId = pRemoveKeyInfo->keyId;
 
-        halStatus = sme_RoamRemoveKey(hHal, pSapCtx->sessionId, &RemoveKeyInfo, &roamId);
-
-        if (HAL_STATUS_SUCCESS(halStatus))
-        {
-            vosStatus = VOS_STATUS_SUCCESS;
-        }
-        else
-        {
-            vosStatus = VOS_STATUS_E_FAULT;
-        }
+        vosStatus = sme_RoamRemoveKey(hHal, pSapCtx->sessionId, &RemoveKeyInfo, &roamId);
     }
     else
         vosStatus = VOS_STATUS_E_FAULT;
@@ -1906,7 +1886,6 @@ WLANSAP_Update_WpsIe
 {
     VOS_STATUS vosStatus = VOS_STATUS_E_FAULT;
     ptSapContext  pSapCtx = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
     v_PVOID_t hHal = NULL;
 
     VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
@@ -1928,14 +1907,7 @@ WLANSAP_Update_WpsIe
             return VOS_STATUS_E_FAULT;
         }
 
-        halStatus = sme_RoamUpdateAPWPSIE( hHal, pSapCtx->sessionId, &pSapCtx->APWPSIEs);
-
-        if(halStatus == eHAL_STATUS_SUCCESS) {
-            vosStatus = VOS_STATUS_SUCCESS;
-        } else
-        {
-            vosStatus = VOS_STATUS_E_FAULT;
-        }
+        vosStatus = sme_RoamUpdateAPWPSIE( hHal, pSapCtx->sessionId, &pSapCtx->APWPSIEs);
 
     }
 
@@ -2073,7 +2045,7 @@ VOS_STATUS WLANSAP_Set_WPARSNIes(v_PVOID_t pvosGCtx, v_U8_t *pWPARSNIEs, v_U32_t
 {
 
     ptSapContext  pSapCtx = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
     v_PVOID_t hHal = NULL;
 
     if(VOS_STA_SAP_MODE == vos_get_conparam ( )){
@@ -2095,14 +2067,7 @@ VOS_STATUS WLANSAP_Set_WPARSNIes(v_PVOID_t pvosGCtx, v_U8_t *pWPARSNIEs, v_U32_t
         pSapCtx->APWPARSNIEs.length = (tANI_U16)WPARSNIEsLen;
         vos_mem_copy(pSapCtx->APWPARSNIEs.rsnIEdata, pWPARSNIEs, WPARSNIEsLen);
 
-        halStatus = sme_RoamUpdateAPWPARSNIEs( hHal, pSapCtx->sessionId, &pSapCtx->APWPARSNIEs);
-
-        if(halStatus == eHAL_STATUS_SUCCESS) {
-            return VOS_STATUS_SUCCESS;
-        } else
-        {
-            return VOS_STATUS_E_FAULT;
-        }
+        vosStatus = sme_RoamUpdateAPWPARSNIEs( hHal, pSapCtx->sessionId, &pSapCtx->APWPARSNIEs);
     }
 
     return VOS_STATUS_E_FAULT;
@@ -2147,7 +2112,7 @@ VOS_STATUS WLANSAP_SendAction( v_PVOID_t pvosGCtx, const tANI_U8 *pBuf,
 {
     ptSapContext  pSapCtx = NULL;
     v_PVOID_t hHal = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
 
     if( VOS_STA_SAP_MODE == vos_get_conparam ( ) )
     {
@@ -2167,12 +2132,7 @@ VOS_STATUS WLANSAP_SendAction( v_PVOID_t pvosGCtx, const tANI_U8 *pBuf,
             return VOS_STATUS_E_FAULT;
         }
 
-        halStatus = sme_sendAction( hHal, pSapCtx->sessionId, pBuf, len, 0 , 0);
-
-        if ( eHAL_STATUS_SUCCESS == halStatus )
-        {
-            return VOS_STATUS_SUCCESS;
-        }
+        vosStatus = sme_sendAction( hHal, pSapCtx->sessionId, pBuf, len, 0 , 0);
     }
 
     VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
@@ -2215,7 +2175,7 @@ VOS_STATUS WLANSAP_RemainOnChannel( v_PVOID_t pvosGCtx,
 {
     ptSapContext  pSapCtx = NULL;
     v_PVOID_t hHal = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
 
     if( VOS_STA_SAP_MODE == vos_get_conparam ( ) )
     {
@@ -2235,10 +2195,10 @@ VOS_STATUS WLANSAP_RemainOnChannel( v_PVOID_t pvosGCtx,
             return VOS_STATUS_E_FAULT;
         }
 
-        halStatus = sme_RemainOnChannel( hHal, pSapCtx->sessionId,
+        vosStatus = sme_RemainOnChannel( hHal, pSapCtx->sessionId,
                           channel, duration, callback, pContext, TRUE );
 
-        if( eHAL_STATUS_SUCCESS == halStatus )
+        if( VOS_STATUS_SUCCESS == vosStatus )
         {
             return VOS_STATUS_SUCCESS;
         }
@@ -2276,7 +2236,7 @@ VOS_STATUS WLANSAP_CancelRemainOnChannel( v_PVOID_t pvosGCtx )
 {
     ptSapContext  pSapCtx = NULL;
     v_PVOID_t hHal = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
 
     pSapCtx = VOS_GET_SAP_CB(pvosGCtx);
     if (NULL == pSapCtx)
@@ -2294,9 +2254,9 @@ VOS_STATUS WLANSAP_CancelRemainOnChannel( v_PVOID_t pvosGCtx )
         return VOS_STATUS_E_FAULT;
     }
 
-    halStatus = sme_CancelRemainOnChannel(hHal, pSapCtx->sessionId);
+    vosStatus = sme_CancelRemainOnChannel(hHal, pSapCtx->sessionId);
 
-    if (eHAL_STATUS_SUCCESS != halStatus)
+    if (VOS_STATUS_SUCCESS != vosStatus)
     {
         VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                 "Failed to Cancel Remain on Channel");
@@ -2336,7 +2296,7 @@ VOS_STATUS WLANSAP_RegisterMgmtFrame( v_PVOID_t pvosGCtx, tANI_U16 frameType,
 {
     ptSapContext  pSapCtx = NULL;
     v_PVOID_t hHal = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
 
     if( VOS_STA_SAP_MODE == vos_get_conparam ( ) )
     {
@@ -2356,10 +2316,10 @@ VOS_STATUS WLANSAP_RegisterMgmtFrame( v_PVOID_t pvosGCtx, tANI_U16 frameType,
             return VOS_STATUS_E_FAULT;
         }
 
-        halStatus = sme_RegisterMgmtFrame(hHal, pSapCtx->sessionId,
+        vosStatus = sme_RegisterMgmtFrame(hHal, pSapCtx->sessionId,
                           frameType, matchData, matchLen);
 
-        if( eHAL_STATUS_SUCCESS == halStatus )
+        if( VOS_STATUS_SUCCESS == vosStatus )
         {
             return VOS_STATUS_SUCCESS;
         }
@@ -2401,7 +2361,7 @@ VOS_STATUS WLANSAP_DeRegisterMgmtFrame( v_PVOID_t pvosGCtx, tANI_U16 frameType,
 {
     ptSapContext  pSapCtx = NULL;
     v_PVOID_t hHal = NULL;
-    eHalStatus halStatus = eHAL_STATUS_FAILURE;
+    VOS_STATUS vosStatus = VOS_STATUS_E_FAILURE;
 
     if( VOS_STA_SAP_MODE == vos_get_conparam ( ) )
     {
@@ -2421,10 +2381,10 @@ VOS_STATUS WLANSAP_DeRegisterMgmtFrame( v_PVOID_t pvosGCtx, tANI_U16 frameType,
             return VOS_STATUS_E_FAULT;
         }
 
-        halStatus = sme_DeregisterMgmtFrame( hHal, pSapCtx->sessionId,
+        vosStatus = sme_DeregisterMgmtFrame( hHal, pSapCtx->sessionId,
                           frameType, matchData, matchLen );
 
-        if( eHAL_STATUS_SUCCESS == halStatus )
+        if( VOS_STATUS_SUCCESS == vosStatus )
         {
             return VOS_STATUS_SUCCESS;
         }

@@ -248,7 +248,6 @@ sapGotoChannelSel
 )
 {
     /* Initiate a SCAN request */
-    eHalStatus halStatus;
     tCsrScanRequest scanRequest;/* To be initialised if scan is required */
     v_U32_t    scanRequestID = 0;
     VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
@@ -345,16 +344,16 @@ sapGotoChannelSel
         VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
                    FL("Auto Channel Selection Scan"));
 
-        halStatus = sme_ScanRequest(hHal,
+        vosStatus = sme_ScanRequest(hHal,
                             0,//Not used in csrScanRequest
                             &scanRequest,
                             &scanRequestID,//, when ID == 0 11D scan/active scan with callback, min-maxChntime set in csrScanRequest()?
                             &WLANSAP_ScanCallback,//csrScanCompleteCallback callback,
                             sapContext);//void * pContext scanRequestID filled up
-        if (eHAL_STATUS_SUCCESS != halStatus)
+        if (VOS_STATUS_SUCCESS != vosStatus)
         {
             VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
-                  FL("Auto Channel Selection Scan  fail %d!!!"), halStatus);
+                  FL("Auto Channel Selection Scan  fail %d!!!"), vosStatus);
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO_HIGH,
                   FL("SoftAP Configuring for default channel, Ch= %d"),
                   sapContext->channel);
@@ -459,18 +458,18 @@ sapGotoChannelSel
                          FL("OBSS Scan for SAP/P2P GO:  Ch= %d"),
                          sapContext->channel);
 
-                    halStatus = sme_ScanRequest(hHal,
+                    vosStatus = sme_ScanRequest(hHal,
                                     0,//Not used in csrScanRequest
                                     &scanRequest,
                                     &scanRequestID,//, when ID == 0 11D scan/active scan with callback, min-maxChntime set in csrScanRequest()?
                                     &WLANSAP_ScanCallback,//csrScanCompleteCallback callback,
                                     sapContext);//void * pContext scanRequestID filled up
 
-                    if (eHAL_STATUS_SUCCESS != halStatus)
+                    if (VOS_STATUS_SUCCESS != vosStatus)
                     {
                         VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                                   FL("OBSS ScanRequest Fail %d!!!"),
-                                  halStatus);
+                                  vosStatus);
                         VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
                            FL("SoftAP Configuring for default channel, Ch= %d"),
                            sapContext->channel);
@@ -582,7 +581,7 @@ sapGotoStarting
 {
     /* tHalHandle */
     tHalHandle hHal = VOS_GET_HAL_CB(sapContext->pvosGCtx);
-    eHalStatus halStatus;
+    VOS_STATUS vosStatus;
 
     /*- - - - - - - - TODO:once configs from hdd available - - - - - - - - -*/
     char key_material[32]={ 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 1,};
@@ -600,21 +599,21 @@ sapGotoStarting
     }
 
     //TODO: What shall we do if failure????
-    halStatus = pmcRequestFullPower( hHal,
+    vosStatus = pmcRequestFullPower( hHal,
                             WLANSAP_pmcFullPwrReqCB,
                             sapContext,
                             eSME_REASON_OTHER);
 
     /* Open SME Session for Softap */
-    halStatus = sme_OpenSession(hHal,
+    vosStatus = sme_OpenSession(hHal,
                         &WLANSAP_RoamCallback,
                         sapContext,
                         sapContext->self_mac_addr,
                         &sapContext->sessionId);
 
-    if(eHAL_STATUS_SUCCESS != halStatus )
+    if(VOS_STATUS_SUCCESS != vosStatus )
     {
-        VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR, "Error: In %s calling sme_RoamConnect status = %d", __func__, halStatus);
+        VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR, "Error: In %s calling sme_RoamConnect status = %d", __func__, vosStatus);
         return VOS_STATUS_E_FAILURE;
     }
 
@@ -649,7 +648,7 @@ sapGotoDisconnecting
     ptSapContext sapContext
 )
 {
-    eHalStatus halStatus;
+    VOS_STATUS vosStatus;
     tHalHandle hHal;
 
     hHal = VOS_GET_HAL_CB(sapContext->pvosGCtx);
@@ -662,10 +661,10 @@ sapGotoDisconnecting
     }
 
     sapFreeRoamProfile(&sapContext->csrRoamProfile);
-    halStatus = sme_RoamStopBss(hHal, sapContext->sessionId);
-    if(eHAL_STATUS_SUCCESS != halStatus )
+    vosStatus = sme_RoamStopBss(hHal, sapContext->sessionId);
+    if(VOS_STATUS_SUCCESS != vosStatus )
     {
-        VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR, "Error: In %s calling sme_RoamStopBss status = %d", __func__, halStatus);
+        VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR, "Error: In %s calling sme_RoamStopBss status = %d", __func__, vosStatus);
         return VOS_STATUS_E_FAILURE;
     }
 
@@ -1268,7 +1267,7 @@ sapFsm
                                   "In %s, NULL hHal in state %s, msg %d",
                                   __func__, "eSAP_STARTING", msg);
                     }
-                    else if (eHAL_STATUS_SUCCESS ==
+                    else if (VOS_STATUS_SUCCESS ==
                          sme_CloseSession(hHal,
                                          sapContext->sessionId, FALSE,
                                          VOS_TRUE, NULL, NULL))
@@ -1301,7 +1300,7 @@ sapFsm
                      VOS_TRACE(VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                                  "In %s, NULL hHal in state %s, msg %d",
                                   __func__, "eSAP_STARTING", msg);
-                    return eHAL_STATUS_INVALID_PARAMETER;
+                    return VOS_STATUS_E_INVAL;
                 }
                 vosStatus = sme_roam_csa_ie_request(hHal, sapContext->bssid,
                                         sapContext->ecsa_info.new_channel,
@@ -1790,7 +1789,6 @@ void sapAddHT40IntolerantSta(ptSapContext sapContext,
     tHalHandle hHal;
     v_U8_t cbMode;
     tANI_U8  staId;
-    eHalStatus halStatus;
     VOS_STATUS  vosStatus = VOS_STATUS_SUCCESS;
 
     /* tHalHandle */
@@ -1854,10 +1852,10 @@ void sapAddHT40IntolerantSta(ptSapContext sapContext,
         VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_INFO,
                    FL("Move SAP from HT40 to HT20"));
 
-        halStatus = sme_SetHT2040Mode(hHal, sapContext->sessionId,
+        vosStatus = sme_SetHT2040Mode(hHal, sapContext->sessionId,
                                             PHY_SINGLE_CHANNEL_CENTERED);
 
-        if (halStatus == eHAL_STATUS_FAILURE)
+        if (vosStatus == VOS_STATUS_E_FAILURE)
         {
             VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                         FL("Failed to change HT20/40 mode"));
@@ -2233,7 +2231,7 @@ static VOS_STATUS sapGetChannelListForObss(tHalHandle halHandle,
     v_U8_t channelCount;
     v_U8_t *list;
 
-    if (eHAL_STATUS_SUCCESS != sapGet24GOBSSAffectedChannel(halHandle, psapCtx))
+    if (VOS_STATUS_SUCCESS != sapGet24GOBSSAffectedChannel(halHandle, psapCtx))
     {
         VOS_TRACE( VOS_MODULE_ID_SAP, VOS_TRACE_LEVEL_ERROR,
                    "%s:Not able to Get Affected Channel Range for Channel : %d",

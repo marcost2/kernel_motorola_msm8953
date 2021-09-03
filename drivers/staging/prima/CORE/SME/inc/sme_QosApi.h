@@ -89,11 +89,11 @@ typedef enum
    SME_QOS_STATUS_SETUP_SUCCESS_NO_ACM_NO_APSD_RSP, 
    //async: In case of UAPSD, once PE notifies successful TSPEC negotiation, or 
    //CSR notifies for successful reassoc to SME-QoS, notify HDD if PMC can't
-   //put the module in UAPSD mode right away (eHAL_STATUS_PMC_PENDING)
+   //put the module in UAPSD mode right away (VOS_STATUS_PMC_PENDING)
    SME_QOS_STATUS_SETUP_SUCCESS_IND_APSD_PENDING, 
    //async: In case of UAPSD, once PE notifies successful TSPEC negotiation, or 
    //CSR notifies for successful reassoc to SME-QoS, notify HDD if PMC can't
-   //put the module in UAPSD mode at all (eHAL_STATUS_FAILURE)
+   //put the module in UAPSD mode at all (VOS_STATUS_E_FAILURE)
    SME_QOS_STATUS_SETUP_SUCCESS_IND_APSD_SET_FAILED, 
 
    //sync: req has been sent down to PE in case of delts or addts for remain 
@@ -125,11 +125,11 @@ typedef enum
    SME_QOS_STATUS_MODIFY_SETUP_INVALID_PARAMS_RSP, 
    //async: In case of UAPSD, once PE notifies successful TSPEC negotiation, or 
    //CSR notifies for successful reassoc to SME-QoS, notify HDD if PMC can't
-   //put the module in UAPSD mode right away (eHAL_STATUS_PMC_PENDING)
+   //put the module in UAPSD mode right away (VOS_STATUS_PMC_PENDING)
    SME_QOS_STATUS_MODIFY_SETUP_SUCCESS_IND_APSD_PENDING, 
    //async: In case of UAPSD, once PE notifies successful TSPEC negotiation, or 
    //CSR notifies for successful reassoc to SME-QoS, notify HDD if PMC can't
-   //put the module in UAPSD mode at all (eHAL_STATUS_FAILURE)
+   //put the module in UAPSD mode at all (VOS_STATUS_E_FAILURE)
    SME_QOS_STATUS_MODIFY_SETUP_SUCCESS_IND_APSD_SET_FAILED,
    //sync: STA is handing off to a new AP
    SME_QOS_STATUS_HANDING_OFF = 300,
@@ -248,13 +248,13 @@ typedef struct
   \param status - The status of the flow running on an AC. It could be of 
                   sme_QosStatusType
   
-  \return eHAL_STATUS_SUCCESS - Callback invoke successful.
+  \return VOS_STATUS_SUCCESS - Callback invoke successful.
   
 
   \sa
   
   --------------------------------------------------------------------------*/
-typedef eHalStatus (*sme_QosCallback)(tHalHandle hHal, void * HDDcontext, 
+typedef VOS_STATUS (*sme_QosCallback)(tHalHandle hHal, void * HDDcontext, 
                                       sme_QosWmmTspecInfo * pCurrentQoSInfo, 
                                       sme_QosStatusType status,
                                       v_U32_t QosFlowID);   

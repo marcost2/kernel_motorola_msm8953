@@ -87,7 +87,7 @@ typedef struct tagDblLinkList
 
 tANI_U32 csrLLCount( tDblLinkList *pList );
 
-eHalStatus csrLLOpen( tHddHandle hHdd, tDblLinkList  *pList );
+VOS_STATUS csrLLOpen( tHddHandle hHdd, tDblLinkList  *pList );
 void csrLLClose( tDblLinkList *pList );
 
 void csrLLLock( tDblLinkList *pList );

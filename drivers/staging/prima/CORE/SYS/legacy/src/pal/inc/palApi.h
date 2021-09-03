@@ -90,12 +90,12 @@
 
     \param pRegValue - pointer to the memory where the register contents are written
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palReadRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 *pRegValue );
+VOS_STATUS palReadRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 *pRegValue );
 
 
 /** ---------------------------------------------------------------------------
@@ -111,12 +111,12 @@ eHalStatus palReadRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 *pReg
 
     \param pRegValue - pointer to the value being written into the register
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palWriteRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 regValue );
+VOS_STATUS palWriteRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 regValue );
 
 /** ---------------------------------------------------------------------------
 
@@ -131,13 +131,13 @@ eHalStatus palWriteRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 regV
 
     \param regValue - value being written into the register
 
-    \return eHalStatus - status of the register write.  Note that this function
+    \return VOS_STATUS - status of the register write.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
 
-eHalStatus palAsyncWriteRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 regValue );
+VOS_STATUS palAsyncWriteRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32 regValue );
 
 
 /** ---------------------------------------------------------------------------
@@ -156,12 +156,12 @@ eHalStatus palAsyncWriteRegister( tHddHandle hHdd, tANI_U32 regAddress, tANI_U32
 
     \param numBytes - the number of bytes to be read.
 
-    \return eHalStatus - status of the memory read.  Note that this function
+    \return VOS_STATUS - status of the memory read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palReadDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
+VOS_STATUS palReadDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
 
 /** ---------------------------------------------------------------------------
 
@@ -179,12 +179,12 @@ eHalStatus palReadDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pB
 
     \param numBytes - the number of bytes to be written.
 
-    \return eHalStatus - status of the memory read.  Note that this function
+    \return VOS_STATUS - status of the memory read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palWriteDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
+VOS_STATUS palWriteDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
 
 
 /** ---------------------------------------------------------------------------
@@ -204,7 +204,7 @@ eHalStatus palWriteDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *p
 
     \param numBytes - the number of bytes to allocate.
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.  In the case of a failure, a non-successful return code will be
     returned and no memory will be allocated (the *ppMemory will be NULL so don't
     try to use it unless the status returns success).
@@ -214,9 +214,9 @@ eHalStatus palWriteDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *p
 
 #ifdef MEMORY_DEBUG
 #define palAllocateMemory(hHdd, ppMemory, numBytes) palAllocateMemory_debug(hHdd, ppMemory, numBytes, __FILE__, __LINE__)
-eHalStatus palAllocateMemory_debug( tHddHandle hHdd, void **ppMemory, tANI_U32 numBytes, char* fileName, tANI_U32 lineNum );
+VOS_STATUS palAllocateMemory_debug( tHddHandle hHdd, void **ppMemory, tANI_U32 numBytes, char* fileName, tANI_U32 lineNum );
 #else
-eHalStatus palAllocateMemory( tHddHandle hHdd, void **ppMemory, tANI_U32 numBytes );
+VOS_STATUS palAllocateMemory( tHddHandle hHdd, void **ppMemory, tANI_U32 numBytes );
 #endif
 
 
@@ -235,13 +235,13 @@ eHalStatus palAllocateMemory( tHddHandle hHdd, void **ppMemory, tANI_U32 numByte
 
     \param pMemory - pointer to memory that will be free'd.
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.  In the case of a failure, a non-successful return code will be
     returned and no memory will be allocated (the *ppMemory will be NULL so don't
     try to use it unless the status returns success).
 
   -------------------------------------------------------------------------------*/
-eHalStatus palFreeMemory( tHddHandle hHdd, void *pMemory );
+VOS_STATUS palFreeMemory( tHddHandle hHdd, void *pMemory );
 
 
 
@@ -259,13 +259,13 @@ eHalStatus palFreeMemory( tHddHandle hHdd, void *pMemory );
 
     \param fillValue - the byte to be written to fill the memory with.
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.  In the case of a failure, a non-successful return code will be
     returned and no memory will be allocated (the *ppMemory will be NULL so don't
     try to use it unless the status returns success).
 
   -------------------------------------------------------------------------------*/
-eHalStatus palFillMemory( tHddHandle hHdd, void *pMemory, tANI_U32 numBytes, tANI_BYTE fillValue );
+VOS_STATUS palFillMemory( tHddHandle hHdd, void *pMemory, tANI_U32 numBytes, tANI_BYTE fillValue );
 
 /** ---------------------------------------------------------------------------
 
@@ -281,10 +281,10 @@ eHalStatus palFillMemory( tHddHandle hHdd, void *pMemory, tANI_U32 numBytes, tAN
 
     \param numBytes - the number of bytes to be be copied.
 
-    \return eHalStatus - status of the memory copy
+    \return VOS_STATUS - status of the memory copy
 
   -------------------------------------------------------------------------------*/
-eHalStatus palCopyMemory( tHddHandle hHdd, void *pDst, const void *pSrc, tANI_U32 numBytes );
+VOS_STATUS palCopyMemory( tHddHandle hHdd, void *pDst, const void *pSrc, tANI_U32 numBytes );
 
 /** ---------------------------------------------------------------------------
 
@@ -300,14 +300,14 @@ eHalStatus palCopyMemory( tHddHandle hHdd, void *pDst, const void *pSrc, tANI_U3
 
     \param fillValue - the byte to be written to fill the memory with.
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.  In the case of a failure, a non-successful return code will be
     returned and no memory will be allocated (the *ppMemory will be NULL so don't
     try to use it unless the status returns success).
 
   -------------------------------------------------------------------------------*/
 ANI_INLINE_FUNCTION
-eHalStatus palZeroMemory( tHddHandle hHdd, void *pMemory, tANI_U32 numBytes )
+VOS_STATUS palZeroMemory( tHddHandle hHdd, void *pMemory, tANI_U32 numBytes )
 {
     return( palFillMemory( hHdd, pMemory, numBytes, 0 ) );
 }
@@ -349,20 +349,14 @@ tANI_BOOLEAN palEqualMemory( tHddHandle hHdd, void *pMemory1, void *pMemory2, tA
 
     \param fillValue - the byte pattern to fill into memory on the device
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.
-
-    eHAL_STATUS_DEVICE_MEMORY_LENGTH_ERROR - length of the device memory is not
-    a multiple of 4 bytes.
-
-    eHAL_STATUS_DEVICE_MEMORY_MISALIGNED - memory address is not aligned on a
-    4 byte boundary.
 
     \note return failure if the memOffset is not 32bit aligned and not a
     multiple of 4 bytes (the device does not support anything else).
 
   -------------------------------------------------------------------------------*/
-eHalStatus palFillDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U32 numBytes, tANI_BYTE fillValue );
+VOS_STATUS palFillDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U32 numBytes, tANI_BYTE fillValue );
 
 
 /** ---------------------------------------------------------------------------
@@ -379,21 +373,15 @@ eHalStatus palFillDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U32 nu
 
     \param fillValue - the 32bit pattern to fill the memory with.
 
-    \return eHalStatus - status of the register read.  Note that this function
+    \return VOS_STATUS - status of the register read.  Note that this function
     can fail.
-
-    eHAL_STATUS_DEVICE_MEMORY_LENGTH_ERROR - length of the device memory is not
-    a multiple of 4 bytes.
-
-    eHAL_STATUS_DEVICE_MEMORY_MISALIGNED - memory address is not aligned on a
-    4 byte boundary.
 
     \note return failure if the memOffset is not 32bit aligned and not a
     multiple of 4 bytes (the device does not support anything else).
 
   -------------------------------------------------------------------------------*/
 ANI_INLINE_FUNCTION
-eHalStatus palZeroDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U32 numBytes )
+VOS_STATUS palZeroDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U32 numBytes )
 {
     return( palFillDeviceMemory( hHdd, memOffset, numBytes, 0 ) );
 }
@@ -412,9 +400,9 @@ eHalStatus palZeroDeviceMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U32 nu
 
     \param ppPacket  -
 
-    \return eHalStatus -
+    \return VOS_STATUS -
 ----------------------------------------------------------------------------------*/
-eHalStatus palPktAlloc(tHddHandle hHdd, eFrameType frmType, tANI_U16 size, void **data, void **ppPacket) ;
+VOS_STATUS palPktAlloc(tHddHandle hHdd, eFrameType frmType, tANI_U16 size, void **data, void **ppPacket) ;
 
 
 // This should return Ssome sort of status.....
@@ -424,13 +412,13 @@ void palPktFree( tHddHandle hHdd, eFrameType frmType, void* buf, void *pPacket);
 
 //PAL lock functions
 //pHandle -- pointer to a caller allocated tPalSpinLockHandle object
-eHalStatus palSpinLockAlloc( tHddHandle hHdd, tPalSpinLockHandle *pHandle );
+VOS_STATUS palSpinLockAlloc( tHddHandle hHdd, tPalSpinLockHandle *pHandle );
 //hSpinLock -- a handle returned by palSpinLockAlloc
-eHalStatus palSpinLockFree( tHddHandle hHdd, tPalSpinLockHandle hSpinLock );
+VOS_STATUS palSpinLockFree( tHddHandle hHdd, tPalSpinLockHandle hSpinLock );
 //hSpinLock -- a handle returned by palSpinLockAlloc
-eHalStatus palSpinLockTake( tHddHandle hHdd, tPalSpinLockHandle hSpinLock );
+VOS_STATUS palSpinLockTake( tHddHandle hHdd, tPalSpinLockHandle hSpinLock );
 //hSpinLock -- a handle returned by palSpinLockAlloc
-eHalStatus palSpinLockGive( tHddHandle hHdd, tPalSpinLockHandle hSpinLock );
+VOS_STATUS palSpinLockGive( tHddHandle hHdd, tPalSpinLockHandle hSpinLock );
 //PAL lock functions end
 
 
@@ -438,7 +426,7 @@ eHalStatus palSpinLockGive( tHddHandle hHdd, tPalSpinLockHandle hSpinLock );
 //pMsgBuf is a buffer allocated by caller. The actual structure varies base on message type
 //The beginning of the buffer can always map to tSirMbMsg
 //This function must take care of padding if it is required for the OS
-eHalStatus palSendMBMessage(tHddHandle hHdd, void *pBuf);
+VOS_STATUS palSendMBMessage(tHddHandle hHdd, void *pBuf);
 
 extern void palGetUnicastStats(tHddHandle hHdd, tANI_U32 *tx, tANI_U32 *rx);
 
@@ -470,12 +458,12 @@ tANI_TIMESTAMP palGetTickCount(tHddHandle hHdd);
 
     \param numBytes - the number of bytes to be read.
 
-    \return eHalStatus - status of the memory read.  Note that this function
+    \return VOS_STATUS - status of the memory read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palReadRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
+VOS_STATUS palReadRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
 
 /** ---------------------------------------------------------------------------
 
@@ -495,12 +483,12 @@ eHalStatus palReadRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuff
 
     \param numBytes - the number of bytes to be written.
 
-    \return eHalStatus - status of the memory read.  Note that this function
+    \return VOS_STATUS - status of the memory read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palAsyncWriteRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
+VOS_STATUS palAsyncWriteRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
 
 /** ---------------------------------------------------------------------------
 
@@ -520,12 +508,12 @@ eHalStatus palAsyncWriteRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 
 
     \param numBytes - the number of bytes to be written.
 
-    \return eHalStatus - status of the memory read.  Note that this function
+    \return VOS_STATUS - status of the memory read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palWriteRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
+VOS_STATUS palWriteRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuffer, tANI_U32 numBytes );
 
 
 /** ---------------------------------------------------------------------------
@@ -549,12 +537,12 @@ eHalStatus palWriteRegMemory( tHddHandle hHdd, tANI_U32 memOffset, tANI_U8 *pBuf
 
     \param pReadRegVal - the value read from the register
 
-    \return eHalStatus - status of the memory read.  Note that this function
+    \return VOS_STATUS - status of the memory read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palWaitRegVal( tHddHandle hHdd, tANI_U32 reg, tANI_U32 mask,
+VOS_STATUS palWaitRegVal( tHddHandle hHdd, tANI_U32 reg, tANI_U32 mask,
                              tANI_U32 waitRegVal, tANI_U32 perIterWaitInNanoSec,
                              tANI_U32 numIter, tANI_U32 *pReadRegVal );
 
@@ -573,20 +561,20 @@ eHalStatus palWaitRegVal( tHddHandle hHdd, tANI_U32 reg, tANI_U32 mask,
 
     \parma orMask - The value after applying the andMask will be ORed with this value
 
-    \return eHalStatus - status of the memory read.  Note that this function
+    \return VOS_STATUS - status of the memory read.  Note that this function
     can fail.  In particular, when the card is removed, this function will return
     a failure.
 
   -------------------------------------------------------------------------------*/
-eHalStatus palReadModifyWriteReg( tHddHandle hHdd, tANI_U32 reg, tANI_U32 andMask, tANI_U32 orMask );
+VOS_STATUS palReadModifyWriteReg( tHddHandle hHdd, tANI_U32 reg, tANI_U32 andMask, tANI_U32 orMask );
 
 //PAL semaphore functions
-eHalStatus palSemaphoreAlloc( tHddHandle hHdd, tPalSemaphoreHandle *pHandle, tANI_S32 count );
-eHalStatus palSemaphoreFree( tHddHandle hHdd, tPalSemaphoreHandle hSemaphore );
-eHalStatus palSemaphoreTake( tHddHandle hHdd, tPalSemaphoreHandle hSemaphore );
-eHalStatus palSemaphoreGive( tHddHandle hHdd, tPalSemaphoreHandle hSemaphore );
-eHalStatus palMutexAlloc( tHddHandle hHdd, tPalSemaphoreHandle *pHandle) ;
-eHalStatus palMutexAllocLocked( tHddHandle hHdd, tPalSemaphoreHandle *pHandle) ;
+VOS_STATUS palSemaphoreAlloc( tHddHandle hHdd, tPalSemaphoreHandle *pHandle, tANI_S32 count );
+VOS_STATUS palSemaphoreFree( tHddHandle hHdd, tPalSemaphoreHandle hSemaphore );
+VOS_STATUS palSemaphoreTake( tHddHandle hHdd, tPalSemaphoreHandle hSemaphore );
+VOS_STATUS palSemaphoreGive( tHddHandle hHdd, tPalSemaphoreHandle hSemaphore );
+VOS_STATUS palMutexAlloc( tHddHandle hHdd, tPalSemaphoreHandle *pHandle) ;
+VOS_STATUS palMutexAllocLocked( tHddHandle hHdd, tPalSemaphoreHandle *pHandle) ;
 
 //PAL irq/softirq
 eAniBoolean pal_in_interrupt(void) ;

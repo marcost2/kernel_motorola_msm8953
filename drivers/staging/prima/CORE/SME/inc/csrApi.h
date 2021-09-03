@@ -1616,7 +1616,7 @@ struct csr_set_tx_max_pwr_per_band {
 
 //void *p2 -- the second context pass in for the caller
 //***what if callback is called before requester gets the scanId??
-typedef eHalStatus (*csrScanCompleteCallback)(tHalHandle, void *p2, tANI_U32 scanID, eCsrScanStatus status);
+typedef VOS_STATUS (*csrScanCompleteCallback)(tHalHandle, void *p2, tANI_U32 scanID, eCsrScanStatus status);
 
 
 
@@ -1628,10 +1628,10 @@ typedef eHalStatus (*csrScanCompleteCallback)(tHalHandle, void *p2, tANI_U32 sca
 //roamId is to identify the callback related roam request. 0 means unsolicit
 //roamStatus is a flag indicating the status of the callback
 //roamResult is the result
-typedef eHalStatus (*csrRoamCompleteCallback)(void *pContext, tCsrRoamInfo *pParam, tANI_U32 roamId,
+typedef VOS_STATUS (*csrRoamCompleteCallback)(void *pContext, tCsrRoamInfo *pParam, tANI_U32 roamId,
                                               eRoamCmdStatus roamStatus, eCsrRoamResult roamResult);
 
-typedef eHalStatus (*csrRoamSessionCloseCallback)(void *pContext);
+typedef VOS_STATUS (*csrRoamSessionCloseCallback)(void *pContext);
 
 /* ---------------------------------------------------------------------------
     \fn csrRoamGetNumPMKIDCache
@@ -1646,9 +1646,9 @@ typedef eHalStatus (*csrRoamSessionCloseCallback)(void *pContext);
     \param pNum - caller allocated memory that has the space of the number of pBuf tPmkidCacheInfo as input. Upon returned, *pNum has the
     needed or actually number in tPmkidCacheInfo.
     \param pPmkidCache - Caller allocated memory that contains PMKID cache, if any, upon return
-    \return eHalStatus - when fail, it usually means the buffer allocated is not big enough
+    \return VOS_STATUS - when fail, it usually means the buffer allocated is not big enough
   -------------------------------------------------------------------------------*/
-//eHalStatus csrRoamGetPMKIDCache(tHalHandle hHal, tANI_U32 *pNum, tPmkidCacheInfo *pPmkidCache);
+//VOS_STATUS csrRoamGetPMKIDCache(tHalHandle hHal, tANI_U32 *pNum, tPmkidCacheInfo *pPmkidCache);
 
 //pProfile - pointer to tCsrRoamProfile
 #define CSR_IS_START_IBSS(pProfile) (eCSR_BSS_TYPE_START_IBSS == (pProfile)->BSSType)
@@ -1683,12 +1683,12 @@ typedef eHalStatus (*csrRoamSessionCloseCallback)(void *pContext);
     \brief HDD calls this function to change some global settings.
     caller must set the all fields or call csrGetConfigParam to prefill the fields.
     \param pParam - caller allocated memory
-    \return eHalStatus
+    \return VOS_STATUS
   -------------------------------------------------------------------------------*/
 
-eHalStatus csrSetChannels(tHalHandle hHal,  tCsrConfigParam *pParam  );
+VOS_STATUS csrSetChannels(tHalHandle hHal,  tCsrConfigParam *pParam  );
 
-eHalStatus csrSetRegInfo(tHalHandle hHal,  tANI_U8 *apCntryCode);
+VOS_STATUS csrSetRegInfo(tHalHandle hHal,  tANI_U8 *apCntryCode);
 
 
 //enum to string conversion for debug output
@@ -1704,9 +1704,9 @@ const char * get_eCsrRoamResult_str(eCsrRoamResult val);
     \param eBand - specify the operational band (2.4, 5 or both)
     \param pfRestartNeeded - pointer to a caller allocated space. Upon successful return, it indicates whether
     a restart is needed to apply the change
-    \return eHalStatus
+    \return VOS_STATUS
   -------------------------------------------------------------------------------*/
-eHalStatus csrSetPhyMode(tHalHandle hHal, tANI_U32 phyMode, eCsrBand eBand, tANI_BOOLEAN *pfRestartNeeded);
+VOS_STATUS csrSetPhyMode(tHalHandle hHal, tANI_U32 phyMode, eCsrBand eBand, tANI_BOOLEAN *pfRestartNeeded);
 
 void csrDumpInit(tHalHandle hHal);
 
@@ -1797,7 +1797,7 @@ typedef void ( *tCsrAntennaIndexCallback) (int antennaId, void *pContext);
 
 
 #ifdef WLAN_FEATURE_VOWIFI_11R
-eHalStatus csrRoamIssueFTPreauthReq(tHalHandle hHal, tANI_U32 sessionId, tpSirBssDescription pBssDescription);
+VOS_STATUS csrRoamIssueFTPreauthReq(tHalHandle hHal, tANI_U32 sessionId, tpSirBssDescription pBssDescription);
 #endif
 
 /*---------------------------------------------------------------------------
@@ -1805,10 +1805,10 @@ eHalStatus csrRoamIssueFTPreauthReq(tHalHandle hHal, tANI_U32 sessionId, tpSirBs
 
   \param hHal - handle to Hal context
   \param eBand - band value
-  \return  eHalStatus
+  \return  VOS_STATUS
 
 ---------------------------------------------------------------------------*/
-eHalStatus csrSetBand(tHalHandle hHal, eCsrBand eBand);
+VOS_STATUS csrSetBand(tHalHandle hHal, eCsrBand eBand);
 
 /*---------------------------------------------------------------------------
   This is the function to get the current operating band value

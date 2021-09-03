@@ -70,11 +70,11 @@ void pmcClosePowerSaveCheckList(tpAniSirGlobal pMac);
 *    hHal - HAL handle for device
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - open successful
-*    eHAL_STATUS_FAILURE - open not successful
+*    VOS_STATUS_SUCCESS - open successful
+*    VOS_STATUS_E_FAILURE - open not successful
 *
 ******************************************************************************/
-eHalStatus pmcOpen (tHalHandle hHal)
+VOS_STATUS pmcOpen (tHalHandle hHal)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -103,7 +103,7 @@ eHalStatus pmcOpen (tHalHandle hHal)
     if (vos_timer_init(&pMac->pmc.hImpsTimer, VOS_TIMER_TYPE_SW, pmcImpsTimerExpired, hHal) != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, FL("Cannot allocate timer for IMPS"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* Allocate a timer used in Full Power State to measure traffic
@@ -112,7 +112,7 @@ eHalStatus pmcOpen (tHalHandle hHal)
                                 VOS_TIMER_TYPE_SW, pmcTrafficTimerExpired, hHal)))
     {
         pmcLog(pMac, LOGE, FL("Cannot allocate timer for traffic measurement"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     //Initialize the default value for Bmps related config. 
@@ -125,53 +125,53 @@ eHalStatus pmcOpen (tHalHandle hHal)
     {
         pmcLog(pMac, LOGE, FL("Cannot allocate exit power save mode timer"));
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     
     /* Initialize lists for power save check routines and request full power callback routines. */
-    if (csrLLOpen(pMac->hHdd, &pMac->pmc.powerSaveCheckList) != eHAL_STATUS_SUCCESS)
+    if (csrLLOpen(pMac->hHdd, &pMac->pmc.powerSaveCheckList) != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, FL("Cannot initialize power save check routine list"));
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
-    if (csrLLOpen(pMac->hHdd, &pMac->pmc.requestFullPowerList) != eHAL_STATUS_SUCCESS)
+    if (csrLLOpen(pMac->hHdd, &pMac->pmc.requestFullPowerList) != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, FL("Cannot initialize request full power callback routine list"));
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* Initialize lists for request BMPS callback routines. */
     if (csrLLOpen(pMac->hHdd, &pMac->pmc.requestBmpsList) !=
-      eHAL_STATUS_SUCCESS)
+      VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, "PMC: cannot initialize request BMPS callback routine list");
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* Initialize lists for request start UAPSD callback routines. */
-    if (csrLLOpen(pMac->hHdd, &pMac->pmc.requestStartUapsdList) != eHAL_STATUS_SUCCESS)
+    if (csrLLOpen(pMac->hHdd, &pMac->pmc.requestStartUapsdList) != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, "PMC: cannot initialize request start UAPSD callback routine list");
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* Initialize lists for device state update indication callback routines. */
-    if (csrLLOpen(pMac->hHdd, &pMac->pmc.deviceStateUpdateIndList) != eHAL_STATUS_SUCCESS)
+    if (csrLLOpen(pMac->hHdd, &pMac->pmc.deviceStateUpdateIndList) != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, "PMC: cannot initialize device state update indication callback list");
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    if (csrLLOpen(pMac->hHdd, &pMac->pmc.deferredMsgList) != eHAL_STATUS_SUCCESS)
+    if (csrLLOpen(pMac->hHdd, &pMac->pmc.deferredMsgList) != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, FL("Cannot initialize deferred msg list"));
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -186,11 +186,11 @@ eHalStatus pmcOpen (tHalHandle hHal)
 *    hHal - HAL handle for device
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - start successful
-*    eHAL_STATUS_FAILURE - start not successful
+*    VOS_STATUS_SUCCESS - start successful
+*    VOS_STATUS_E_FAILURE - start not successful
 *
 ******************************************************************************/
-eHalStatus pmcStart (tHalHandle hHal)
+VOS_STATUS pmcStart (tHalHandle hHal)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
     tSirMacHTMIMOPowerSaveState  htMimoPowerSaveState;
@@ -242,14 +242,14 @@ eHalStatus pmcStart (tHalHandle hHal)
         htMimoPowerSaveState = eSIR_HT_MIMO_PS_NO_LIMIT;
     
     if (pmcSendMessage(hHal, eWNI_PMC_SMPS_STATE_IND, &htMimoPowerSaveState,
-                       sizeof(tSirMacHTMIMOPowerSaveState)) != eHAL_STATUS_SUCCESS)
-        return eHAL_STATUS_FAILURE;
+                       sizeof(tSirMacHTMIMOPowerSaveState)) != VOS_STATUS_SUCCESS)
+        return VOS_STATUS_E_FAILURE;
 
 #if defined(ANI_LOGDUMP)
     pmcDumpInit(hHal);
 #endif
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -264,11 +264,11 @@ eHalStatus pmcStart (tHalHandle hHal)
 *    hHal - HAL handle for device
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - stop successful
-*    eHAL_STATUS_FAILURE - stop not successful
+*    VOS_STATUS_SUCCESS - stop successful
+*    VOS_STATUS_E_FAILURE - stop not successful
 *
 ******************************************************************************/
-eHalStatus pmcStop (tHalHandle hHal)
+VOS_STATUS pmcStop (tHalHandle hHal)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
     tListElem *pEntry;
@@ -290,11 +290,11 @@ eHalStatus pmcStop (tHalHandle hHal)
     }
 
     /* Do all the callbacks. */
-    pmcDoCallbacks(hHal, eHAL_STATUS_FAILURE);
-    pmcDoBmpsCallbacks(hHal, eHAL_STATUS_FAILURE);
+    pmcDoCallbacks(hHal, VOS_STATUS_E_FAILURE);
+    pmcDoBmpsCallbacks(hHal, VOS_STATUS_E_FAILURE);
     pMac->pmc.uapsdSessionRequired = FALSE;
-    pmcDoStartUapsdCallbacks(hHal, eHAL_STATUS_FAILURE);
-    pmcDoStandbyCallbacks(hHal, eHAL_STATUS_FAILURE);
+    pmcDoStartUapsdCallbacks(hHal, VOS_STATUS_E_FAILURE);
+    pmcDoStandbyCallbacks(hHal, VOS_STATUS_E_FAILURE);
 
     //purge the deferred msg list
     csrLLLock( &pMac->pmc.deferredMsgList );
@@ -309,7 +309,7 @@ eHalStatus pmcStop (tHalHandle hHal)
     pMac->pmc.pmcState = STOPPED;
     pMac->pmc.pmcReady = FALSE;
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -324,11 +324,11 @@ eHalStatus pmcStop (tHalHandle hHal)
 *    hHal - HAL handle for device
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - close successful
-*    eHAL_STATUS_FAILURE - close not successful
+*    VOS_STATUS_SUCCESS - close successful
+*    VOS_STATUS_E_FAILURE - close not successful
 *
 ******************************************************************************/
-eHalStatus pmcClose (tHalHandle hHal)
+VOS_STATUS pmcClose (tHalHandle hHal)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -359,7 +359,7 @@ eHalStatus pmcClose (tHalHandle hHal)
     pmcCloseDeviceStateUpdateList(pMac);
     pmcCloseDeferredMsgList(pMac);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -375,11 +375,11 @@ eHalStatus pmcClose (tHalHandle hHal)
 *    event - the event that has occurred
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - signaling successful
-*    eHAL_STATUS_FAILURE - signaling not successful
+*    VOS_STATUS_SUCCESS - signaling successful
+*    VOS_STATUS_E_FAILURE - signaling not successful
 *
 ******************************************************************************/
-eHalStatus pmcSignalPowerEvent (tHalHandle hHal, tPmcPowerEvent event)
+VOS_STATUS pmcSignalPowerEvent (tHalHandle hHal, tPmcPowerEvent event)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 #ifndef GEN6_ONWARDS
@@ -425,10 +425,10 @@ eHalStatus pmcSignalPowerEvent (tHalHandle hHal, tPmcPowerEvent event)
             if (pMac->pmc.smpsConfig.mode == ePMC_STATIC_SMPS)
                 htMimoPowerSaveState = eSIR_HT_MIMO_PS_STATIC;
             if (pmcSendMessage(hHal, eWNI_PMC_SMPS_STATE_IND, &htMimoPowerSaveState,
-                               sizeof(tSirMacHTMIMOPowerSaveState)) != eHAL_STATUS_SUCCESS)   
-                return eHAL_STATUS_FAILURE;
+                               sizeof(tSirMacHTMIMOPowerSaveState)) != VOS_STATUS_SUCCESS)   
+                return VOS_STATUS_E_FAILURE;
         }
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
 
     case ePMC_AC_OPERATION:
         pMac->pmc.powerSource = AC_POWER;
@@ -438,15 +438,15 @@ eHalStatus pmcSignalPowerEvent (tHalHandle hHal, tPmcPowerEvent event)
         {
             htMimoPowerSaveState = eSIR_HT_MIMO_PS_NO_LIMIT;
             if (pmcSendMessage(hHal, eWNI_PMC_SMPS_STATE_IND, &htMimoPowerSaveState,
-                               sizeof(tSirMacHTMIMOPowerSaveState)) != eHAL_STATUS_SUCCESS)
-                return eHAL_STATUS_FAILURE;
+                               sizeof(tSirMacHTMIMOPowerSaveState)) != VOS_STATUS_SUCCESS)
+                return VOS_STATUS_E_FAILURE;
         }
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
 #endif //GEN6_ONWARDS
     default:
         pmcLog(pMac, LOGE, FL("Invalid event %d"), event);
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 }
 
@@ -465,11 +465,11 @@ eHalStatus pmcSignalPowerEvent (tHalHandle hHal, tPmcPowerEvent event)
 *                    power saving mode
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - configuration successful
-*    eHAL_STATUS_FAILURE - configuration not successful
+*    VOS_STATUS_SUCCESS - configuration successful
+*    VOS_STATUS_E_FAILURE - configuration not successful
 *
 ******************************************************************************/
-eHalStatus pmcSetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams)
+VOS_STATUS pmcSetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -541,18 +541,18 @@ eHalStatus pmcSetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, v
     default:
         pmcLog(pMac, LOGE, FL("Invalid power save mode %d"), psMode);
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     //Send the power save config down to PE/HAL/FW if BMPS mode is being configured
     //and pmcReady has been invoked
     if(PMC_IS_READY(pMac) && psMode == ePMC_BEACON_MODE_POWER_SAVE)
     {
-       if (pmcSendPowerSaveConfigMessage(hHal) != eHAL_STATUS_SUCCESS)
-           return eHAL_STATUS_FAILURE;
+       if (pmcSendPowerSaveConfigMessage(hHal) != VOS_STATUS_SUCCESS)
+           return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /******************************************************************************
@@ -569,11 +569,11 @@ eHalStatus pmcSetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, v
 *                    power saving mode
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - configuration successful
-*    eHAL_STATUS_FAILURE - configuration not successful
+*    VOS_STATUS_SUCCESS - configuration successful
+*    VOS_STATUS_E_FAILURE - configuration not successful
 *
 ******************************************************************************/
-eHalStatus pmcGetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams)
+VOS_STATUS pmcGetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, void *pConfigParams)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -597,10 +597,10 @@ eHalStatus pmcGetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, v
 
     default:
         pmcLog(pMac, LOGE, FL("Invalid power save mode %d"), psMode);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 /******************************************************************************
 *
@@ -614,11 +614,11 @@ eHalStatus pmcGetConfigPowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode, v
 *    psMode - the power saving mode to enable
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - successfully enabled
-*    eHAL_STATUS_FAILURE - not successfully enabled
+*    VOS_STATUS_SUCCESS - successfully enabled
+*    VOS_STATUS_E_FAILURE - not successfully enabled
 *
 ******************************************************************************/
-eHalStatus pmcEnablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
+VOS_STATUS pmcEnablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
     tSirMacHTMIMOPowerSaveState  htMimoPowerSaveState;
@@ -660,8 +660,8 @@ eHalStatus pmcEnablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
                 if (pMac->pmc.smpsConfig.mode == ePMC_STATIC_SMPS)
                     htMimoPowerSaveState = eSIR_HT_MIMO_PS_STATIC;
                 if (pmcSendMessage(hHal, eWNI_PMC_SMPS_STATE_IND, &htMimoPowerSaveState,
-                                   sizeof(tSirMacHTMIMOPowerSaveState)) != eHAL_STATUS_SUCCESS)
-                    return eHAL_STATUS_FAILURE;
+                                   sizeof(tSirMacHTMIMOPowerSaveState)) != VOS_STATUS_SUCCESS)
+                    return VOS_STATUS_E_FAILURE;
             }
         break;
 
@@ -680,10 +680,10 @@ eHalStatus pmcEnablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
     default:
         pmcLog(pMac, LOGE, FL("Invalid power save mode %d"), psMode);
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 /* ---------------------------------------------------------------------------
     \fn pmcStartAutoBmpsTimer
@@ -691,9 +691,9 @@ eHalStatus pmcEnablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
             module for entry into Bmps mode. This timer is started only if BMPS is
             enabled and whenever the device is in full power.
     \param  hHal - The handle returned by macOpen.
-    \return eHalStatus     
+    \return VOS_STATUS     
   ---------------------------------------------------------------------------*/
-eHalStatus pmcStartAutoBmpsTimer (tHalHandle hHal) 
+VOS_STATUS pmcStartAutoBmpsTimer (tHalHandle hHal) 
 {
    tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -712,7 +712,7 @@ eHalStatus pmcStartAutoBmpsTimer (tHalHandle hHal)
    if (!pMac->pmc.bmpsEnabled)
    {
       pmcLog(pMac, LOGE, "PMC: Cannot enable BMPS timer. BMPS is disabled");
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    pMac->pmc.autoBmpsEntryEnabled = TRUE;
@@ -722,13 +722,13 @@ eHalStatus pmcStartAutoBmpsTimer (tHalHandle hHal)
 
    if (pmcShouldBmpsTimerRun(pMac))
    {
-      if (pmcStartTrafficTimer(hHal, pMac->pmc.bmpsConfig.trafficMeasurePeriod) != eHAL_STATUS_SUCCESS)
-         return eHAL_STATUS_FAILURE;
+      if (pmcStartTrafficTimer(hHal, pMac->pmc.bmpsConfig.trafficMeasurePeriod) != VOS_STATUS_SUCCESS)
+         return VOS_STATUS_E_FAILURE;
    }
 
 
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -737,9 +737,9 @@ eHalStatus pmcStartAutoBmpsTimer (tHalHandle hHal)
             Stopping the timer does not cause a device state change. Only the timer
             is stopped. If "Full Power" is desired, use the pmcRequestFullPower API
     \param  hHal - The handle returned by macOpen.
-    \return eHalStatus     
+    \return VOS_STATUS     
   ---------------------------------------------------------------------------*/
-eHalStatus pmcStopAutoBmpsTimer (tHalHandle hHal)
+VOS_STATUS pmcStopAutoBmpsTimer (tHalHandle hHal)
 {
    tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -759,7 +759,7 @@ eHalStatus pmcStopAutoBmpsTimer (tHalHandle hHal)
    if (!pMac->pmc.uapsdSessionRequired && !pMac->pmc.bmpsRequestedByHdd)
       pmcStopTrafficTimer(hHal);
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 /******************************************************************************
@@ -774,11 +774,11 @@ eHalStatus pmcStopAutoBmpsTimer (tHalHandle hHal)
 *    psMode - the power saving mode to disable
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - successfully disabled
-*    eHAL_STATUS_FAILURE - not successfully disabled
+*    VOS_STATUS_SUCCESS - successfully disabled
+*    VOS_STATUS_E_FAILURE - not successfully disabled
 *
 ******************************************************************************/
-eHalStatus pmcDisablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
+VOS_STATUS pmcDisablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
     tSirMacHTMIMOPowerSaveState  htMimoPowerSaveState;
@@ -813,8 +813,8 @@ eHalStatus pmcDisablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
         /* Turn off SMPS. */
         htMimoPowerSaveState = eSIR_HT_MIMO_PS_NO_LIMIT;
         if (pmcSendMessage(hHal, eWNI_PMC_SMPS_STATE_IND, &htMimoPowerSaveState,
-                           sizeof(tSirMacHTMIMOPowerSaveState)) != eHAL_STATUS_SUCCESS)
-            return eHAL_STATUS_FAILURE;
+                           sizeof(tSirMacHTMIMOPowerSaveState)) != VOS_STATUS_SUCCESS)
+            return VOS_STATUS_E_FAILURE;
         break;
 
     case ePMC_UAPSD_MODE_POWER_SAVE:
@@ -832,10 +832,10 @@ eHalStatus pmcDisablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
     default:
         pmcLog(pMac, LOGE, FL("Invalid power save mode %d"), psMode);
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -855,11 +855,11 @@ eHalStatus pmcDisablePowerSave (tHalHandle hHal, tPmcPowerSavingMode psMode)
 *                         Switch state
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - power state successfully returned
-*    eHAL_STATUS_FAILURE - power state not successfully returned
+*    VOS_STATUS_SUCCESS - power state successfully returned
+*    VOS_STATUS_E_FAILURE - power state not successfully returned
 *
 ******************************************************************************/
-eHalStatus pmcQueryPowerState (tHalHandle hHal, tPmcPowerState *pPowerState,
+VOS_STATUS pmcQueryPowerState (tHalHandle hHal, tPmcPowerState *pPowerState,
                                tPmcSwitchState *pHwWlanSwitchState, tPmcSwitchState *pSwWlanSwitchState)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
@@ -889,7 +889,7 @@ eHalStatus pmcQueryPowerState (tHalHandle hHal, tPmcPowerState *pPowerState,
     if(pSwWlanSwitchState != NULL)
        *pSwWlanSwitchState = pMac->pmc.swWlanSwitchState;
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -959,7 +959,7 @@ tANI_BOOLEAN pmcIsPowerSaveEnabled (tHalHandle hHal, tPmcPowerSavingMode psMode)
 * Parameters:
 *    hHal - HAL handle for device
 *    callbackRoutine - routine to call when device actually achieves full
-*                      power state if "eHAL_STATUS_PMC_PENDING" is returned
+*                      power state if "VOS_STATUS_PMC_PENDING" is returned
 *    callbackContext - value to be passed as parameter to routine specified
 *                      above
 *    fullPowerReason -  Reason for requesting full power mode. This is used
@@ -970,13 +970,13 @@ tANI_BOOLEAN pmcIsPowerSaveEnabled (tHalHandle hHal, tPmcPowerSavingMode psMode)
 *                       out of power save.
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - device brought to full power state
-*    eHAL_STATUS_FAILURE - device cannot be brought to full power state
-*    eHAL_STATUS_PMC_PENDING - device is being brought to full power state,
+*    VOS_STATUS_SUCCESS - device brought to full power state
+*    VOS_STATUS_E_FAILURE - device cannot be brought to full power state
+*    VOS_STATUS_PMC_PENDING - device is being brought to full power state,
 *                              callbackRoutine will be called when completed
 *
 ******************************************************************************/
-eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+VOS_STATUS pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
                                 void *callbackContext, tRequestFullPowerReason fullPowerReason)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
@@ -1000,7 +1000,7 @@ eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *
         pmcLog(pMac, LOGE, FL("Requesting Full Power when PMC not ready"));
         pmcLog(pMac, LOGE, FL("pmcReady = %d pmcState = %s"),
             pMac->pmc.pmcReady, pmcGetPmcStateStr(pMac->pmc.pmcState));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* If HDD is requesting full power, clear any buffered requests for WOWL and BMPS that were
@@ -1013,7 +1013,7 @@ eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *
 
     /* If already in full power, just return. */
     if (pMac->pmc.pmcState == FULL_POWER)
-        return eHAL_STATUS_SUCCESS;
+        return VOS_STATUS_SUCCESS;
 
     /* If in IMPS State, then cancel the timer. */
     if (pMac->pmc.pmcState == IMPS)
@@ -1033,7 +1033,7 @@ eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *
             pmcLog(pMac, LOGE,
                    FL("Cannot allocate memory for request full power routine list entry"));
             PMC_ABORT;
-            return eHAL_STATUS_FAILURE;
+            return VOS_STATUS_E_FAILURE;
         }
 
         /* Store routine and context in entry. */
@@ -1044,7 +1044,7 @@ eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *
         csrLLInsertTail(&pMac->pmc.requestFullPowerList, &pRequestFullPowerEntry->link, TRUE);
     }
     /* Enter Request Full Power State. */
-    if (pmcEnterRequestFullPowerState(hHal, fullPowerReason) != eHAL_STATUS_SUCCESS)
+    if (pmcEnterRequestFullPowerState(hHal, fullPowerReason) != VOS_STATUS_SUCCESS)
     {
         /* If pmcEnterRequestFullPowerState fails ; driver need to remove callback
          * from requestFullPowerList */
@@ -1054,10 +1054,10 @@ eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *
             pRequestFullPowerEntry = GET_BASE_ADDR(pEntry, tRequestFullPowerEntry, link);
             vos_mem_free(pRequestFullPowerEntry);
         }
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_PMC_PENDING;
+    return VOS_STATUS_PMC_PENDING;
 }
 
 
@@ -1080,22 +1080,22 @@ eHalStatus pmcRequestFullPower (tHalHandle hHal, void (*callbackRoutine) (void *
 *                      above
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - device will enter IMPS
-*    eHAL_STATUS_PMC_DISABLED - IMPS is disabled
-*    eHAL_STATUS_PMC_NOT_NOW - another module is prohibiting entering IMPS
+*    VOS_STATUS_SUCCESS - device will enter IMPS
+*    VOS_STATUS_PMC_DISABLED - IMPS is disabled
+*    VOS_STATUS_PMC_NOT_NOW - another module is prohibiting entering IMPS
 *                              at this time
-*    eHAL_STATUS_PMC_AC_POWER - IMPS is disabled when host operating from
+*    VOS_STATUS_PMC_AC_POWER - IMPS is disabled when host operating from
 *                               AC power
-*    eHAL_STATUS_PMC_ALREADY_IN_IMPS - device is already in IMPS
-*    eHAL_STATUS_PMC_SYS_ERROR - system error that prohibits entering IMPS
+*    VOS_STATUS_ALREADY_IN_IMPS - device is already in IMPS
+*    VOS_STATUS_SYS_ERROR - system error that prohibits entering IMPS
 *
 ******************************************************************************/
-eHalStatus pmcRequestImps (tHalHandle hHal, tANI_U32 impsPeriod,
-                           void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+VOS_STATUS pmcRequestImps (tHalHandle hHal, tANI_U32 impsPeriod,
+                           void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
                            void *callbackContext)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
-    eHalStatus status;
+    VOS_STATUS status;
 
 #ifdef FEATURE_WLAN_DIAG_SUPPORT    
     WLAN_VOS_DIAG_EVENT_DEF(psRequest, vos_event_wlan_powersave_payload_type);
@@ -1125,7 +1125,7 @@ eHalStatus pmcRequestImps (tHalHandle hHal, tANI_U32 impsPeriod,
     }
         else
     {
-            status = eHAL_STATUS_PMC_SYS_ERROR;
+            status = VOS_STATUS_SYS_ERROR;
     }
     }
 
@@ -1151,11 +1151,11 @@ eHalStatus pmcRequestImps (tHalHandle hHal, tANI_U32 impsPeriod,
 *    checkContext - value to be passed as parameter to routine specified above
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - successfully registered
-*    eHAL_STATUS_FAILURE - not successfully registered
+*    VOS_STATUS_SUCCESS - successfully registered
+*    VOS_STATUS_E_FAILURE - not successfully registered
 *
 ******************************************************************************/
-eHalStatus pmcRegisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext),
+VOS_STATUS pmcRegisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext),
                                       void *checkContext)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
@@ -1169,7 +1169,7 @@ eHalStatus pmcRegisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRouti
     {
         pmcLog(pMac, LOGE, FL("Cannot allocate memory for power save check routine list entry"));
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* Store routine and context in entry. */
@@ -1179,7 +1179,7 @@ eHalStatus pmcRegisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRouti
     /* Add entry to list. */
     csrLLInsertTail(&pMac->pmc.powerSaveCheckList, &pEntry->link, FALSE);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -1196,11 +1196,11 @@ eHalStatus pmcRegisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRouti
 *    checkRoutine - routine to deregister
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - successfully deregistered
-*    eHAL_STATUS_FAILURE - not successfully deregistered
+*    VOS_STATUS_SUCCESS - successfully deregistered
+*    VOS_STATUS_E_FAILURE - not successfully deregistered
 *
 ******************************************************************************/
-eHalStatus pmcDeregisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext))
+VOS_STATUS pmcDeregisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRoutine) (void *checkContext))
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
     tListElem *pEntry;
@@ -1223,15 +1223,15 @@ eHalStatus pmcDeregisterPowerSaveCheck (tHalHandle hHal, tANI_BOOLEAN (*checkRou
             else
             {
                 pmcLog(pMac, LOGE, FL("Cannot remove power save check routine list entry"));
-                return eHAL_STATUS_FAILURE;
+                return VOS_STATUS_E_FAILURE;
             }
-            return eHAL_STATUS_SUCCESS;
+            return VOS_STATUS_SUCCESS;
         }
         pEntry = csrLLNext(&pMac->pmc.powerSaveCheckList, pEntry, FALSE);
     }
 
     /* Could not find matching entry. */
-    return eHAL_STATUS_FAILURE;
+    return VOS_STATUS_E_FAILURE;
 }
 
 
@@ -1301,7 +1301,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
             if (pMsg->statusCode == eSIR_SME_SUCCESS)
             {
                 pmcEnterStandbyState(pMac);
-                pmcDoStandbyCallbacks(pMac, eHAL_STATUS_SUCCESS);
+                pmcDoStandbyCallbacks(pMac, VOS_STATUS_SUCCESS);
             }
 
             /* If response is failure, then we stay in Full Power State
@@ -1311,7 +1311,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
                 pmcLog(pMac, LOGE, "PMC: response message to request to enter "
                        "standby indicates failure, status %d", pMsg->statusCode);
                 pmcEnterFullPowerState(pMac);
-                pmcDoStandbyCallbacks(pMac, eHAL_STATUS_FAILURE);
+                pmcDoStandbyCallbacks(pMac, VOS_STATUS_E_FAILURE);
             }
         }
         else
@@ -1352,7 +1352,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
                            BMPS_IMPS_FAILURE_REPORT_THRESHOLD))
                 {
                     pMac->pmc.ImpsRspFailCnt++;
-                    if (eHAL_STATUS_SUCCESS ==
+                    if (VOS_STATUS_SUCCESS ==
                         pmcSendMessage(pMac, eWNI_PMC_EXIT_IMPS_REQ, NULL, 0) )
                     {
                         fRemoveCommand = eANI_BOOLEAN_FALSE;
@@ -1402,7 +1402,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
             /* Note: If BMPS was requested because of start UAPSD,
                there will no entries for BMPS callback routines and
                pmcDoBmpsCallbacks will be a No-Op*/
-                pmcDoBmpsCallbacks(pMac, eHAL_STATUS_SUCCESS);
+                pmcDoBmpsCallbacks(pMac, VOS_STATUS_SUCCESS);
          }
         /* If response is failure, then we stay in Full Power State and tell everyone that we aren't going into BMPS. */
         else
@@ -1412,7 +1412,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
                    pMsg->statusCode);
                 pmcEnterFullPowerState(pMac);
                 //Do not call UAPSD callback here since it may be re-entered
-                pmcDoBmpsCallbacks(pMac, eHAL_STATUS_FAILURE);
+                pmcDoBmpsCallbacks(pMac, VOS_STATUS_E_FAILURE);
         }
         break;
 
@@ -1467,7 +1467,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
             if (pMsg->statusCode == eSIR_SME_SUCCESS) 
             {
                 pmcEnterUapsdState(pMac);
-                pmcDoStartUapsdCallbacks(pMac, eHAL_STATUS_SUCCESS);
+                pmcDoStartUapsdCallbacks(pMac, VOS_STATUS_SUCCESS);
             }
             else
             {
@@ -1484,7 +1484,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
                 if (pMsg->statusCode != eSIR_SME_UAPSD_REQ_INVALID)
                 {
                     //UAPSD will not be retied in this case so tell requester we are done with failure
-                    pmcDoStartUapsdCallbacks(pMac, eHAL_STATUS_FAILURE);
+                    pmcDoStartUapsdCallbacks(pMac, VOS_STATUS_E_FAILURE);
                 }
                 else
                     pMac->pmc.uapsdSessionRequired = OrigUapsdReqState;
@@ -1536,7 +1536,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
          /* Enter WOWL State if response indicates success. */
          if (pMsg->statusCode == eSIR_SME_SUCCESS) {
                 pmcEnterWowlState(pMac);
-                pmcDoEnterWowlCallbacks(pMac, eHAL_STATUS_SUCCESS);
+                pmcDoEnterWowlCallbacks(pMac, VOS_STATUS_SUCCESS);
          }
 
          /* If response is failure, then we try to put the chip back in
@@ -1545,7 +1545,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
             pmcLog(pMac, LOGE, "PMC: response message to request to enter "
                "WOWL indicates failure, status %d", pMsg->statusCode);
                 pmcEnterBmpsState(pMac);
-                pmcDoEnterWowlCallbacks(pMac, eHAL_STATUS_FAILURE);
+                pmcDoEnterWowlCallbacks(pMac, VOS_STATUS_E_FAILURE);
          }
          break;
 
@@ -1578,7 +1578,7 @@ static void pmcProcessResponse( tpAniSirGlobal pMac, tSirSmeRsp *pMsg )
                 pMac->pmc.pmcState = FULL_POWER;
                 pMac->pmc.isAPWOWExit = TRUE;
                 pMac->pmc.requestFullPowerPending = false;
-                pmcDoCallbacks(pMac, eHAL_STATUS_SUCCESS);
+                pmcDoCallbacks(pMac, VOS_STATUS_SUCCESS);
                 break;
             }
             else
@@ -1758,19 +1758,19 @@ tANI_BOOLEAN pmcAllowImps( tHalHandle hHal )
 *                      above
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - device is in BMPS state
-*    eHAL_STATUS_FAILURE - device cannot be brought to BMPS state
-*    eHAL_STATUS_PMC_PENDING - device is being brought to BMPS state,
+*    VOS_STATUS_SUCCESS - device is in BMPS state
+*    VOS_STATUS_E_FAILURE - device cannot be brought to BMPS state
+*    VOS_STATUS_PMC_PENDING - device is being brought to BMPS state,
 *
 ******************************************************************************/
-eHalStatus pmcRequestBmps (
+VOS_STATUS pmcRequestBmps (
     tHalHandle hHal,
-    void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+    void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
     void *callbackContext)
 {
    tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
    tpRequestBmpsEntry pEntry;
-   eHalStatus status;
+   VOS_STATUS status;
 
 #ifdef FEATURE_WLAN_DIAG_SUPPORT    
    WLAN_VOS_DIAG_EVENT_DEF(psRequest, vos_event_wlan_powersave_payload_type);
@@ -1788,7 +1788,7 @@ eHalStatus pmcRequestBmps (
    {
       pmcLog(pMac, LOG2, "PMC: Device already in BMPS pmcState %d", pMac->pmc.pmcState);
       pMac->pmc.bmpsRequestedByHdd = TRUE;
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
    
    status = pmcEnterBmpsCheck( pMac );
@@ -1821,7 +1821,7 @@ eHalStatus pmcRequestBmps (
          {
             pmcLog(pMac, LOGE, "PMC: cannot allocate memory for request "
                   "BMPS routine list entry");
-            return eHAL_STATUS_FAILURE;
+            return VOS_STATUS_E_FAILURE;
          }
 
          /* Store routine and context in entry. */
@@ -1831,16 +1831,16 @@ eHalStatus pmcRequestBmps (
          /* Add entry to list. */
          csrLLInsertTail(&pMac->pmc.requestBmpsList, &pEntry->link, FALSE);
 
-         status = eHAL_STATUS_PMC_PENDING;
+         status = VOS_STATUS_PMC_PENDING;
       }
       else
       {
-         status = eHAL_STATUS_FAILURE;
+         status = VOS_STATUS_E_FAILURE;
       }
    }
    /* Retry to enter the BMPS if the
-      status = eHAL_STATUS_PMC_NOT_NOW */
-   else if (status == eHAL_STATUS_PMC_NOT_NOW)
+      status = VOS_STATUS_PMC_NOT_NOW */
+   else if (status == VOS_STATUS_PMC_NOT_NOW)
    {
       pmcStopTrafficTimer(hHal);
       pmcLog(pMac, LOG1, FL("Can't enter BMPS+++"));
@@ -1848,7 +1848,7 @@ eHalStatus pmcRequestBmps (
       {
          if (pmcStartTrafficTimer(pMac,
                                   pMac->pmc.bmpsConfig.trafficMeasurePeriod)
-                                  != eHAL_STATUS_SUCCESS)
+                                  != VOS_STATUS_SUCCESS)
          {
             pmcLog(pMac, LOG1, FL("Cannot start BMPS Retry timer"));
          }
@@ -1874,15 +1874,15 @@ eHalStatus pmcRequestBmps (
 *                      above
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - device is in UAPSD state
-*    eHAL_STATUS_FAILURE - device cannot be brought to UAPSD state
-*    eHAL_STATUS_PMC_PENDING - device is being brought to UAPSD state
-*    eHAL_STATUS_PMC_DISABLED - UAPSD is disabled or BMPS mode is disabled
+*    VOS_STATUS_SUCCESS - device is in UAPSD state
+*    VOS_STATUS_E_FAILURE - device cannot be brought to UAPSD state
+*    VOS_STATUS_PMC_PENDING - device is being brought to UAPSD state
+*    VOS_STATUS_PMC_DISABLED - UAPSD is disabled or BMPS mode is disabled
 *
 ******************************************************************************/
-eHalStatus pmcStartUapsd (
+VOS_STATUS pmcStartUapsd (
     tHalHandle hHal,
-    void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+    void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
     void *callbackContext)
 {
    tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
@@ -1904,37 +1904,37 @@ eHalStatus pmcStartUapsd (
        pmcLog(pMac, LOGE, FL("Requesting UAPSD when PMC not ready"));
        pmcLog(pMac, LOGE, FL("pmcReady = %d pmcState = %s"),
            pMac->pmc.pmcReady, pmcGetPmcStateStr(pMac->pmc.pmcState));
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
 
    /* Check if BMPS is enabled. */
    if (!pMac->pmc.bmpsEnabled)
    {
       pmcLog(pMac, LOGE, "PMC: Cannot enter UAPSD. BMPS is disabled");
-      return eHAL_STATUS_PMC_DISABLED;
+      return VOS_STATUS_PMC_DISABLED;
    }
 
    /* Check if UAPSD is enabled. */
    if (!pMac->pmc.uapsdEnabled)
    {
       pmcLog(pMac, LOGE, "PMC: Cannot enter UAPSD. UAPSD is disabled");
-      return eHAL_STATUS_PMC_DISABLED;
+      return VOS_STATUS_PMC_DISABLED;
    }
 
    /* If already in UAPSD, just return. */
    if (pMac->pmc.pmcState == UAPSD)
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
 
    /* Check that we are associated. */
    if (!pmcValidateConnectState( pMac ))
    {
       pmcLog(pMac, LOGE, "PMC: STA not associated with an AP. UAPSD cannot be entered");
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    /* Enter REQUEST_START_UAPSD State. */
-   if (pmcEnterRequestStartUapsdState(hHal) != eHAL_STATUS_SUCCESS)
-      return eHAL_STATUS_FAILURE;
+   if (pmcEnterRequestStartUapsdState(hHal) != VOS_STATUS_SUCCESS)
+      return VOS_STATUS_E_FAILURE;
 
    if( NULL != callbackRoutine )
    {
@@ -1944,7 +1944,7 @@ eHalStatus pmcStartUapsd (
       {
          pmcLog(pMac, LOGE, "PMC: cannot allocate memory for request "
             "start UAPSD routine list entry");
-         return eHAL_STATUS_FAILURE;
+         return VOS_STATUS_E_FAILURE;
       }
 
       /* Store routine and context in entry. */
@@ -1955,7 +1955,7 @@ eHalStatus pmcStartUapsd (
       csrLLInsertTail(&pMac->pmc.requestStartUapsdList, &pEntry->link, FALSE);
    }
 
-   return eHAL_STATUS_PMC_PENDING;
+   return VOS_STATUS_PMC_PENDING;
 }
 
 /******************************************************************************
@@ -1969,11 +1969,11 @@ eHalStatus pmcStartUapsd (
 *    hHal - HAL handle for device
 *
 * Returns:
-*    eHAL_STATUS_SUCCESS - device is put out of UAPSD and back in BMPS state
-*    eHAL_STATUS_FAILURE - device cannot be brought out of UAPSD state
+*    VOS_STATUS_SUCCESS - device is put out of UAPSD and back in BMPS state
+*    VOS_STATUS_E_FAILURE - device cannot be brought out of UAPSD state
 *
 ******************************************************************************/
-eHalStatus pmcStopUapsd (tHalHandle hHal)
+VOS_STATUS pmcStopUapsd (tHalHandle hHal)
 {
    tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
    tANI_S8 sessionId;
@@ -2006,14 +2006,14 @@ eHalStatus pmcStopUapsd (tHalHandle hHal)
    {
       pmcLog(pMac, LOGW, "PMC: Device is already out of UAPSD "
          "state. Current state is %d", pMac->pmc.pmcState);
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
    }
 
    /* Enter REQUEST_STOP_UAPSD State*/
-   if (pmcEnterRequestStopUapsdState(hHal) != eHAL_STATUS_SUCCESS)
-      return eHAL_STATUS_FAILURE;
+   if (pmcEnterRequestStopUapsdState(hHal) != VOS_STATUS_SUCCESS)
+      return VOS_STATUS_E_FAILURE;
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2022,14 +2022,14 @@ eHalStatus pmcStopUapsd (tHalHandle hHal)
     \param  hHal - The handle returned by macOpen.
     \param  callbackRoutine - Callback routine invoked in case of success/failure
     \param  callbackContext - value to be passed as parameter to callback
-    \return eHalStatus  
-      eHAL_STATUS_SUCCESS - device is in Standby mode
-      eHAL_STATUS_FAILURE - device cannot be put in standby mode
-      eHAL_STATUS_PMC_PENDING - device is being put in standby mode
+    \return VOS_STATUS  
+      VOS_STATUS_SUCCESS - device is in Standby mode
+      VOS_STATUS_E_FAILURE - device cannot be put in standby mode
+      VOS_STATUS_PMC_PENDING - device is being put in standby mode
   ---------------------------------------------------------------------------*/
-extern eHalStatus pmcRequestStandby (
+extern VOS_STATUS pmcRequestStandby (
    tHalHandle hHal,
-   void (*callbackRoutine) (void *callbackContext, eHalStatus status),
+   void (*callbackRoutine) (void *callbackContext, VOS_STATUS status),
    void *callbackContext)
 {
    tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
@@ -2049,7 +2049,7 @@ extern eHalStatus pmcRequestStandby (
    if (!pMac->pmc.standbyEnabled)
    {
       pmcLog(pMac, LOGE, "PMC: Cannot enter standby. Standby is disabled");
-      return eHAL_STATUS_PMC_DISABLED;
+      return VOS_STATUS_PMC_DISABLED;
    }
 
    if( !PMC_IS_READY(pMac) )
@@ -2057,30 +2057,30 @@ extern eHalStatus pmcRequestStandby (
        pmcLog(pMac, LOGE, FL("Requesting standby when PMC not ready"));
        pmcLog(pMac, LOGE, FL("pmcReady = %d pmcState = %s"),
            pMac->pmc.pmcReady, pmcGetPmcStateStr(pMac->pmc.pmcState));
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
 
    /* If already in STANDBY, just return. */
    if (pMac->pmc.pmcState == STANDBY)
-      return eHAL_STATUS_SUCCESS;
+      return VOS_STATUS_SUCCESS;
 
    
    if (csrIsIBSSStarted(pMac) || csrIsBTAMPStarted(pMac))
    {
       VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_FATAL, 
           "WLAN: IBSS or BT-AMP session present. Cannot honor standby request");
-      return eHAL_STATUS_PMC_NOT_NOW;
+      return VOS_STATUS_PMC_NOT_NOW;
    }
 
    /* Enter Request Standby State. */
-   if (pmcEnterRequestStandbyState(hHal) != eHAL_STATUS_SUCCESS)
-      return eHAL_STATUS_FAILURE;
+   if (pmcEnterRequestStandbyState(hHal) != VOS_STATUS_SUCCESS)
+      return VOS_STATUS_E_FAILURE;
 
    /* Save the callback routine for when we need it. */
    pMac->pmc.standbyCallbackRoutine = callbackRoutine;
    pMac->pmc.standbyCallbackContext = callbackContext;
 
-   return eHAL_STATUS_PMC_PENDING;
+   return VOS_STATUS_PMC_PENDING;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2090,11 +2090,11 @@ extern eHalStatus pmcRequestStandby (
     \param  hHal - The handle returned by macOpen.
     \param  callbackRoutine -  Callback routine to be registered
     \param  callbackContext -  Cookie to be passed back during callback
-    \return eHalStatus
-            eHAL_STATUS_SUCCESS - successfully registered
-            eHAL_STATUS_FAILURE - not successfully registered  
+    \return VOS_STATUS
+            VOS_STATUS_SUCCESS - successfully registered
+            VOS_STATUS_E_FAILURE - not successfully registered  
   ---------------------------------------------------------------------------*/
-extern eHalStatus pmcRegisterDeviceStateUpdateInd (tHalHandle hHal, 
+extern VOS_STATUS pmcRegisterDeviceStateUpdateInd (tHalHandle hHal, 
    void (*callbackRoutine) (void *callbackContext, tPmcState pmcState),
    void *callbackContext)
 {
@@ -2110,7 +2110,7 @@ extern eHalStatus pmcRegisterDeviceStateUpdateInd (tHalHandle hHal,
     {
         pmcLog(pMac, LOGE, FL("Cannot allocate memory for device power state update indication"));
         PMC_ABORT;
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* Store routine in entry. */
@@ -2120,7 +2120,7 @@ extern eHalStatus pmcRegisterDeviceStateUpdateInd (tHalHandle hHal,
     /* Add entry to list. */
     csrLLInsertTail(&pMac->pmc.deviceStateUpdateIndList, &pEntry->link, FALSE);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2128,11 +2128,11 @@ extern eHalStatus pmcRegisterDeviceStateUpdateInd (tHalHandle hHal,
     \brief  Deregister a routine that was registered for device state changes
     \param  hHal - The handle returned by macOpen.
     \param  callbackRoutine -  Callback routine to be deregistered
-    \return eHalStatus
-            eHAL_STATUS_SUCCESS - successfully deregistered
-            eHAL_STATUS_FAILURE - not successfully deregistered  
+    \return VOS_STATUS
+            VOS_STATUS_SUCCESS - successfully deregistered
+            VOS_STATUS_E_FAILURE - not successfully deregistered  
   ---------------------------------------------------------------------------*/
-eHalStatus pmcDeregisterDeviceStateUpdateInd (tHalHandle hHal, 
+VOS_STATUS pmcDeregisterDeviceStateUpdateInd (tHalHandle hHal, 
    void (*callbackRoutine) (void *callbackContext, tPmcState pmcState))
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
@@ -2152,16 +2152,16 @@ eHalStatus pmcDeregisterDeviceStateUpdateInd (tHalHandle hHal,
             if (!csrLLRemoveEntry(&pMac->pmc.deviceStateUpdateIndList, pEntry, FALSE))
             {
                 pmcLog(pMac, LOGE, FL("Cannot remove device state update ind entry from list"));
-                return eHAL_STATUS_FAILURE;
+                return VOS_STATUS_E_FAILURE;
             }
             vos_mem_free(pDeviceStateUpdateIndEntry);
-            return eHAL_STATUS_SUCCESS;
+            return VOS_STATUS_SUCCESS;
         }
         pEntry = csrLLNext(&pMac->pmc.deviceStateUpdateIndList, pEntry, FALSE);
     }
 
     /* Could not find matching entry. */
-    return eHAL_STATUS_FAILURE;
+    return VOS_STATUS_E_FAILURE;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2172,9 +2172,9 @@ eHalStatus pmcDeregisterDeviceStateUpdateInd (tHalHandle hHal,
             related stuff before this API is invoked, PMC will buffer all the 
             configutaion.
     \param  hHal - The handle returned by macOpen.
-    \return eHalStatus
+    \return VOS_STATUS
   ---------------------------------------------------------------------------*/
-eHalStatus pmcReady(tHalHandle hHal)
+VOS_STATUS pmcReady(tHalHandle hHal)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -2183,16 +2183,16 @@ eHalStatus pmcReady(tHalHandle hHal)
     if(pMac->pmc.pmcState == STOPPED)
     {
         pmcLog(pMac, LOGP, FL("pmcReady is invoked even before pmcStart"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pMac->pmc.pmcReady = TRUE;
-    if (pmcSendPowerSaveConfigMessage(hHal) != eHAL_STATUS_SUCCESS)
+    if (pmcSendPowerSaveConfigMessage(hHal) != VOS_STATUS_SUCCESS)
     {
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2203,11 +2203,11 @@ eHalStatus pmcReady(tHalHandle hHal)
             broadcast frames and while Libra is in BMPS mode.
     \param  hHal - The handle returned by macOpen.
     \param  pattern -  Pointer to the pattern to be added
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot add pattern
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot add pattern
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcWowlAddBcastPattern (
+VOS_STATUS pmcWowlAddBcastPattern (
     tHalHandle hHal, 
     tpSirWowlAddBcastPtrn pattern,
     tANI_U8 sessionId)
@@ -2224,13 +2224,13 @@ eHalStatus pmcWowlAddBcastPattern (
     if(pattern == NULL)
     {
         pmcLog(pMac, LOGE, FL("Null broadcast pattern being passed"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     if( pSession == NULL)
     {
         pmcLog(pMac, LOGE, FL("Session not found "));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
 #ifdef FEATURE_WLAN_DIAG_SUPPORT
@@ -2261,21 +2261,21 @@ eHalStatus pmcWowlAddBcastPattern (
     if(pattern->ucPatternId >= SIR_WOWL_BCAST_MAX_NUM_PATTERNS )
     {
         pmcLog(pMac, LOGE, FL("Pattern Id must range from 0 to %d"), SIR_WOWL_BCAST_MAX_NUM_PATTERNS-1);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     if( pMac->pmc.pmcState == STANDBY || pMac->pmc.pmcState == REQUEST_STANDBY )
     {
         pmcLog(pMac, LOGE, FL("Cannot add WoWL Pattern as chip is in %s state"),
            pmcGetPmcStateStr(pMac->pmc.pmcState));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     if( pMac->pmc.pmcState == IMPS || pMac->pmc.pmcState == REQUEST_IMPS )
     {
         pmcLog(pMac, LOGE, FL("Cannot add WoWL Pattern as chip is in %s state"),
            pmcGetPmcStateStr(pMac->pmc.pmcState));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     if (!(CSR_IS_INFRA_AP(pSession->pCurRoamProfile)))
@@ -2284,20 +2284,20 @@ eHalStatus pmcWowlAddBcastPattern (
        {
           pmcLog(pMac, LOGE, FL("Cannot add WoWL Pattern session in %d state"),
                  pSession->connectState);
-           return eHAL_STATUS_FAILURE;
+           return VOS_STATUS_E_FAILURE;
        }
     }
 
     vos_mem_copy(pattern->bssId, pSession->connectedProfile.bssid, sizeof(tSirMacAddr));
 
     if (pmcSendMessage(hHal, eWNI_PMC_WOWL_ADD_BCAST_PTRN, pattern, sizeof(tSirWowlAddBcastPtrn))
-        != eHAL_STATUS_SUCCESS)
+        != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, FL("Send of eWNI_PMC_WOWL_ADD_BCAST_PTRN to PE failed"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2305,11 +2305,11 @@ eHalStatus pmcWowlAddBcastPattern (
     \brief  Delete a pattern that was added for Pattern Byte Matching.
     \param  hHal - The handle returned by macOpen.
     \param  pattern -  Pattern to be deleted
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot delete pattern
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot delete pattern
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcWowlDelBcastPattern (
+VOS_STATUS pmcWowlDelBcastPattern (
     tHalHandle hHal, 
     tpSirWowlDelBcastPtrn pattern,
     tANI_U8  sessionId)
@@ -2332,28 +2332,28 @@ eHalStatus pmcWowlDelBcastPattern (
     if( NULL == pSession )
     {
         pmcLog(pMac, LOGE, FL("Session not found "));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     if(pattern->ucPatternId >= SIR_WOWL_BCAST_MAX_NUM_PATTERNS )
     {
         pmcLog(pMac, LOGE, FL("Pattern Id must range from 0 to %d"),
             SIR_WOWL_BCAST_MAX_NUM_PATTERNS-1);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     if(pMac->pmc.pmcState == STANDBY || pMac->pmc.pmcState == REQUEST_STANDBY)
     {
         pmcLog(pMac, LOGE, FL("Cannot delete WoWL Pattern as chip is in %s state"),
            pmcGetPmcStateStr(pMac->pmc.pmcState));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     vos_mem_copy(pattern->bssId, pSession->connectedProfile.bssid, sizeof(tSirMacAddr));
 
     if( pMac->pmc.pmcState == IMPS || pMac->pmc.pmcState == REQUEST_IMPS )
     {
-        eHalStatus status;
+        VOS_STATUS status;
 
         vos_mem_copy(pattern->bssId, pSession->connectedProfile.bssid,
                      sizeof(tSirMacAddr));
@@ -2361,9 +2361,9 @@ eHalStatus pmcWowlDelBcastPattern (
         status = pmcDeferMsg( pMac, eWNI_PMC_WOWL_DEL_BCAST_PTRN, 
                                     pattern, sizeof(tSirWowlDelBcastPtrn) );
 
-        if( eHAL_STATUS_PMC_PENDING == status )
+        if( VOS_STATUS_PMC_PENDING == status )
         {
-            return eHAL_STATUS_SUCCESS;
+            return VOS_STATUS_SUCCESS;
         }
         else 
         {
@@ -2377,13 +2377,13 @@ eHalStatus pmcWowlDelBcastPattern (
     }
 
     if (pmcSendMessage(hHal, eWNI_PMC_WOWL_DEL_BCAST_PTRN, pattern, sizeof(tSirWowlDelBcastPtrn))
-        != eHAL_STATUS_SUCCESS)
+        != VOS_STATUS_SUCCESS)
     {
         pmcLog(pMac, LOGE, FL("Send of eWNI_PMC_WOWL_DEL_BCAST_PTRN to PE failed"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2416,14 +2416,14 @@ eHalStatus pmcWowlDelBcastPattern (
     \param  - wakeReasonIndCBContext -  Cookie to be passed back during callback
     \param  - fullPowerReason - Reason why this API is being invoked. SME needs to
               distinguish between BAP and HDD requests
-    \return eHalStatus - status 
-     eHAL_STATUS_SUCCESS - device brought to full power state
-     eHAL_STATUS_FAILURE - device cannot be brought to full power state
-     eHAL_STATUS_PMC_PENDING - device is being brought to full power state,
+    \return VOS_STATUS - status 
+     VOS_STATUS_SUCCESS - device brought to full power state
+     VOS_STATUS_E_FAILURE - device cannot be brought to full power state
+     VOS_STATUS_PMC_PENDING - device is being brought to full power state,
   ---------------------------------------------------------------------------*/
-eHalStatus pmcEnterWowl ( 
+VOS_STATUS pmcEnterWowl ( 
     tHalHandle hHal, 
-    void (*enterWowlCallbackRoutine) (void *callbackContext, eHalStatus status),
+    void (*enterWowlCallbackRoutine) (void *callbackContext, VOS_STATUS status),
     void *enterWowlCallbackContext,
 #ifdef WLAN_WAKEUP_EVENTS
     void (*wakeReasonIndCB) (void *callbackContext, tpSirWakeReasonInd pWakeReasonInd),
@@ -2460,7 +2460,7 @@ eHalStatus pmcEnterWowl (
    if( NULL == pSession )
    {
        pmcLog(pMac, LOGE, FL("Session not found "));
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
 
    if( !PMC_IS_READY(pMac) )
@@ -2468,7 +2468,7 @@ eHalStatus pmcEnterWowl (
        pmcLog(pMac, LOGE, FL("Requesting WoWL when PMC not ready"));
        pmcLog(pMac, LOGE, FL("pmcReady = %d pmcState = %s"),
            pMac->pmc.pmcReady, pmcGetPmcStateStr(pMac->pmc.pmcState));
-       return eHAL_STATUS_FAILURE;
+       return VOS_STATUS_E_FAILURE;
    }
 
    if ((!(CSR_IS_INFRA_AP(pSession->pCurRoamProfile)))
@@ -2478,14 +2478,14 @@ eHalStatus pmcEnterWowl (
       if (!pMac->pmc.bmpsEnabled)
       {
          pmcLog(pMac, LOGE, "PMC: Cannot enter WoWL. BMPS is disabled");
-         return eHAL_STATUS_PMC_DISABLED;
+         return VOS_STATUS_PMC_DISABLED;
       }
       /* Check that we are associated with single Session. */
       if (!pmcValidateConnectState( pMac ))
       {
          pmcLog(pMac, LOGE, "PMC: Cannot enable WOWL. STA not associated "
              "with an Access Point in Infra Mode with single active session");
-          return eHAL_STATUS_FAILURE;
+          return VOS_STATUS_E_FAILURE;
       }
    }
 
@@ -2493,7 +2493,7 @@ eHalStatus pmcEnterWowl (
    if (!pMac->pmc.wowlEnabled)
    {
       pmcLog(pMac, LOGE, "PMC: Cannot enter WoWL. WoWL is disabled");
-      return eHAL_STATUS_PMC_DISABLED;
+      return VOS_STATUS_PMC_DISABLED;
    }
 
    /* Is there a pending UAPSD request? HDD should have triggered QoS
@@ -2501,7 +2501,7 @@ eHalStatus pmcEnterWowl (
    if(pMac->pmc.uapsdSessionRequired)
    {
       pmcLog(pMac, LOGE, "PMC: Cannot request WOWL. Pending UAPSD request");
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    /* Check that entry into a power save mode is allowed at this time. */
@@ -2509,7 +2509,7 @@ eHalStatus pmcEnterWowl (
    {
       pmcLog(pMac, LOGE, "PMC: Power save check failed. WOWL request "
              "will not be accepted");
-      return eHAL_STATUS_FAILURE;
+      return VOS_STATUS_E_FAILURE;
    }
 
    vos_mem_copy(wowlEnterParams->bssId, pSession->connectedProfile.bssid,
@@ -2527,8 +2527,8 @@ eHalStatus pmcEnterWowl (
 #endif // WLAN_WAKEUP_EVENTS
 
    /* Enter Request WOWL State. */
-   if (pmcRequestEnterWowlState(hHal, wowlEnterParams) != eHAL_STATUS_SUCCESS)
-      return eHAL_STATUS_FAILURE;
+   if (pmcRequestEnterWowlState(hHal, wowlEnterParams) != VOS_STATUS_SUCCESS)
+      return VOS_STATUS_E_FAILURE;
 
    pMac->pmc.wowlModeRequired = TRUE;
 
@@ -2537,7 +2537,7 @@ eHalStatus pmcEnterWowl (
     */
    pMac->pmc.wowlExitSrc = eWOWL_EXIT_WAKEIND;
 
-   return eHAL_STATUS_PMC_PENDING;
+   return VOS_STATUS_PMC_PENDING;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2548,11 +2548,11 @@ eHalStatus pmcEnterWowl (
     \param  hHal - The handle returned by macOpen.
             wowlExitSrc - is wowl exiting because of wakeup pkt or user
                           explicitly disabling WoWL
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Device cannot exit WoWLAN mode.
-            eHAL_STATUS_SUCCESS  Request accepted to exit WoWLAN mode. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Device cannot exit WoWLAN mode.
+            VOS_STATUS_SUCCESS  Request accepted to exit WoWLAN mode. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcExitWowl (tHalHandle hHal, tWowlExitSource wowlExitSrc)
+VOS_STATUS pmcExitWowl (tHalHandle hHal, tWowlExitSource wowlExitSrc)
 {
    tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
 
@@ -2575,8 +2575,8 @@ eHalStatus pmcExitWowl (tHalHandle hHal, tWowlExitSource wowlExitSrc)
    pMac->pmc.wowlExitSrc = wowlExitSrc;
 
    /* Enter REQUEST_EXIT_WOWL State*/
-   if (pmcRequestExitWowlState(hHal) != eHAL_STATUS_SUCCESS)
-      return eHAL_STATUS_FAILURE;
+   if (pmcRequestExitWowlState(hHal) != VOS_STATUS_SUCCESS)
+      return VOS_STATUS_E_FAILURE;
 
    if (eWOWL_EXIT_USER == wowlExitSrc)
    {
@@ -2589,7 +2589,7 @@ eHalStatus pmcExitWowl (tHalHandle hHal, tWowlExitSource wowlExitSrc)
 #endif
    }
 
-   return eHAL_STATUS_SUCCESS;
+   return VOS_STATUS_SUCCESS;
 }
 
 
@@ -2599,11 +2599,11 @@ eHalStatus pmcExitWowl (tHalHandle hHal, tWowlExitSource wowlExitSrc)
     \brief  Set the host offload feature.
     \param  hHal - The handle returned by macOpen.
     \param  pRequest - Pointer to the offload request.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the offload.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the offload.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest, 
+VOS_STATUS pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest, 
                                    tANI_U8 sessionId)
 {
     tpSirHostOffloadReq pRequestBuf;
@@ -2618,14 +2618,14 @@ eHalStatus pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
     if(NULL == pSession )
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: SESSION not Found\n", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pRequestBuf = vos_mem_malloc(sizeof(tSirHostOffloadReq));
     if (NULL == pRequestBuf)
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to allocate memory for host offload request", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     vos_mem_copy(pRequest->bssId, pSession->connectedProfile.bssid,
@@ -2642,10 +2642,10 @@ eHalStatus pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post WDA_SET_HOST_OFFLOAD message to WDA", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -2653,11 +2653,11 @@ eHalStatus pmcSetHostOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
     \brief  Set the Keep Alive feature.
     \param  hHal - The handle returned by macOpen.
     \param  pRequest - Pointer to the Keep Alive.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the keepalive.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the keepalive.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8 sessionId)
+VOS_STATUS pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8 sessionId)
 {
     tpSirKeepAliveReq pRequestBuf;
     vos_msg_t msg;
@@ -2671,7 +2671,7 @@ eHalStatus pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: "
            " Session not Found", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     pRequestBuf = vos_mem_malloc(sizeof(tSirKeepAliveReq));
     if (NULL == pRequestBuf)
@@ -2679,7 +2679,7 @@ eHalStatus pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: "
                   "Not able to allocate memory for keep alive request",
                   __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     vos_mem_copy(pRequest->bssId, pSession->connectedProfile.bssid, sizeof(tSirMacAddr));
@@ -2699,10 +2699,10 @@ eHalStatus pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8
                   "Not able to post WDA_SET_KEEP_ALIVE message to WDA",
                   __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
@@ -2713,11 +2713,11 @@ eHalStatus pmcSetKeepAlive (tHalHandle hHal, tpSirKeepAliveReq pRequest, tANI_U8
     \brief  Set the host offload feature.
     \param  hHal - The handle returned by macOpen.
     \param  pRequest - Pointer to the offload request.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the offload.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the offload.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcSetNSOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest, 
+VOS_STATUS pmcSetNSOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest, 
                                  tANI_U8 sessionId)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT(hHal);
@@ -2728,7 +2728,7 @@ eHalStatus pmcSetNSOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
     if( NULL == pSession )
     {
         pmcLog(pMac, LOGE, FL("Session not found "));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     vos_mem_copy(pRequest->bssId, pSession->connectedProfile.bssid, 
@@ -2738,7 +2738,7 @@ eHalStatus pmcSetNSOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
     if (NULL == pRequestBuf)
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to allocate memory for NS offload request", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
     vos_mem_copy(pRequestBuf, pRequest, sizeof(tSirHostOffloadReq));
 
@@ -2751,10 +2751,10 @@ eHalStatus pmcSetNSOffload (tHalHandle hHal, tpSirHostOffloadReq pRequest,
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post SIR_HAL_SET_HOST_OFFLOAD message to HAL", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 #endif //WLAN_NS_OFFLOAD
@@ -2979,7 +2979,7 @@ pmcPrepareProbeReqTemplate(tpAniSirGlobal pMac,
 } // End pmcPrepareProbeReqTemplate.
 
 
-eHalStatus pmcSetPreferredNetworkList
+VOS_STATUS pmcSetPreferredNetworkList
 (
     tHalHandle hHal, 
     tpSirPNOScanReq pRequest, 
@@ -3000,14 +3000,14 @@ eHalStatus pmcSetPreferredNetworkList
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                   "%s: pSession is NULL", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pCommand = csrGetCommandBuffer(pMac);
     if(NULL == pCommand)
     {
         smsLog( pMac, LOGE, FL(" fail to get command buffer") );
-        return eHAL_STATUS_RESOURCES;
+        return VOS_STATUS_E_RESOURCES;
     }
     pRequestBuf = &(pCommand->u.pnoInfo);
     vos_mem_copy(pRequestBuf, pRequest, sizeof(tSirPNOScanReq));
@@ -3018,7 +3018,7 @@ eHalStatus pmcSetPreferredNetworkList
             VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                       FL("Network count is 0"));
             csrReleaseCommand(pMac, pCommand);
-            return eHAL_STATUS_FAILURE;
+            return VOS_STATUS_E_FAILURE;
         }
         /*Must translate the mode first*/
         ucDot11Mode = (tANI_U8) csrTranslateToWNICfgDot11Mode(pMac,
@@ -3121,7 +3121,7 @@ eHalStatus pmcSetPreferredNetworkList
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                   FL("failed to post eSmeCommandPnoReq command"));
         csrReleaseCommand(pMac, pCommand);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     /* Cache the Preferred Network Found Indication callback information */
@@ -3130,10 +3130,10 @@ eHalStatus pmcSetPreferredNetworkList
 
     VOS_TRACE( VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_INFO, "-%s", __func__);
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
-eHalStatus pmcSetRssiFilter(tHalHandle hHal,   v_U8_t        rssiThreshold)
+VOS_STATUS pmcSetRssiFilter(tHalHandle hHal,   v_U8_t        rssiThreshold)
 {
     tpSirSetRSSIFilterReq pRequestBuf;
     vos_msg_t msg;
@@ -3143,7 +3143,7 @@ eHalStatus pmcSetRssiFilter(tHalHandle hHal,   v_U8_t        rssiThreshold)
     if (NULL == pRequestBuf)
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to allocate memory for PNO request", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
 
@@ -3158,14 +3158,14 @@ eHalStatus pmcSetRssiFilter(tHalHandle hHal,   v_U8_t        rssiThreshold)
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post WDA_SET_PNO_REQ message to WDA", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 
-eHalStatus pmcUpdateScanParams(tHalHandle hHal, tCsrConfig *pRequest, tCsrChannel *pChannelList, tANI_U8 b11dResolved)
+VOS_STATUS pmcUpdateScanParams(tHalHandle hHal, tCsrConfig *pRequest, tCsrChannel *pChannelList, tANI_U8 b11dResolved)
 {
     tpSirUpdateScanParams pRequestBuf;
     vos_msg_t msg;
@@ -3177,7 +3177,7 @@ eHalStatus pmcUpdateScanParams(tHalHandle hHal, tCsrConfig *pRequest, tCsrChanne
     if (NULL == pRequestBuf)
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to allocate memory for UpdateScanParams request", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     // 
@@ -3211,14 +3211,14 @@ eHalStatus pmcUpdateScanParams(tHalHandle hHal, tCsrConfig *pRequest, tCsrChanne
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post WDA_UPDATE_SCAN_PARAMS message to WDA", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 #endif // FEATURE_WLAN_SCAN_PNO
 
-eHalStatus pmcSetPowerParams(tHalHandle hHal,   tSirSetPowerParamsReq*  pwParams, tANI_BOOLEAN forced)
+VOS_STATUS pmcSetPowerParams(tHalHandle hHal,   tSirSetPowerParamsReq*  pwParams, tANI_BOOLEAN forced)
 {
     tSirSetPowerParamsReq* pRequestBuf;
     vos_msg_t msg;
@@ -3228,14 +3228,14 @@ eHalStatus pmcSetPowerParams(tHalHandle hHal,   tSirSetPowerParamsReq*  pwParams
     psessionEntry = peGetValidPowerSaveSession(pMac);
     if (!forced && (psessionEntry == NULL))
     {
-        return eHAL_STATUS_NOT_INITIALIZED;
+        return VOS_STATUS_NOT_INITIALIZED;
     }
 
     pRequestBuf = vos_mem_malloc(sizeof(tSirSetPowerParamsReq));
     if (NULL == pRequestBuf)
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to allocate memory for Power Paramrequest", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
 
@@ -3252,14 +3252,14 @@ eHalStatus pmcSetPowerParams(tHalHandle hHal,   tSirSetPowerParamsReq*  pwParams
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post WDA_SET_POWER_PARAMS_REQ message to WDA", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 #ifdef WLAN_FEATURE_PACKET_FILTERING
-eHalStatus pmcGetFilterMatchCount
+VOS_STATUS pmcGetFilterMatchCount
 (
     tHalHandle hHal, 
     FilterMatchCountCallback callbackRoutine, 
@@ -3279,7 +3279,7 @@ eHalStatus pmcGetFilterMatchCount
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                   "%s: Session not found ", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pRequestBuf = vos_mem_malloc(sizeof(tSirRcvFltPktMatchRsp));
@@ -3288,7 +3288,7 @@ eHalStatus pmcGetFilterMatchCount
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                   "%s: Not able to allocate "
                   "memory for Get PC Filter Match Count request", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     vos_mem_copy(pRequestBuf->bssId, pSession->connectedProfile.bssid,
@@ -3319,10 +3319,10 @@ eHalStatus pmcGetFilterMatchCount
             "%s: Not able to post WDA_PACKET_COALESCING_FILTER_MATCH_COUNT_REQ "
             "message to WDA", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 #endif // WLAN_FEATURE_PACKET_FILTERING
 
@@ -3332,11 +3332,11 @@ eHalStatus pmcGetFilterMatchCount
     \brief  Set GTK offload feature.
     \param  hHal - The handle returned by macOpen.
     \param  pGtkOffload - Pointer to the GTK offload request.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the offload.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the offload.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload, 
+VOS_STATUS pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload, 
                                   tANI_U8 sessionId)
 {
     tpSirGtkOffloadParams pRequestBuf;
@@ -3351,7 +3351,7 @@ eHalStatus pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload,
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
                   "%s: Session not found ", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pRequestBuf = (tpSirGtkOffloadParams)vos_mem_malloc(sizeof(tSirGtkOffloadParams));
@@ -3359,7 +3359,7 @@ eHalStatus pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload,
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to allocate "
                   "memory for GTK offload request", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     vos_mem_copy(pGtkOffload->bssId, pSession->connectedProfile.bssid,
@@ -3377,10 +3377,10 @@ eHalStatus pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload,
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post "
                   "SIR_HAL_SET_GTK_OFFLOAD message to HAL", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* ---------------------------------------------------------------------------
@@ -3388,11 +3388,11 @@ eHalStatus pmcSetGTKOffload (tHalHandle hHal, tpSirGtkOffloadParams pGtkOffload,
     \brief  Get GTK offload information.
     \param  hHal - The handle returned by macOpen.
     \param  callbackRoutine - Pointer to the GTK Offload Get Info response callback routine.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  Cannot set the offload.
-            eHAL_STATUS_SUCCESS  Request accepted. 
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  Cannot set the offload.
+            VOS_STATUS_SUCCESS  Request accepted. 
   ---------------------------------------------------------------------------*/
-eHalStatus pmcGetGTKOffload(tHalHandle hHal, GTKOffloadGetInfoCallback callbackRoutine, 
+VOS_STATUS pmcGetGTKOffload(tHalHandle hHal, GTKOffloadGetInfoCallback callbackRoutine, 
                                   void *callbackContext, tANI_U8 sessionId)
 {
     tpSirGtkOffloadGetInfoRspParams  pRequestBuf;
@@ -3407,7 +3407,7 @@ eHalStatus pmcGetGTKOffload(tHalHandle hHal, GTKOffloadGetInfoCallback callbackR
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, 
                   "%s: Session not found ", __func__);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pRequestBuf = (tpSirGtkOffloadGetInfoRspParams)
@@ -3416,7 +3416,7 @@ eHalStatus pmcGetGTKOffload(tHalHandle hHal, GTKOffloadGetInfoCallback callbackR
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to allocate "
                   "memory for Get GTK offload request", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     vos_mem_copy(pRequestBuf->bssId, pSession->connectedProfile.bssid, sizeof(tSirMacAddr)); 
@@ -3444,10 +3444,10 @@ eHalStatus pmcGetGTKOffload(tHalHandle hHal, GTKOffloadGetInfoCallback callbackR
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR, "%s: Not able to post WDA_GTK_OFFLOAD_GETINFO_REQ message to WDA", 
                     __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 #endif // WLAN_FEATURE_GTK_OFFLOAD
 
@@ -3477,12 +3477,12 @@ void pmcResetImpsFailStatus (tHalHandle hHal)
     \param  sessionId - session ID
     \param  callbackRoutine - Pointer to set batch scan request callback routine
     \param  callbackContext - Pointer to set batch scan request callback context
-    \return eHalStatus
-             eHAL_STATUS_FAILURE  Cannot set batch scan request
-             eHAL_STATUS_SUCCESS  Request accepted.
+    \return VOS_STATUS
+             VOS_STATUS_E_FAILURE  Cannot set batch scan request
+             VOS_STATUS_SUCCESS  Request accepted.
  -----------------------------------------------------------------------------*/
 
-eHalStatus pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq *pRequest,
+VOS_STATUS pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq *pRequest,
     tANI_U8 sessionId, hddSetBatchScanReqCallback callbackRoutine,
     void *callbackContext)
 {
@@ -3495,7 +3495,7 @@ eHalStatus pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq *pRequest,
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
           "%s: Not able to allocate memory for SET BATCH SCAN req", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     /* Cache HDD callback information*/
@@ -3519,10 +3519,10 @@ eHalStatus pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq *pRequest,
           "%s: Not able to post WDA_SET_BATCH_SCAN_REQ message to WDA",
           __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* -----------------------------------------------------------------------------
@@ -3532,12 +3532,12 @@ eHalStatus pmcSetBatchScanReq(tHalHandle hHal, tSirSetBatchScanReq *pRequest,
     \param  sessionId - session ID
     \param  callbackRoutine - Pointer to get batch scan request callback routine
     \param  callbackContext - Pointer to get batch scan request callback context
-    \return eHalStatus
-             eHAL_STATUS_FAILURE  Cannot set batch scan request
-             eHAL_STATUS_SUCCESS  Request accepted.
+    \return VOS_STATUS
+             VOS_STATUS_E_FAILURE  Cannot set batch scan request
+             VOS_STATUS_SUCCESS  Request accepted.
  -----------------------------------------------------------------------------*/
 
-eHalStatus pmcTriggerBatchScanResultInd
+VOS_STATUS pmcTriggerBatchScanResultInd
 (
     tHalHandle hHal, tSirTriggerBatchScanResultInd *pRequest, tANI_U8 sessionId,
     hddTriggerBatchScanResultIndCallback callbackRoutine, void *callbackContext
@@ -3553,7 +3553,7 @@ eHalStatus pmcTriggerBatchScanResultInd
        VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
         "%s: Not able to allocate memory for WDA_TRIGGER_BATCH_SCAN_RESULT_IND",
         __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     /*HDD callback to be called after getting batch scan result ind from FW*/
@@ -3573,10 +3573,10 @@ eHalStatus pmcTriggerBatchScanResultInd
           "%s: Not able to post WDA_TRIGGER_BATCH_SCAN_RESULT_IND message"
           " to WDA", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /* -----------------------------------------------------------------------------
@@ -3584,12 +3584,12 @@ eHalStatus pmcTriggerBatchScanResultInd
     \brief  Stoping batch scan request in FW
     \param  hHal - The handle returned by macOpen.
     \param  callbackRoutine - Pointer to stop batch scan request callback routine
-    \return eHalStatus
-             eHAL_STATUS_FAILURE  Cannot set batch scan request
-             eHAL_STATUS_SUCCESS  Request accepted.
+    \return VOS_STATUS
+             VOS_STATUS_E_FAILURE  Cannot set batch scan request
+             VOS_STATUS_SUCCESS  Request accepted.
  -----------------------------------------------------------------------------*/
 
-eHalStatus pmcStopBatchScanInd(tHalHandle hHal, tSirStopBatchScanInd *pRequest,
+VOS_STATUS pmcStopBatchScanInd(tHalHandle hHal, tSirStopBatchScanInd *pRequest,
     tANI_U8 sessionId)
 {
     tSirStopBatchScanInd *pRequestBuf;
@@ -3600,7 +3600,7 @@ eHalStatus pmcStopBatchScanInd(tHalHandle hHal, tSirStopBatchScanInd *pRequest,
     {
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
           "%s: Not able to allocate memory for STOP BATCH SCAN IND", __func__);
-        return eHAL_STATUS_FAILED_ALLOC;
+        return VOS_STATUS_E_NOMEM;
     }
 
     pRequestBuf->param = pRequest->param;
@@ -3615,10 +3615,10 @@ eHalStatus pmcStopBatchScanInd(tHalHandle hHal, tSirStopBatchScanInd *pRequest,
         VOS_TRACE(VOS_MODULE_ID_SME, VOS_TRACE_LEVEL_ERROR,
           "%s: Not able to post WDA_TOP_BATCH_SCAN_IND message to WDA", __func__);
         vos_mem_free(pRequestBuf);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 #endif

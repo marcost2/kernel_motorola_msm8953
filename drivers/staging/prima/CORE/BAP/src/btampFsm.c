@@ -165,7 +165,6 @@ bapSetKey( v_PVOID_t pvosGCtx, tCsrRoamSetKey *pSetKeyInfo )
     VOS_STATUS  vosStatus = VOS_STATUS_SUCCESS;
     ptBtampContext btampContext; /* use btampContext value */ 
     v_U8_t status;    /* return the BT-AMP status here */
-    eHalStatus  halStatus;
     v_U32_t roamId = 0xFF;
     tHalHandle     hHal = NULL;
     v_U8_t groupMac[ANI_MAC_ADDR_SIZE] = {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF};  
@@ -202,29 +201,29 @@ bapSetKey( v_PVOID_t pvosGCtx, tCsrRoamSetKey *pSetKeyInfo )
     vosStatus = btampFsm(btampContext, &bapEvent, &status);
 
     /* Set the Pairwise Key */ 
-    halStatus = sme_RoamSetKey( 
+    vosStatus = sme_RoamSetKey( 
             hHal, 
             btampContext->sessionId, 
             pSetKeyInfo, 
             &roamId );
-    if ( halStatus != eHAL_STATUS_SUCCESS )
+    if ( vosStatus != VOS_STATUS_SUCCESS )
     {
       VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR, 
-              "[%4d] sme_RoamSetKey returned ERROR status= %d", __LINE__, halStatus );
+              "[%4d] sme_RoamSetKey returned ERROR status= %d", __LINE__, vosStatus );
         return VOS_STATUS_E_FAULT;
     }
                          
     /* Set the Group Key */ 
     vos_mem_copy( pSetKeyInfo->peerMac, groupMac, sizeof( tAniMacAddr ) );
-    halStatus = sme_RoamSetKey( 
+    vosStatus = sme_RoamSetKey( 
             hHal, 
             btampContext->sessionId, 
             pSetKeyInfo, 
             &roamId );
-    if ( halStatus != eHAL_STATUS_SUCCESS )
+    if ( vosStatus != VOS_STATUS_SUCCESS )
     {
         VOS_TRACE( VOS_MODULE_ID_BAP, VOS_TRACE_LEVEL_ERROR, 
-                "[%4d] sme_RoamSetKey returned ERROR status= %d", __LINE__, halStatus );
+                "[%4d] sme_RoamSetKey returned ERROR status= %d", __LINE__, vosStatus );
       return VOS_STATUS_E_FAULT;
     }
   
@@ -755,7 +754,6 @@ gotoStarting
 ) 
 {
     VOS_STATUS  vosStatus = VOS_STATUS_SUCCESS;
-    eHalStatus  halStatus;
     v_U32_t     parseStatus;
     /* tHalHandle */    
     tHalHandle hHal;
@@ -794,7 +792,7 @@ gotoStarting
 
 
     //Tell PMC to exit BMPS;
-    halStatus = pmcRequestFullPower(
+    vosStatus = pmcRequestFullPower(
             hHal, 
             WLANBAP_pmcFullPwrReqCB, 
             btampContext,
@@ -926,20 +924,20 @@ gotoStarting
     //Set gDiscReason to 0 (no reason);
     btampContext->gDiscReason = WLANBAP_STATUS_SUCCESS;
     /* Initiate the link as either START or JOIN */
-    //halStatus = csrRoamOpenSession(&newSession);
+    //vosStatus = csrRoamOpenSession(&newSession);
     /*Added by Luiza:*/
 
     if (btampContext->isBapSessionOpen == FALSE)
     {
 
-        halStatus = sme_OpenSession(hHal, 
+        vosStatus = sme_OpenSession(hHal, 
                                     WLANBAP_RoamCallback, 
                                     btampContext,
                                     // <=== JEZ081210: FIXME
                                     //(tANI_U8 *) btampContext->self_mac_addr,  
                                     btampContext->self_mac_addr,  
                                     &btampContext->sessionId);
-        if(eHAL_STATUS_SUCCESS == halStatus)
+        if(VOS_STATUS_SUCCESS == vosStatus)
         {
             btampContext->isBapSessionOpen = TRUE;
         }
@@ -954,7 +952,7 @@ gotoStarting
     /* Update the SME Session info for this Phys Link (i.e., for this Phys State Machine instance) */
     //bapUpdateSMESessionForThisPhysLink(newSession, PhysLinkHandle);
     // Taken care of, above
-    //halStatus = csrRoamConnect(newSession, bssType);
+    //vosStatus = csrRoamConnect(newSession, bssType);
     // Final
     vosStatus = convertToCsrProfile ( 
             btampContext, /* btampContext value */    
@@ -968,19 +966,18 @@ gotoStarting
         return VOS_STATUS_E_INVAL;
     }
 #if 0
-    halStatus = sme_RoamConnect(VOS_GET_HAL_CB(btampContext->pvosGCtx), 
+    vosStatus = sme_RoamConnect(VOS_GET_HAL_CB(btampContext->pvosGCtx), 
             &btampContext->csrRoamProfile, 
             NULL,   /* tScanResultHandle hBssListIn, */ 
             &btampContext->csrRoamId);
 #endif //0
 //#if 0
-    halStatus = sme_RoamConnect(hHal, 
+    vosStatus = sme_RoamConnect(hHal, 
             btampContext->sessionId, 
             &btampContext->csrRoamProfile, 
             &btampContext->csrRoamId);
 //#endif //0
 
-    //Map the halStatus into a vosStatus
     return vosStatus;
 } //gotoStarting
           
@@ -1255,12 +1252,12 @@ gotoDisconnected
     //What if pmcRequestFullPower wasn't called?
     //Tell PMC to resume BMPS;  /* Whatever the previous BMPS "state" was */
     //Comment this out until such time as we have PMC support
-    //halStatus = pmcResumePower ( hHal);
+    //vosStatus = pmcResumePower ( hHal);
 
     /* Signal BT Coexistence code in firmware to no longer prefer WLAN */
     WLANBAP_NeedBTCoexPriority ( btampContext, 0);
 
-    //Map the halStatus into a vosStatus
+    //Map the vosStatus into a vosStatus
     return vosStatus;
 } // gotoDisconnected 
 

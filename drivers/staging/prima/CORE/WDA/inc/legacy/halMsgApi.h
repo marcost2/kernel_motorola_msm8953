@@ -240,8 +240,8 @@ typedef struct
      * via response message. HAL does not read them.
      */
     // The return status of SIR_HAL_ADD_STA_REQ is reported here
-    eHalStatus status;
-    // Station index; valid only when 'status' field value is eHAL_STATUS_SUCCESS
+    VOS_STATUS status;
+    // Station index; valid only when 'status' field value is VOS_STATUS_SUCCESS
     tANI_U8 staIdx;
 
     //BSSID of BSS to which the station is associated.
@@ -310,7 +310,7 @@ typedef struct
     tANI_U8   rateIdx;
 
     // The return status of SIR_HAL_UPDATE_STARATEINFO_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
 
     //A flag to indicate to HAL if the response message is required.
     tANI_U8 respReqd;
@@ -331,7 +331,7 @@ typedef struct
     // as part of the AddSta
     tANI_U16 staIdx;
     tANI_U16 assocId;
-    eHalStatus  status;    // Status of SIR_HAL_DELETE_STA_REQ is reported here
+    VOS_STATUS  status;    // Status of SIR_HAL_DELETE_STA_REQ is reported here
     tANI_U8 respReqd;
     tANI_U8     sessionId; // PE session id for PE<->HAL interface 
     // PE session id now added to all HAL<->PE transacations
@@ -356,7 +356,7 @@ typedef struct
      * Following parameter is for returning status
      * via response message. HAL does not read them.
      */
-    eHalStatus  status;    // status of SIR_HAL_SET_STAKEY_REQ is reported here
+    VOS_STATUS  status;    // status of SIR_HAL_SET_STAKEY_REQ is reported here
     tANI_U8     sessionId; // PE session id for PE<->HAL interface 
 
     // PE session id now added to all HAL<->PE transacations
@@ -447,17 +447,17 @@ typedef struct
     * via response message. HAL does not read them.
     */
     // The return status of SIR_HAL_ADD_BSS_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
     // BSS index allocated by HAL.
-    // valid only when 'status' field is eHAL_STATUS_SUCCESS
+    // valid only when 'status' field is VOS_STATUS_SUCCESS
     tANI_U16 bssIdx;
 
     // Broadcast DPU descriptor index allocated by HAL and used for broadcast/multicast packets.
-    // valid only when 'status' field is eHAL_STATUS_SUCCESS
+    // valid only when 'status' field is VOS_STATUS_SUCCESS
     tANI_U8    bcastDpuDescIndx;
 
     // DPU signature to be used for broadcast/multicast packets
-    // valid only when 'status' field is eHAL_STATUS_SUCCESS
+    // valid only when 'status' field is VOS_STATUS_SUCCESS
     tANI_U8    bcastDpuSignature;
 
     // DPU descriptor index allocated by HAL, used for bcast/mcast management packets
@@ -508,7 +508,7 @@ typedef struct
 {
     tANI_U8 bssIdx;
     // The return status of SIR_HAL_DELETE_BSS_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
     //HAL will send the response message to LIM only when this flag is set.
     //LIM will set this flag, whereas DVT will not set this flag.
     tANI_U8 respReqd;
@@ -573,7 +573,7 @@ typedef struct {
      * via response message. HAL does not read them.
      */
     // The return status of SIR_HAL_INIT_SCAN_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
 
 } tInitScanParams, * tpInitScanParams;
 
@@ -613,7 +613,7 @@ typedef struct {
     * via response message. HAL does not read them.
     */
     // The return status of SIR_HAL_START_SCAN_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
 
 #if defined WLAN_FEATURE_VOWIFI
     tANI_U32 startTSF[2];
@@ -636,7 +636,7 @@ typedef struct {
     * via response message. HAL does not read them.
     */
     // The return status of SIR_HAL_END_SCAN_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
 
 } tEndScanParams, * tpEndScanParams;
 
@@ -683,7 +683,7 @@ typedef struct {
     * via response message. HAL does not read them.
     */
     // The return status of SIR_HAL_FINISH_SCAN_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
 
 } tFinishScanParams, * tpFinishScanParams;
 
@@ -699,7 +699,7 @@ typedef struct {
 typedef struct
 {
     tSirMacAddr          selfMacAddr;
-    eHalStatus           status;
+    VOS_STATUS           status;
     tANI_U8              oemDataReq[OEM_DATA_REQ_SIZE];
 } tStartOemDataReq, *tpStartOemDataReq;
 
@@ -763,7 +763,7 @@ typedef struct
      * Following parameter is for returning status
      * via response message. HAL does not read them.
      */
-    eHalStatus  status;     // status of SIR_HAL_SET_BSSKEY_REQ is reported here
+    VOS_STATUS  status;     // status of SIR_HAL_SET_BSSKEY_REQ is reported here
     tANI_U8     sessionId;  // PE session id for PE<->HAL interface 
                             // HAL sends this unmodified in the response
 } tSetBssKeyParams, *tpSetBssKeyParams;
@@ -781,7 +781,7 @@ typedef struct
      * Following parameter is for returning status
      * via response message. HAL does not read them.
      */
-    eHalStatus  status;     // return status of SIR_HAL_REMOVE_STAKEY_REQ 
+    VOS_STATUS  status;     // return status of SIR_HAL_REMOVE_STAKEY_REQ 
     tANI_U8     sessionId;  // PE session id for PE<->HAL interface 
                             //  HAL Sends back the PE session 
                             //  id unmodified 
@@ -800,7 +800,7 @@ typedef struct
      * Following parameter is for returning status
      * via response message. HAL does not read them.
      */
-    eHalStatus  status;    // return status of SIR_HAL_REMOVE_BSSKEY_REQ 
+    VOS_STATUS  status;    // return status of SIR_HAL_REMOVE_BSSKEY_REQ 
     tANI_U8     sessionId; // PE session id for PE<->HAL interface 
                            //  HAL Sends back the PE session 
                            //  id unmodified 
@@ -812,7 +812,7 @@ typedef struct
     tANI_U16 staIdx;
     tANI_U8 encMode;
     // The return status of SIR_HAL_DPU_STATS_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
     // The return statistics
     tANI_U32  sendBlocks;
     tANI_U32  recvBlocks;
@@ -838,7 +838,7 @@ typedef struct
      * via response message. HAL does not read them.
      */
     // The return status of SIR_HAL_SET_BSSKEY_REQ is reported here
-    eHalStatus status;
+    VOS_STATUS status;
     tANI_U8    dpuDescIndx;
     tANI_U8    dpuSignature;
 } tGetDpuParams, *tpGetDpuParams;
@@ -953,7 +953,7 @@ typedef struct
      */
     tSirMacAddr bssId;
 
-    eHalStatus status;
+    VOS_STATUS status;
 
 }tSwitchChannelParams, *tpSwitchChannelParams;
 
@@ -979,7 +979,7 @@ typedef struct
   tANI_U16 staIdx;
   tANI_U16 tspecIdx; //TSPEC handler uniquely identifying a TSPEC for a STA in a BSS
   tSirMacTspecIE   tspec;
-  eHalStatus       status;
+  VOS_STATUS       status;
   tANI_U8          sessionId;          //PE session id for PE<->HAL interface 
 } tAddTsParams, *tpAddTsParams;
 
@@ -1001,7 +1001,7 @@ typedef struct
   tANI_U16 staIdx;
   tANI_U16 tspecIdx; //TSPEC handler uniquely identifying a TSPEC for a STA in a BSS
   tSirMacTspecIE   tspec[HAL_QOS_NUM_AC_MAX];
-  eHalStatus       status[HAL_QOS_NUM_AC_MAX];
+  VOS_STATUS       status[HAL_QOS_NUM_AC_MAX];
   tANI_U8          sessionId;          //PE session id for PE<->HAL interface 
 }tAggrAddTsParams, *tpAggrAddTsParams;
 
@@ -1025,7 +1025,7 @@ typedef struct
 * Function Prototypes
 */
 
-eHalStatus halMsg_setPromiscMode(tpAniSirGlobal pMac);
+VOS_STATUS halMsg_setPromiscMode(tpAniSirGlobal pMac);
 
 
 //
@@ -1081,7 +1081,7 @@ typedef struct sAddBAParams
     //
     // The return status of SIR_HAL_ADDBA_REQ is reported
     // in the SIR_HAL_ADDBA_RSP message
-    eHalStatus status;
+    VOS_STATUS status;
 
     // Indicating to HAL whether a response message is required.
     tANI_U8 respReqd;
@@ -1118,7 +1118,7 @@ typedef struct sDelBAParams
     //
     // The return status of SIR_HAL_DELBA_REQ is reported
     // in the SIR_HAL_DELBA_RSP message
-    //eHalStatus status;
+    //VOS_STATUS status;
 
 } tDelBAParams, * tpDelBAParams;
 
@@ -1136,7 +1136,7 @@ typedef struct sSet_MIMOPS
     tSirMacHTMIMOPowerSaveState htMIMOPSState;
     // The return status of SIR_HAL_SET_MIMOPS_REQ is reported
     // in the SIR_HAL_SET_MIMOPS_RSP message
-    eHalStatus status;
+    VOS_STATUS status;
     tANI_U8     fsendRsp;
 
 } tSetMIMOPS, * tpSetMIMOPS;
@@ -1149,7 +1149,7 @@ typedef struct sSet_MIMOPS
 typedef struct sExitBmpsParams
 {
     tANI_U8     sendDataNull;
-    eHalStatus  status;
+    VOS_STATUS  status;
     tANI_U8     bssIdx;
 } tExitBmpsParams, *tpExitBmpsParams;
 
@@ -1167,7 +1167,7 @@ typedef struct sUapsdParams
     tANI_U8     beTriggerEnabled:1;
     tANI_U8     viTriggerEnabled:1;
     tANI_U8     voTriggerEnabled:1;
-    eHalStatus  status;
+    VOS_STATUS  status;
     tANI_U8     bssIdx;
 }tUapsdParams, *tpUapsdParams;
 
@@ -1177,7 +1177,7 @@ typedef struct sUapsdParams
 //
 typedef struct sExitUapsdParams
 {
-    eHalStatus  status;
+    VOS_STATUS  status;
     tANI_U8     bssIdx;
 }tExitUapsdParams, *tpExitUapsdParams;
 
@@ -1281,7 +1281,7 @@ typedef struct sEnterBmpsParams
     tANI_U32 rssiFilterPeriod;
     tANI_U32 numBeaconPerRssiAverage;
 
-    eHalStatus status;
+    VOS_STATUS status;
     tANI_U8 respReqd;
 }tEnterBmpsParams, *tpEnterBmpsParams;
 

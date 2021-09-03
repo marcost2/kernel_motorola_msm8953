@@ -379,7 +379,7 @@ typedef void (*pWDATxRxCompFunc)( v_PVOID_t pContext, void *pData );
 //callback function for TX complete
 //parameter 1 - global pMac pointer
 //parameter 2 - txComplete status : 1- success, 0 - failure.
-typedef eHalStatus (*pWDAAckFnTxComp)(tpAniSirGlobal, void *pData);
+typedef VOS_STATUS (*pWDAAckFnTxComp)(tpAniSirGlobal, void *pData);
 
 #ifdef WLAN_FEATURE_RMC
 typedef void (*WDA_txFailIndCallback)(tANI_U8 *, tANI_U8);
@@ -924,7 +924,7 @@ tSirRetStatus uMacPostCtrlMsg(void* pSirGlobal, tSirMbMsg* pMb);
 #define WDA_RADIO_ON_OFF_IND SIR_HAL_RADIO_ON_OFF_IND
 #define WDA_RESET_CNF SIR_HAL_RESET_CNF
 #define WDA_SetRegDomain \
-    (eHalStatus halPhySetRegDomain(tHalHandle hHal, eRegDomainId regDomain))
+    (VOS_STATUS halPhySetRegDomain(tHalHandle hHal, eRegDomainId regDomain))
 #endif
 
 #define WDA_APP_SETUP_NTF  SIR_HAL_APP_SETUP_NTF 
@@ -1323,7 +1323,7 @@ tSirRetStatus uMacPostCtrlMsg(void* pSirGlobal, tSirMbMsg* pMb);
 
 tSirRetStatus wdaPostCtrlMsg(tpAniSirGlobal pMac, tSirMsgQ *pMsg);
 
-eHalStatus WDA_SetRegDomain(void * clientCtxt, v_REGDOMAIN_t regId,
+VOS_STATUS WDA_SetRegDomain(void * clientCtxt, v_REGDOMAIN_t regId,
                                                tAniBool sendRegHint);
 
 #ifdef WLAN_FEATURE_EXTSCAN
@@ -1398,7 +1398,7 @@ eHalStatus WDA_SetRegDomain(void * clientCtxt, v_REGDOMAIN_t regId,
 #define HAL_USE_BD_RATE2_FOR_MANAGEMENT_FRAME 0x40 // Bit 6 will be used to control BD rate for Management frames
 
 #define halTxFrame(hHal, pFrmBuf, frmLen, frmType, txDir, tid, pCompFunc, pData, txFlag) \
-   (eHalStatus)( WDA_TxPacket(\
+   (VOS_STATUS)( WDA_TxPacket(\
          vos_get_context(VOS_MODULE_ID_WDA, vos_get_global_context(VOS_MODULE_ID_WDA, (hHal))),\
          (pFrmBuf),\
          (frmLen),\
@@ -1412,7 +1412,7 @@ eHalStatus WDA_SetRegDomain(void * clientCtxt, v_REGDOMAIN_t regId,
          (0)) )
 
 #define halTxFrameWithTxComplete(hHal, pFrmBuf, frmLen, frmType, txDir, tid, pCompFunc, pData, pCBackFnTxComp, txFlag, txBdToken) \
-   (eHalStatus)( WDA_TxPacket(\
+   (VOS_STATUS)( WDA_TxPacket(\
          vos_get_context(VOS_MODULE_ID_WDA, vos_get_global_context(VOS_MODULE_ID_WDA, (hHal))),\
          (pFrmBuf),\
          (frmLen),\

@@ -27,9 +27,9 @@
  * IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-eHalStatus csr_neighbor_roam_issue_preauth_reassoc(tpAniSirGlobal mac);
+VOS_STATUS csr_neighbor_roam_issue_preauth_reassoc(tpAniSirGlobal mac);
 
-eHalStatus csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
+VOS_STATUS csr_roam_issue_preauth_reassoc_req(tHalHandle hal,
                      tANI_U32 session_id, tpSirBssDescription bss_description);
 
 void csr_roam_preauth_rsp_mbb_processor(tHalHandle hal,

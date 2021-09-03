@@ -1115,7 +1115,7 @@ void limGetRandomBssid(tpAniSirGlobal pMac, tANI_U8 *data)
      vos_mem_copy( data, (tANI_U8*)random, sizeof(tSirMacAddr));
 }
 
-static eHalStatus limSendHalStartScanOffloadReq(tpAniSirGlobal pMac,
+static VOS_STATUS limSendHalStartScanOffloadReq(tpAniSirGlobal pMac,
         tpSirSmeScanReq pScanReq)
 {
     tSirScanOffloadReq *pScanOffloadReq;
@@ -1136,7 +1136,7 @@ static eHalStatus limSendHalStartScanOffloadReq(tpAniSirGlobal pMac,
     {
         limLog(pMac, LOGE,
                 FL("AllocateMemory failed for pScanOffloadReq"));
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     vos_mem_set( (tANI_U8 *) pScanOffloadReq, len, 0);
@@ -1154,7 +1154,7 @@ static eHalStatus limSendHalStartScanOffloadReq(tpAniSirGlobal pMac,
         limLog(pMac, LOGE,
                 FL("Invalid value (%d) for numSsid"), SIR_SCAN_MAX_NUM_SSID);
         vos_mem_free (pScanOffloadReq);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
 
     pScanOffloadReq->numSsid = pScanReq->numSsid;
@@ -1194,11 +1194,11 @@ static eHalStatus limSendHalStartScanOffloadReq(tpAniSirGlobal pMac,
     {
         limLog(pMac, LOGE, FL("wdaPostCtrlMsg() return failure"));
         vos_mem_free(pScanOffloadReq);
-        return eHAL_STATUS_FAILURE;
+        return VOS_STATUS_E_FAILURE;
     }
     limLog(pMac, LOG1, FL("Processed Offload Scan Request Successfully"));
 
-    return eHAL_STATUS_SUCCESS;
+    return VOS_STATUS_SUCCESS;
 }
 
 /**
@@ -1340,7 +1340,7 @@ __limProcessSmeScanReq(tpAniSirGlobal pMac, tANI_U32 *pMsgBuf)
 
       if (pMac->fScanOffload)
       {
-          if (eHAL_STATUS_SUCCESS !=
+          if (VOS_STATUS_SUCCESS !=
                   limSendHalStartScanOffloadReq(pMac, pScanReq))
           {
               limLog(pMac, LOGE, FL("Couldn't send Offload scan request"));
@@ -6020,7 +6020,7 @@ limProcessSmeReqMessages(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
                 {
                     pMac->lim.gpDefdSmeMsgForNOA = NULL;
                     pMac->lim.gpLimRemainOnChanReq = (tpSirRemainOnChnReq )pMsgBuf;
-                    limRemainOnChnRsp(pMac,eHAL_STATUS_FAILURE, NULL);
+                    limRemainOnChnRsp(pMac,VOS_STATUS_E_FAILURE, NULL);
 
                     /*
                      * limRemainOnChnRsp will free the buffer this change is to

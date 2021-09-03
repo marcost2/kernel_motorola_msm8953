@@ -1950,20 +1950,20 @@ void btcUapsdCheck( tpAniSirGlobal pMac, tpSmeBtEvent pBtEvent )
     \fn btcHandleCoexInd
     \brief  API to handle Coex indication from WDI
     \param  pMac - The handle returned by macOpen.
-    \return eHalStatus
-            eHAL_STATUS_FAILURE  success
-            eHAL_STATUS_SUCCESS  failure
+    \return VOS_STATUS
+            VOS_STATUS_E_FAILURE  success
+            VOS_STATUS_SUCCESS  failure
   ---------------------------------------------------------------------------*/
-eHalStatus btcHandleCoexInd(tHalHandle hHal, void* pMsg)
+VOS_STATUS btcHandleCoexInd(tHalHandle hHal, void* pMsg)
 {
    tpAniSirGlobal pMac = PMAC_STRUCT( hHal );
-   eHalStatus status = eHAL_STATUS_SUCCESS;
+   VOS_STATUS status = VOS_STATUS_SUCCESS;
    tSirSmeCoexInd *pSmeCoexInd = (tSirSmeCoexInd *)pMsg;
 
    if (NULL == pMsg)
    {
       smsLog(pMac, LOGE, "in %s msg ptr is NULL", __func__);
-      status = eHAL_STATUS_FAILURE;
+      status = VOS_STATUS_E_FAILURE;
    }
    else
    {

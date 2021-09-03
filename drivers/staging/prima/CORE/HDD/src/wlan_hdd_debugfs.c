@@ -363,7 +363,7 @@ static ssize_t __wcnss_patterngen_write(struct file *file,
                      pAdapter->macAddressCurrent.bytes, 6);
 
         /* Delete pattern */
-        if (eHAL_STATUS_SUCCESS != sme_DelPeriodicTxPtrn(pHddCtx->hHal,
+        if (VOS_STATUS_SUCCESS != sme_DelPeriodicTxPtrn(pHddCtx->hHal,
                                                 delPeriodicTxPtrnParams))
         {
             VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,
@@ -443,7 +443,7 @@ static ssize_t __wcnss_patterngen_write(struct file *file,
     }
 
     /* Add pattern */
-    if (eHAL_STATUS_SUCCESS != sme_AddPeriodicTxPtrn(pHddCtx->hHal,
+    if (VOS_STATUS_SUCCESS != sme_AddPeriodicTxPtrn(pHddCtx->hHal,
                                             addPeriodicTxPtrnParams))
     {
         VOS_TRACE( VOS_MODULE_ID_HDD, VOS_TRACE_LEVEL_ERROR,

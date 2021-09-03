@@ -273,7 +273,7 @@ schSendStartScanRsp(tpAniSirGlobal pMac)
  *
  * @param size - Length of the beacon
  *
- * @return eHalStatus
+ * @return VOS_STATUS
  */
 tSirRetStatus schSendBeaconReq( tpAniSirGlobal pMac, tANI_U8 *beaconPayload, tANI_U16 size, tpPESession psessionEntry)
 {

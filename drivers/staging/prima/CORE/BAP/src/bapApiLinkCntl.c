@@ -126,9 +126,9 @@
       roamResult: is the result
    
   RETURN VALUE
-    The eHalStatus code associated with performing the operation  
+    The VOS_STATUS code associated with performing the operation  
 
-    eHAL_STATUS_SUCCESS:  Success
+    VOS_STATUS_SUCCESS:  Success
   
   SIDE EFFECTS 
   
@@ -168,7 +168,7 @@ eCSR_ROAM_RESULT_WDS_STOPPED
 #endif //0
 
 
-eHalStatus
+VOS_STATUS
 WLANBAP_RoamCallback
 (
   void *pContext, 
@@ -178,7 +178,6 @@ WLANBAP_RoamCallback
   eCsrRoamResult roamResult
 )
 {
-    eHalStatus  halStatus = eHAL_STATUS_SUCCESS; 
     /* btampContext value */    
     ptBtampContext btampContext = (ptBtampContext) pContext; 
     tWLAN_BAPEvent bapEvent; /* State machine event */
@@ -375,7 +374,7 @@ WLANBAP_RoamCallback
   
             /* If BAP doesn't like the incoming association, signal SME/CSR */ 
             if ( status != WLANBAP_STATUS_SUCCESS) 
-                halStatus = eHAL_STATUS_FAILURE;
+                vosStatus = VOS_STATUS_E_FAILURE;
   
             break;
 
@@ -702,12 +701,12 @@ WLANBAP_RoamCallback
         case eCSR_ROAM_SHOULD_ROAM:
             if ((pCsrRoamInfo) && (pCsrRoamInfo->pBssDesc)) {
                 // pCallbackInfo points to the BSS desc. Convert to Apple Scan Result.
-                halStatus = ccpCsrToAppleScanResult( 
+                vosStatus = ccpCsrToAppleScanResult( 
                         mPMacObject, 
                         pCsrRoamInfo->pBssDesc, 
                         &scanResult); 
-                if ( halStatus != 0 ) 
-                    return eHAL_STATUS_FAILURE;
+                if ( vosStatus != 0 ) 
+                    return VOS_STATUS_E_FAILURE;
                 roamAccepted = apple80211Interface->shouldRoam(&scanResult);  // Return result is crucial
                 if (roamAccepted == true) { 
                     // If the roam is acceptable, return SUCCESS 
@@ -722,11 +721,11 @@ WLANBAP_RoamCallback
                     DBGLOG("%s: willRoam (called out of order) returns\n", __func__);
                     DBGLOG("    with BSSID = " MAC_ADDR_STRING(bssid.ether_addr_octet));
 //#endif
-                    return eHAL_STATUS_SUCCESS;
+                    return VOS_STATUS_SUCCESS;
                 } else { 
                     // If the roam is NOT acceptable, return FAILURE
                     DBGLOG("%s: shouldRoam returns \"NOT acceptable\"\n", __func__);
-                    return eHAL_STATUS_FAILURE;
+                    return VOS_STATUS_E_FAILURE;
                 }
             }
             break;
@@ -794,7 +793,7 @@ WLANBAP_RoamCallback
     }
 #endif //0
 
-    return halStatus;
+    return vosStatus;
 }
 
 /*----------------------------------------------------------------------------

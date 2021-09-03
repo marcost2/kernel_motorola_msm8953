@@ -209,7 +209,7 @@ void lim_post_pre_auth_reassoc_rsp(tpAniSirGlobal mac,
  * This function handles cleanup during reassoc failure
  */
 void lim_reassoc_fail_cleanup(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data)
+     VOS_STATUS status, tANI_U32 *data)
 {
     tpPESession session_entry;
 
@@ -231,9 +231,7 @@ void lim_reassoc_fail_cleanup(tpAniSirGlobal mac,
     peDeleteSession(mac, session_entry);
 
     /* Add bss parameter cleanup happens as part of this processing*/
-    if ((status == eHAL_STATUS_MBB_DEL_BSS_FAIL) ||
-        (status == eHAL_STATUS_INVALID_PARAMETER) ||
-        (status == eHAL_STATUS_MBB_ADD_BSS_FAIL))
+    if (status == VOS_STATUS_E_INVAL)
         lim_post_pre_auth_reassoc_rsp(mac, eSIR_FAILURE, NULL,
                                            SIR_MBB_DISCONNECTED);
      else
@@ -251,7 +249,7 @@ void lim_reassoc_fail_cleanup(tpAniSirGlobal mac,
  * This function invokes resume callback
  */
 void lim_perform_post_reassoc_mbb_channel_change(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data, tpPESession session_entry)
+     VOS_STATUS status, tANI_U32 *data, tpPESession session_entry)
 {
     tpPESession session_entry_con_ap;
     tANI_U8 session_id;
@@ -342,7 +340,7 @@ void lim_handle_reassoc_mbb_fail(tpAniSirGlobal mac,
  * This function handles cleanup during reassoc failure
  */
 void lim_preauth_fail_cleanup(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data)
+     VOS_STATUS status, tANI_U32 *data)
 {
     tpPESession session_entry;
 
@@ -362,7 +360,7 @@ void lim_preauth_fail_cleanup(tpAniSirGlobal mac,
  * This function invokes resume callback
  */
 void lim_perform_preauth_mbb_fail_channel_change(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data, tpPESession session_entry)
+     VOS_STATUS status, tANI_U32 *data, tpPESession session_entry)
 {
     peSetResumeChannel(mac, session_entry->currentOperChannel, 0);
     limResumeLink(mac, lim_preauth_fail_cleanup,
@@ -439,7 +437,7 @@ tSirRetStatus lim_del_sta_mbb(tpAniSirGlobal mac,
     vos_mem_zero(del_sta_params, sizeof(*del_sta_params));
 
     del_sta_params->sessionId = session_entry_connected_ap->peSessionId;
-    del_sta_params->status  = eHAL_STATUS_SUCCESS;
+    del_sta_params->status  = VOS_STATUS_SUCCESS;
 
 #ifdef FEATURE_WLAN_TDLS
     if(((eLIM_STA_ROLE == GET_LIM_SYSTEM_ROLE(session_entry_connected_ap)) &&
@@ -527,7 +525,7 @@ tSirRetStatus lim_del_bss_mbb(tpAniSirGlobal mac, tpDphHashNode sta_ds,
     MTRACE(macTrace(mac, TRACE_CODE_MLM_STATE,
           session_entry->peSessionId, eLIM_MLM_WT_DEL_BSS_RSP_STATE));
 
-    delbss_params->status= eHAL_STATUS_SUCCESS;
+    delbss_params->status= VOS_STATUS_SUCCESS;
     delbss_params->respReqd = 1;
 
     limLog(mac, LOG1, FL("Sessionid %d bss idx: %x BSSID:" MAC_ADDRESS_STR),
@@ -704,10 +702,10 @@ void lim_handle_reassoc_mbb_success(tpAniSirGlobal mac,
     lim_cleanup_connected_ap(mac, sta_ds_connected_ap, session_entry_con_ap);
 cleanup:
     /*
-     * eHAL_STATUS_INVALID_PARAMETER is used
+     * VOS_STATUS_E_INVAL is used
      * so that full cleanup is triggered.
      */
-    lim_reassoc_fail_cleanup(mac, eHAL_STATUS_INVALID_PARAMETER,
+    lim_reassoc_fail_cleanup(mac, VOS_STATUS_E_INVAL,
                                 (tANI_U32 *)session_entry);
 }
 
@@ -721,7 +719,7 @@ cleanup:
  * This function invokes resume callback
  */
 static inline void lim_process_preauth_mbb_result(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data)
+     VOS_STATUS status, tANI_U32 *data)
 {
     tpPESession session_entry, ft_session_entry = NULL;
     tpDphHashNode sta_ds;
@@ -875,7 +873,7 @@ end:
  */
 static inline
 void lim_perform_post_preauth_mbb_channel_change(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data, tpPESession session_entry)
+     VOS_STATUS status, tANI_U32 *data, tpPESession session_entry)
 {
     peSetResumeChannel(mac, 0, 0);
     limResumeLink(mac, lim_process_preauth_mbb_result,
@@ -1062,12 +1060,12 @@ void lim_process_reassoc_mbb_rsp_timeout(tpAniSirGlobal mac)
  * This function process preauth request received from CSR
  */
 static inline
-void lim_perform_pre_auth_reassoc(tpAniSirGlobal mac, eHalStatus status,
+void lim_perform_pre_auth_reassoc(tpAniSirGlobal mac, VOS_STATUS status,
      tANI_U32 *data, tpPESession session_entry)
 {
     tSirMacAuthFrameBody authFrame;
 
-    if (status != eHAL_STATUS_SUCCESS) {
+    if (status != VOS_STATUS_SUCCESS) {
         limLog(mac, LOGE,
                FL("Change channel not successful for pre-auth"));
         goto preauth_fail;
@@ -1118,11 +1116,11 @@ preauth_fail:
  */
 static inline
 void pre_auth_mbb_suspend_link_handler(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data)
+     VOS_STATUS status, tANI_U32 *data)
 {
     tpPESession session_entry;
 
-    if (status != eHAL_STATUS_SUCCESS) {
+    if (status != VOS_STATUS_SUCCESS) {
         limLog(mac, LOGE, FL("Link suspend failed"));
         lim_post_pre_auth_reassoc_rsp(mac, eSIR_FAILURE,
                         (tpPESession)data, SIR_MBB_CONNECTED);
@@ -1138,7 +1136,7 @@ void pre_auth_mbb_suspend_link_handler(tpAniSirGlobal mac,
                 lim_perform_pre_auth_reassoc, NULL, session_entry);
         return;
     } else {
-        lim_perform_pre_auth_reassoc(mac, eHAL_STATUS_SUCCESS,
+        lim_perform_pre_auth_reassoc(mac, VOS_STATUS_SUCCESS,
                                   NULL, session_entry);
         return;
     }
@@ -1237,7 +1235,7 @@ void lim_process_sta_mlm_del_sta_rsp_mbb(tpAniSirGlobal mac,
     limLog(mac, LOG1, FL("Del STA RSP received. Status:%d AssocID:%d"),
            del_sta_params->status, del_sta_params->assocId);
 
-    if (eHAL_STATUS_SUCCESS != del_sta_params->status) {
+    if (VOS_STATUS_SUCCESS != del_sta_params->status) {
         limLog(mac, LOGE, FL("Del STA failed! Status:%d, still proceeding"
                "with Del BSS"), del_sta_params->status);
     }
@@ -1294,10 +1292,10 @@ end:
     }
 
     /*
-     * eHAL_STATUS_INVALID_PARAMETER is used
+     * VOS_STATUS_E_INVAL is used
      * so that full cleanup is triggered.
      */
-    lim_reassoc_fail_cleanup(mac, eHAL_STATUS_INVALID_PARAMETER,
+    lim_reassoc_fail_cleanup(mac, VOS_STATUS_E_INVAL,
                                 (tANI_U32 *)ft_session_entry);
 }
 
@@ -1387,7 +1385,7 @@ void lim_process_sta_mlm_del_bss_rsp_mbb(tpAniSirGlobal mac,
         goto end;
     }
 
-    if(eHAL_STATUS_SUCCESS == delbss_params->status) {
+    if(VOS_STATUS_SUCCESS == delbss_params->status) {
        limLog(mac, LOG1,
               FL( "STA received the DEL_BSS_RSP for BSSID: %X."),
               delbss_params->bssIdx);
@@ -1432,7 +1430,7 @@ void lim_process_sta_mlm_del_bss_rsp_mbb(tpAniSirGlobal mac,
        lim_cleanup_connected_ap(mac, sta_ds, session_entry);
 
        /* Newly created session cleanup */
-       lim_reassoc_fail_cleanup(mac, eHAL_STATUS_MBB_DEL_BSS_FAIL,
+       lim_reassoc_fail_cleanup(mac, VOS_STATUS_E_INVAL,
                                 (tANI_U32 *)ft_session_entry);
        return;
     }
@@ -1456,10 +1454,10 @@ end:
     }
 
     /*
-     * eHAL_STATUS_INVALID_PARAMETER is used
+     * VOS_STATUS_E_INVAL is used
      * so that full cleanup is triggered.
      */
-    lim_reassoc_fail_cleanup(mac, eHAL_STATUS_INVALID_PARAMETER,
+    lim_reassoc_fail_cleanup(mac, VOS_STATUS_E_INVAL,
                                 (tANI_U32 *)ft_session_entry);
 }
 
@@ -1476,7 +1474,7 @@ void lim_fill_add_sta_params_mbb(tpAniSirGlobal mac,
                  sizeof(tSirMacAddr));
 
     add_sta_params->staType = STA_ENTRY_SELF;
-    add_sta_params->status = eHAL_STATUS_SUCCESS;
+    add_sta_params->status = VOS_STATUS_SUCCESS;
     add_sta_params->respReqd = 1;
 
     add_sta_params->sessionId = session_entry->peSessionId;
@@ -1576,7 +1574,7 @@ void lim_process_sta_mlm_add_bss_rsp_mbb(tpAniSirGlobal mac,
     limLog(mac, LOG1, FL("Add BSS RSP received. Status:%d"),
                          add_bss_params->status);
 
-    if(eHAL_STATUS_SUCCESS == add_bss_params->status) {
+    if(VOS_STATUS_SUCCESS == add_bss_params->status) {
 
        if(eLIM_MLM_WT_ADD_BSS_RSP_REASSOC_STATE != session_entry->limMlmState) {
           limLog(mac, LOGE,
@@ -1623,7 +1621,7 @@ void lim_process_sta_mlm_add_bss_rsp_mbb(tpAniSirGlobal mac,
               FL("ADD BSS failed! Status:%d"), add_bss_params->status);
 
        /* Newly created session cleanup */
-       lim_reassoc_fail_cleanup(mac, eHAL_STATUS_MBB_ADD_BSS_FAIL,
+       lim_reassoc_fail_cleanup(mac, VOS_STATUS_E_INVAL,
                                 (tANI_U32 *)session_entry);
     }
 
@@ -1644,7 +1642,7 @@ end:
  * This function invokes resume callback
  */
 void lim_perform_post_add_sta_rsp(tpAniSirGlobal mac,
-     eHalStatus status, tANI_U32 *data)
+     VOS_STATUS status, tANI_U32 *data)
 {
     tpDphHashNode sta_ds;
     /* session entry for newly roamed ap */
@@ -1712,7 +1710,7 @@ void lim_process_sta_mlm_add_sta_rsp_mbb(tpAniSirGlobal mac,
     limLog(mac, LOG1, FL("Add STA RSP received. Status:%d"),
                          add_sta_params->status);
 
-    if (eHAL_STATUS_SUCCESS == add_sta_params->status) {
+    if (VOS_STATUS_SUCCESS == add_sta_params->status) {
         if ( eLIM_MLM_WT_ADD_STA_RSP_STATE != session_entry->limMlmState) {
             limLog(mac, LOGE,
                    FL("Received unexpected ADD_STA_RSP in state %d"),
@@ -1737,7 +1735,7 @@ void lim_process_sta_mlm_add_sta_rsp_mbb(tpAniSirGlobal mac,
        limLog(mac, LOGE, FL( "ADD_STA failed!"));
 
         /* Newly created session cleanup */
-        lim_reassoc_fail_cleanup(mac, eHAL_STATUS_MBB_ADD_BSS_FAIL,
+        lim_reassoc_fail_cleanup(mac, VOS_STATUS_E_INVAL,
                                 (tANI_U32 *)session_entry);
 
     }

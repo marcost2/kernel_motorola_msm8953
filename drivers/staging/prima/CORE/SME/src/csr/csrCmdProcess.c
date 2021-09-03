@@ -41,9 +41,9 @@
 
 
 
-eHalStatus csrMsgProcessor( tpAniSirGlobal pMac,  void *pMsgBuf )
+VOS_STATUS csrMsgProcessor( tpAniSirGlobal pMac,  void *pMsgBuf )
 {
-    eHalStatus status = eHAL_STATUS_SUCCESS;
+    VOS_STATUS status = VOS_STATUS_SUCCESS;
     tSirSmeRsp *pSmeRsp = (tSirSmeRsp *)pMsgBuf;
 
     smsLog(pMac, LOG2, FL("Message %d[0x%04X] received in curState %s"
@@ -130,7 +130,7 @@ tANI_BOOLEAN csrCheckPSReady(void *pv)
 }
 
 
-void csrFullPowerCallback(void *pv, eHalStatus status)
+void csrFullPowerCallback(void *pv, VOS_STATUS status)
 {
     tpAniSirGlobal pMac = PMAC_STRUCT( pv );
     tListElem *pEntry;

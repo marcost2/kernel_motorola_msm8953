@@ -102,17 +102,17 @@ typedef struct {
 } tCcm ;
 
 void ccmCfgCnfMsgHandler(tHalHandle hHal, void *msg) ;
-eHalStatus ccmOpen(tHalHandle hHal) ;
-eHalStatus ccmClose(tHalHandle hHal) ;
+VOS_STATUS ccmOpen(tHalHandle hHal) ;
+VOS_STATUS ccmClose(tHalHandle hHal) ;
 void ccmStart(tHalHandle hHal) ;
 void ccmStop(tHalHandle hHal) ;
 //If callback is NULL, the API is not serialized for the CFGs
-eHalStatus ccmCfgSetInt(tHalHandle hHal, tANI_U32 cfgId, tANI_U32 ccmValue, tCcmCfgSetCallback callback, eAniBoolean toBeSaved) ;
+VOS_STATUS ccmCfgSetInt(tHalHandle hHal, tANI_U32 cfgId, tANI_U32 ccmValue, tCcmCfgSetCallback callback, eAniBoolean toBeSaved) ;
 //If callback is NULL, the API is not serialized for the CFGs
-eHalStatus ccmCfgSetStr(tHalHandle hHal, tANI_U32 cfgId, tANI_U8 *pStr, tANI_U32 length, tCcmCfgSetCallback callback, eAniBoolean toBeSaved) ;
-eHalStatus ccmCfgUpdate(tHalHandle hHal, tCcmCfgSetCallback callback) ;
-eHalStatus ccmCfgGetInt(tHalHandle hHal, tANI_U32 cfgId, tANI_U32 *pValue) ;
-eHalStatus ccmCfgGetStr(tHalHandle hHal, tANI_U32 cfgId, tANI_U8 *pBuf, tANI_U32 *pLength) ;
+VOS_STATUS ccmCfgSetStr(tHalHandle hHal, tANI_U32 cfgId, tANI_U8 *pStr, tANI_U32 length, tCcmCfgSetCallback callback, eAniBoolean toBeSaved) ;
+VOS_STATUS ccmCfgUpdate(tHalHandle hHal, tCcmCfgSetCallback callback) ;
+VOS_STATUS ccmCfgGetInt(tHalHandle hHal, tANI_U32 cfgId, tANI_U32 *pValue) ;
+VOS_STATUS ccmCfgGetStr(tHalHandle hHal, tANI_U32 cfgId, tANI_U8 *pBuf, tANI_U32 *pLength) ;
 
 void ccmDumpInit(tHalHandle hHal);
 

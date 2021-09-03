@@ -550,7 +550,7 @@ WLANBAP_ReleaseHndl
   /* obtain btamp Context  */ 
   ptBtampContext  btampContext = (ptBtampContext) btampHandle; 
   tHalHandle halHandle;
-  eHalStatus halStatus = eHAL_STATUS_SUCCESS;
+  VOS_STATUS vosStatus = VOS_STATUS_SUCCESS;
   /*------------------------------------------------------------------------
     Sanity check params
    ------------------------------------------------------------------------*/
@@ -579,9 +579,9 @@ WLANBAP_ReleaseHndl
 
   if( btampContext->isBapSessionOpen == TRUE )
   {
-    halStatus = sme_CloseSession(halHandle, 
+    vosStatus = sme_CloseSession(halHandle, 
             btampContext->sessionId, FALSE, VOS_TRUE, NULL, NULL);
-    if(eHAL_STATUS_SUCCESS == halStatus)
+    if(VOS_STATUS_SUCCESS == vosStatus)
     {
       btampContext->isBapSessionOpen = FALSE;
     }
@@ -1153,7 +1153,7 @@ WLANBAP_CreateNewLogLinkCtx
 
     IN
     callbackContext:  The user passed in a context to identify 
-    status:           The halStatus 
+    status:           The vosStatus 
     
    
   RETURN VALUE
@@ -1166,7 +1166,7 @@ void
 WLANBAP_pmcFullPwrReqCB
 ( 
   void *callbackContext, 
-  eHalStatus status
+  VOS_STATUS status
 )
 {
 

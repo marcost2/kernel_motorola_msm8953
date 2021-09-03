@@ -3399,7 +3399,7 @@ typedef struct sSirHalWowlEnterParams
     /* Status code to be filled by HAL when it sends
      * SIR_HAL_WOWL_ENTER_RSP to PE. 
      */  
-    eHalStatus  status;
+    VOS_STATUS  status;
 
    /*BSSID to find the current session
       */
@@ -3412,7 +3412,7 @@ typedef struct sSirHalWowlExitParams
     /* Status code to be filled by HAL when it sends
      * SIR_HAL_WOWL_EXIT_RSP to PE. 
      */  
-    eHalStatus  status;
+    VOS_STATUS  status;
 
    /*BSSIDX to find the current session
       */

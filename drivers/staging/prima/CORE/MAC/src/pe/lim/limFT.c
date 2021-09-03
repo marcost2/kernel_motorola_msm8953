@@ -219,12 +219,12 @@ void limFTInit(tpAniSirGlobal pMac)
  * We suspend the link and then now proceed to switch channel.
  *
  *------------------------------------------------------------------*/
-void FTPreAuthSuspendLinkHandler(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data)
+void FTPreAuthSuspendLinkHandler(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data)
 {
     tpPESession psessionEntry;
     
     // The link is suspended of not ?
-    if (status != eHAL_STATUS_SUCCESS) 
+    if (status != VOS_STATUS_SUCCESS) 
     {
         PELOGE(limLog( pMac, LOGE, "%s: Returning ", __func__);)
         // Post the FT Pre Auth Response to SME
@@ -312,7 +312,7 @@ int limProcessFTPreAuthReq(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
         limLog(pMac, LOG1, FL(" Performing pre-auth on same"
                " channel (session %pK)"), psessionEntry);
         // We are in the same channel. Perform pre-auth
-        limPerformFTPreAuth(pMac, eHAL_STATUS_SUCCESS, NULL, psessionEntry);
+        limPerformFTPreAuth(pMac, VOS_STATUS_SUCCESS, NULL, psessionEntry);
     }
 
     return bufConsumed;
@@ -322,7 +322,7 @@ int limProcessFTPreAuthReq(tpAniSirGlobal pMac, tpSirMsgQ pMsg)
  * Send the Auth1 
  * Receive back Auth2
  *------------------------------------------------------------------*/
-void limPerformFTPreAuth(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data, 
+void limPerformFTPreAuth(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data, 
     tpPESession psessionEntry)
 {
     tSirMacAuthFrameBody authFrame;
@@ -338,7 +338,7 @@ void limPerformFTPreAuth(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data,
             goto preauth_fail;
         }
     }
-    if (status != eHAL_STATUS_SUCCESS) 
+    if (status != VOS_STATUS_SUCCESS) 
     {
         PELOGE(limLog( pMac, LOGE,
                        "%s: Change channel not successful for FT pre-auth",
@@ -669,7 +669,7 @@ tSirRetStatus limFTPrepareAddBssReq( tpAniSirGlobal pMac,
     }
 #endif
 
-    pAddBssParams->status = eHAL_STATUS_SUCCESS;
+    pAddBssParams->status = VOS_STATUS_SUCCESS;
     pAddBssParams->respReqd = true;
 
     pAddBssParams->staContext.sessionId = pftSessionEntry->peSessionId;
@@ -943,7 +943,7 @@ void limFTSetupAuthSession(tpAniSirGlobal pMac, tpPESession psessionEntry)
 /*------------------------------------------------------------------
  * Resume Link Call Back 
  *------------------------------------------------------------------*/
-void limFTProcessPreAuthResult(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data)
+void limFTProcessPreAuthResult(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data)
 {
     tpPESession psessionEntry;
 
@@ -967,7 +967,7 @@ void limFTProcessPreAuthResult(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 
 /*------------------------------------------------------------------
  * Resume Link Call Back 
  *------------------------------------------------------------------*/
-void limPerformPostFTPreAuthAndChannelChange(tpAniSirGlobal pMac, eHalStatus status, tANI_U32 *data, 
+void limPerformPostFTPreAuthAndChannelChange(tpAniSirGlobal pMac, VOS_STATUS status, tANI_U32 *data, 
     tpPESession psessionEntry)
 {
     //Set the resume channel to Any valid channel (invalid). 
@@ -1717,7 +1717,7 @@ void limProcessFTAggrQoSRsp(tpAniSirGlobal pMac, tpSirMsgQ limMsg)
     for( i = 0; i < HAL_QOS_NUM_AC_MAX; i++ )
     {
         if((((1 << i) & pAggrQosRspMsg->tspecIdx)) &&
-                (pAggrQosRspMsg->status[i] != eHAL_STATUS_SUCCESS))
+                (pAggrQosRspMsg->status[i] != VOS_STATUS_SUCCESS))
         {
             /* send DELTS to the station */
             sirCopyMacAddr(peerMacAddr,psessionEntry->bssId);

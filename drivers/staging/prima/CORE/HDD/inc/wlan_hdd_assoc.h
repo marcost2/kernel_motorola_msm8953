@@ -212,7 +212,7 @@ typedef struct hdd_mon_ctx_s  hdd_mon_ctx_t;
 
 extern v_BOOL_t hdd_connIsConnected( hdd_station_ctx_t *pHddStaCtx );
 eCsrBand hdd_connGetConnectedBand( hdd_station_ctx_t *pHddStaCtx );
-extern eHalStatus hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, v_U32_t roamId, 
+extern VOS_STATUS hdd_smeRoamCallback( void *pContext, tCsrRoamInfo *pRoamInfo, v_U32_t roamId, 
                                 eRoamCmdStatus roamStatus, eCsrRoamResult roamResult );
 
 extern v_VOID_t hdd_connSaveConnectInfo( hdd_adapter_t *pAdapter, tCsrRoamInfo *pRoamInfo, eCsrRoamBssType eBssType );
@@ -243,7 +243,7 @@ void hdd_indicateEseBcnReportNoResults(const hdd_adapter_t *pAdapter,
                                        const tANI_U8 numBss);
 #endif /* FEATURE_WLAN_ESE && FEATURE_WLAN_ESE_UPLOAD */
 
-void iw_full_power_cbfn (void *pContext, eHalStatus status);
+void iw_full_power_cbfn (void *pContext, VOS_STATUS status);
 
 void hdd_copy_ht_caps(struct ieee80211_ht_cap *hdd_ht_cap,
                       tDot11fIEHTCaps *roam_ht_cap);
