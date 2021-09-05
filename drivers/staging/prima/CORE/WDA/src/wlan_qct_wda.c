@@ -294,6 +294,30 @@ v_VOID_t WDA_ProcessAntennaDiversitySelectionReq(tWDA_CbContext *pWDA,
 
 VOS_STATUS WDA_ProcessBcnMissPenaltyCount(tWDA_CbContext *pWDA,
                                    tModifyRoamParamsReqParams *params);
+
+/*Convert HAL driver type into WDI driver type*/
+static inline WDI_DriverType 
+HAL_DRV_TYPE_2_WDI 
+(
+   tDriverType driverType
+)
+{
+   /*Lightweight function - no sanity checks and no unecessary code to increase
+    the chances of getting inlined*/
+   switch ( driverType )
+   {
+   case eDRIVER_TYPE_PRODUCTION:
+      return WDI_DRIVER_TYPE_PRODUCTION;
+   case eDRIVER_TYPE_MFG:
+      return WDI_DRIVER_TYPE_MFG;
+   case eDRIVER_TYPE_DVT:
+      return WDI_DRIVER_TYPE_DVT;   
+   }
+
+   return WDI_DRIVER_TYPE_PRODUCTION;
+}
+
+
 /*
  * FUNCTION: WDA_ProcessNanRequest
  * Process NAN request
@@ -676,7 +700,7 @@ VOS_STATUS WDA_start(v_PVOID_t pVosContext)
       the stack since we won't exit until WDI_Start() completes or
       times out */
    vos_mem_set(&wdiStartParam, sizeof(wdiStartParam), 0);
-   wdiStartParam.wdiDriverType = wdaContext->driverMode;
+   wdiStartParam.wdiDriverType = HAL_DRV_TYPE_2_WDI(wdaContext->driverMode);
    /* prepare the config TLV for the WDI */
    status = WDA_prepareConfigTLV(pVosContext, &wdiStartParam);
    if ( !VOS_IS_STATUS_SUCCESS(status) )
