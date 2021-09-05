@@ -25913,7 +25913,7 @@ case WLAN_HAL_DEL_STA_SELF_RSP:
   case WLAN_HAL_POWER_CONTROL_MODE_CHANGE_RSP:
        return WDI_SET_LOW_POWER_RSP;
   default:
-    return eDRIVER_TYPE_MAX;
+    return WDI_MAX_RESP;
   }
 
 }/*HAL_2_WDI_RSP_TYPE*/
