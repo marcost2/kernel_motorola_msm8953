@@ -1214,6 +1214,7 @@ static void fwu_irq_enable(bool enable)
 			dev_err(&fwu->rmi4_data->i2c_client->dev,
 					"%s: Failed to request irq: %d\n",
 					__func__, retval);
+			return;
 		}
 
 		dev_dbg(&fwu->rmi4_data->i2c_client->dev,
