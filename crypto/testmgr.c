@@ -431,7 +431,7 @@ static int __test_aead(struct crypto_aead *tfm, int enc,
 	struct scatterlist *sgout;
 	const char *e, *d;
 	struct tcrypt_result result;
-	unsigned int authsize;
+	unsigned int authsize, iv_len;
 	void *input;
 	void *output;
 	void *assoc;
@@ -482,6 +482,8 @@ static int __test_aead(struct crypto_aead *tfm, int enc,
 	aead_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG,
 				  tcrypt_complete, &result);
 
+	iv_len = crypto_aead_ivsize(tfm);
+
 	for (i = 0, j = 0; i < tcount; i++) {
 		if (template[i].np)
 			continue;
@@ -502,10 +504,11 @@ static int __test_aead(struct crypto_aead *tfm, int enc,
 
 		memcpy(input, template[i].input, template[i].ilen);
 		memcpy(assoc, template[i].assoc, template[i].alen);
+		iv_len = crypto_aead_ivsize(tfm);
 		if (template[i].iv)
-			memcpy(iv, template[i].iv, MAX_IVLEN);
+			memcpy(iv, template[i].iv, iv_len);
 		else
-			memset(iv, 0, MAX_IVLEN);
+			memset(iv, 0, iv_len);
 
 		crypto_aead_clear_flags(tfm, ~0);
 		if (template[i].wk)
@@ -607,7 +610,7 @@ static int __test_aead(struct crypto_aead *tfm, int enc,
 		j++;
 
 		if (template[i].iv)
-			memcpy(iv, template[i].iv, MAX_IVLEN);
+			memcpy(iv, template[i].iv, iv_len);
 		else
 			memset(iv, 0, MAX_IVLEN);
 
@@ -2913,36 +2916,6 @@ static const struct alg_test_desc alg_test_descs[] = {
 			}
 		}
 	}, {
-		.alg = "ecb(speck128)",
-		.test = alg_test_skcipher,
-		.suite = {
-			.cipher = {
-				.enc = {
-					.vecs = speck128_enc_tv_template,
-					.count = ARRAY_SIZE(speck128_enc_tv_template)
-				},
-				.dec = {
-					.vecs = speck128_dec_tv_template,
-					.count = ARRAY_SIZE(speck128_dec_tv_template)
-				}
-			}
-		}
-	}, {
-		.alg = "ecb(speck64)",
-		.test = alg_test_skcipher,
-		.suite = {
-			.cipher = {
-				.enc = {
-					.vecs = speck64_enc_tv_template,
-					.count = ARRAY_SIZE(speck64_enc_tv_template)
-				},
-				.dec = {
-					.vecs = speck64_dec_tv_template,
-					.count = ARRAY_SIZE(speck64_dec_tv_template)
-				}
-			}
-		}
-	}, {
 		.alg = "ecb(tea)",
 		.test = alg_test_skcipher,
 		.suite = {
@@ -3599,36 +3572,6 @@ static const struct alg_test_desc alg_test_descs[] = {
 				.dec = {
 					.vecs = serpent_xts_dec_tv_template,
 					.count = SERPENT_XTS_DEC_TEST_VECTORS
-				}
-			}
-		}
-	}, {
-		.alg = "xts(speck128)",
-		.test = alg_test_skcipher,
-		.suite = {
-			.cipher = {
-				.enc = {
-					.vecs = speck128_xts_enc_tv_template,
-					.count = ARRAY_SIZE(speck128_xts_enc_tv_template)
-				},
-				.dec = {
-					.vecs = speck128_xts_dec_tv_template,
-					.count = ARRAY_SIZE(speck128_xts_dec_tv_template)
-				}
-			}
-		}
-	}, {
-		.alg = "xts(speck64)",
-		.test = alg_test_skcipher,
-		.suite = {
-			.cipher = {
-				.enc = {
-					.vecs = speck64_xts_enc_tv_template,
-					.count = ARRAY_SIZE(speck64_xts_enc_tv_template)
-				},
-				.dec = {
-					.vecs = speck64_xts_dec_tv_template,
-					.count = ARRAY_SIZE(speck64_xts_dec_tv_template)
 				}
 			}
 		}

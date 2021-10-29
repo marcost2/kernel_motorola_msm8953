@@ -51,7 +51,6 @@
 #define elf_prstatus	compat_elf_prstatus
 #define elf_prpsinfo	compat_elf_prpsinfo
 
-
 #ifdef CONFIG_ELF_CORE
 /*
  * Compat version of cputime_to_compat_timeval, perhaps this

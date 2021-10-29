@@ -237,11 +237,15 @@ manage_start_stop_store(struct device *dev, struct device_attribute *attr,
 {
 	struct scsi_disk *sdkp = to_scsi_disk(dev);
 	struct scsi_device *sdp = sdkp->device;
+	bool v;
 
 	if (!capable(CAP_SYS_ADMIN))
 		return -EACCES;
 
-	sdp->manage_start_stop = simple_strtoul(buf, NULL, 10);
+	if (kstrtobool(buf, &v))
+		return -EINVAL;
+
+	sdp->manage_start_stop = v;
 
 	return count;
 }
@@ -259,6 +263,7 @@ static ssize_t
 allow_restart_store(struct device *dev, struct device_attribute *attr,
 		    const char *buf, size_t count)
 {
+	bool v;
 	struct scsi_disk *sdkp = to_scsi_disk(dev);
 	struct scsi_device *sdp = sdkp->device;
 
@@ -268,7 +273,10 @@ allow_restart_store(struct device *dev, struct device_attribute *attr,
 	if (sdp->type != TYPE_DISK)
 		return -EINVAL;
 
-	sdp->allow_restart = simple_strtoul(buf, NULL, 10);
+	if (kstrtobool(buf, &v))
+		return -EINVAL;
+
+	sdp->allow_restart = v;
 
 	return count;
 }
@@ -1420,6 +1428,86 @@ static int media_not_present(struct scsi_disk *sdkp,
 	return 0;
 }
 
+/**
+ *	sd_check_events - check media events
+ *	@disk: kernel device descriptor
+ *	@clearing: disk events currently being cleared
+ *
+ *	Returns mask of DISK_EVENT_*.
+ *
+ *	Note: this function is invoked from the block subsystem.
+ **/
+static unsigned int sd_check_events(struct gendisk *disk, unsigned int clearing)
+{
+	struct scsi_disk *sdkp = scsi_disk_get(disk);
+	struct scsi_device *sdp;
+	struct scsi_sense_hdr *sshdr = NULL;
+	int retval;
+
+	if (!sdkp)
+		return 0;
+
+	sdp = sdkp->device;
+	SCSI_LOG_HLQUEUE(3, sd_printk(KERN_INFO, sdkp, "sd_check_events\n"));
+
+	/*
+	 * If the device is offline, don't send any commands - just pretend as
+	 * if the command failed.  If the device ever comes back online, we
+	 * can deal with it then.  It is only because of unrecoverable errors
+	 * that we would ever take a device offline in the first place.
+	 */
+	if (!scsi_device_online(sdp)) {
+		set_media_not_present(sdkp);
+		goto out;
+	}
+
+	/*
+	 * Using TEST_UNIT_READY enables differentiation between drive with
+	 * no cartridge loaded - NOT READY, drive with changed cartridge -
+	 * UNIT ATTENTION, or with same cartridge - GOOD STATUS.
+	 *
+	 * Drives that auto spin down. eg iomega jaz 1G, will be started
+	 * by sd_spinup_disk() from sd_revalidate_disk(), which happens whenever
+	 * sd_revalidate() is called.
+	 */
+	retval = -ENODEV;
+
+	if (scsi_block_when_processing_errors(sdp)) {
+		sshdr  = kzalloc(sizeof(*sshdr), GFP_KERNEL);
+		retval = scsi_test_unit_ready(sdp, SD_TIMEOUT, SD_MAX_RETRIES,
+					      sshdr);
+	}
+
+	/* failed to execute TUR, assume media not present */
+	if (host_byte(retval)) {
+		set_media_not_present(sdkp);
+		goto out;
+	}
+
+	if (media_not_present(sdkp, sshdr))
+		goto out;
+
+	/*
+	 * For removable scsi disk we have to recognise the presence
+	 * of a disk in the drive.
+	 */
+	if (!sdkp->media_present)
+		sdp->changed = 1;
+	sdkp->media_present = 1;
+out:
+	/*
+	 * sdp->changed is set under the following conditions:
+	 *
+	 *	Medium present state has changed in either direction.
+	 *	Device has indicated UNIT_ATTENTION.
+	 */
+	kfree(sshdr);
+	retval = sdp->changed ? DISK_EVENT_MEDIA_CHANGE : 0;
+	sdp->changed = 0;
+	scsi_disk_put(sdkp);
+	return retval;
+}
+
 static int sd_sync_cache(struct scsi_disk *sdkp)
 {
 	int retries, res;
@@ -1533,6 +1621,7 @@ static const struct block_device_operations sd_fops = {
 #ifdef CONFIG_COMPAT
 	.compat_ioctl		= sd_compat_ioctl,
 #endif
+	.check_events		= sd_check_events,
 	.revalidate_disk	= sd_revalidate_disk,
 	.unlock_native_capacity	= sd_unlock_native_capacity,
 };
@@ -1869,8 +1958,10 @@ static int sd_read_protection_type(struct scsi_disk *sdkp, unsigned char *buffer
 	u8 type;
 	int ret = 0;
 
-	if (scsi_device_protection(sdp) == 0 || (buffer[12] & 1) == 0)
+	if (scsi_device_protection(sdp) == 0 || (buffer[12] & 1) == 0) {
+		sdkp->protection_type = 0;
 		return ret;
+	}
 
 	type = ((buffer[12] >> 1) & 7) + 1; /* P_TYPE 0 = Type 1 */
 
@@ -2266,6 +2357,7 @@ sd_read_write_protect_flag(struct scsi_disk *sdkp, unsigned char *buffer)
 	int res;
 	struct scsi_device *sdp = sdkp->device;
 	struct scsi_mode_data data;
+	int old_wp = sdkp->write_prot;
 
 	set_disk_ro(sdkp->disk, 0);
 	if (sdp->skip_ms_page_3f) {
@@ -2306,6 +2398,13 @@ sd_read_write_protect_flag(struct scsi_disk *sdkp, unsigned char *buffer)
 	} else {
 		sdkp->write_prot = ((data.device_specific & 0x80) != 0);
 		set_disk_ro(sdkp->disk, sdkp->write_prot);
+		if (sdkp->first_scan || old_wp != sdkp->write_prot) {
+			sd_printk(KERN_NOTICE, sdkp, "Write Protect is %s\n",
+				  sdkp->write_prot ? "on" : "off");
+			sd_printk(KERN_DEBUG, sdkp,
+				  "Mode Sense: %02x %02x %02x %02x\n",
+				  buffer[0], buffer[1], buffer[2], buffer[3]);
+		}
 	}
 }
 
@@ -2439,7 +2538,8 @@ sd_read_cache_type(struct scsi_disk *sdkp, unsigned char *buffer)
 		if (sdp->broken_fua) {
 			sd_first_printk(KERN_NOTICE, sdkp, "Disabling FUA\n");
 			sdkp->DPOFUA = 0;
-		} else if (sdkp->DPOFUA && !sdkp->device->use_10_for_rw) {
+		} else if (sdkp->DPOFUA && !sdkp->device->use_10_for_rw &&
+			   !sdkp->device->use_16_for_rw) {
 			sd_first_printk(KERN_NOTICE, sdkp,
 				  "Uses READ/WRITE(6), disabling FUA\n");
 			sdkp->DPOFUA = 0;

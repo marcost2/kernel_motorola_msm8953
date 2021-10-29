@@ -326,7 +326,6 @@ bool handle_nested_irq(unsigned int irq)
 	raw_spin_lock_irq(&desc->lock);
 
 	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
-	kstat_incr_irqs_this_cpu(irq, desc);
 
 	action = desc->action;
 	if (unlikely(!action || irqd_irq_disabled(&desc->irq_data))) {
@@ -335,6 +334,7 @@ bool handle_nested_irq(unsigned int irq)
 		goto out_unlock;
 	}
 
+	kstat_incr_irqs_this_cpu(irq, desc);
 	irqd_set(&desc->irq_data, IRQD_IRQ_INPROGRESS);
 	raw_spin_unlock_irq(&desc->lock);
 
@@ -414,13 +414,13 @@ handle_simple_irq(unsigned int irq, struct irq_desc *desc)
 		goto out_unlock;
 
 	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
-	kstat_incr_irqs_this_cpu(irq, desc);
 
 	if (unlikely(!desc->action || irqd_irq_disabled(&desc->irq_data))) {
 		desc->istate |= IRQS_PENDING;
 		goto out_unlock;
 	}
 
+	kstat_incr_irqs_this_cpu(irq, desc);
 	handle_irq_event(desc);
 
 	handled = true;
@@ -471,7 +471,6 @@ handle_level_irq(unsigned int irq, struct irq_desc *desc)
 		goto out_unlock;
 
 	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
-	kstat_incr_irqs_this_cpu(irq, desc);
 
 	/*
 	 * If its disabled or no action available
@@ -482,6 +481,7 @@ handle_level_irq(unsigned int irq, struct irq_desc *desc)
 		goto out_unlock;
 	}
 
+	kstat_incr_irqs_this_cpu(irq, desc);
 	handle_irq_event(desc);
 
 	cond_unmask_irq(desc);
@@ -547,7 +547,6 @@ handle_fasteoi_irq(unsigned int irq, struct irq_desc *desc)
 		goto out;
 
 	desc->istate &= ~(IRQS_REPLAY | IRQS_WAITING);
-	kstat_incr_irqs_this_cpu(irq, desc);
 
 	/*
 	 * If its disabled or no action available
@@ -560,6 +559,7 @@ handle_fasteoi_irq(unsigned int irq, struct irq_desc *desc)
 		goto out;
 	}
 
+	kstat_incr_irqs_this_cpu(irq, desc);
 	if (desc->istate & IRQS_ONESHOT)
 		mask_irq(desc);
 

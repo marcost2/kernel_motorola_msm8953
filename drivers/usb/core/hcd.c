@@ -1800,7 +1800,7 @@ void usb_hcd_flush_endpoint(struct usb_device *udev,
 	/* No more submits can occur */
 	spin_lock_irq(&hcd_urb_list_lock);
 rescan:
-	list_for_each_entry (urb, &ep->urb_list, urb_list) {
+	list_for_each_entry_reverse(urb, &ep->urb_list, urb_list) {
 		int	is_in;
 
 		if (urb->unlinked)
@@ -2064,7 +2064,7 @@ int usb_alloc_streams(struct usb_interface *interface,
 	hcd = bus_to_hcd(dev->bus);
 	if (!hcd->driver->alloc_streams || !hcd->driver->free_streams)
 		return -EINVAL;
-	if (dev->speed != USB_SPEED_SUPER)
+	if (dev->speed < USB_SPEED_SUPER)
 		return -EINVAL;
 	if (dev->state < USB_STATE_CONFIGURED)
 		return -ENODEV;
@@ -2112,7 +2112,7 @@ int usb_free_streams(struct usb_interface *interface,
 
 	dev = interface_to_usbdev(interface);
 	hcd = bus_to_hcd(dev->bus);
-	if (dev->speed != USB_SPEED_SUPER)
+	if (dev->speed < USB_SPEED_SUPER)
 		return -EINVAL;
 
 	/* Double-free is not allowed */
@@ -2930,6 +2930,9 @@ void
 usb_hcd_platform_shutdown(struct platform_device *dev)
 {
 	struct usb_hcd *hcd = platform_get_drvdata(dev);
+
+	/* No need for pm_runtime_put(), we're shutting down */
+	pm_runtime_get_sync(&dev->dev);
 
 	if (hcd->driver->shutdown)
 		hcd->driver->shutdown(hcd);

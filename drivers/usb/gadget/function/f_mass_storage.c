@@ -221,6 +221,9 @@
 #include <linux/usb/composite.h>
 
 #include "gadget_chips.h"
+
+#include <linux/nospec.h>
+
 #include "configfs.h"
 
 
@@ -327,8 +330,6 @@ struct fsg_common {
 	struct completion	thread_notifier;
 	struct task_struct	*thread_task;
 
-	/* Callback functions. */
-	const struct fsg_operations	*ops;
 	/* Gadget's private data. */
 	void			*private_data;
 
@@ -2810,6 +2811,7 @@ static void handle_exception(struct fsg_common *common)
 static int fsg_main_thread(void *common_)
 {
 	struct fsg_common	*common = common_;
+	int			i;
 
 	/*
 	 * Allow the thread to be killed by a signal, but set the signal mask
@@ -2880,22 +2882,16 @@ static int fsg_main_thread(void *common_)
 	common->thread_task = NULL;
 	spin_unlock_irq(&common->lock);
 
-	if (!common->ops || !common->ops->thread_exits
-	 || common->ops->thread_exits(common) < 0) {
-		struct fsg_lun **curlun_it = common->luns;
-		unsigned i = common->nluns;
+	/* Eject media from all LUNs */
 
-		down_write(&common->filesem);
-		for (; i--; ++curlun_it) {
-			struct fsg_lun *curlun = *curlun_it;
-			if (!curlun || !fsg_lun_is_open(curlun))
-				continue;
+	down_write(&common->filesem);
+	for (i = 0; i < common->nluns; i++) {
+		struct fsg_lun *curlun = common->luns[i];
 
+		if (curlun && fsg_lun_is_open(curlun))
 			fsg_lun_close(curlun);
-			curlun->unit_attention_data = SS_MEDIUM_NOT_PRESENT;
-		}
-		up_write(&common->filesem);
 	}
+	up_write(&common->filesem);
 
 	/* Let fsg_unbind() know the thread has exited */
 	complete_and_exit(&common->thread_notifier, 0);
@@ -3221,13 +3217,6 @@ int fsg_common_set_nluns(struct fsg_common *common, int nluns)
 }
 EXPORT_SYMBOL_GPL(fsg_common_set_nluns);
 
-void fsg_common_set_ops(struct fsg_common *common,
-			const struct fsg_operations *ops)
-{
-	common->ops = ops;
-}
-EXPORT_SYMBOL_GPL(fsg_common_set_ops);
-
 void fsg_common_free_buffers(struct fsg_common *common)
 {
 	_fsg_common_free_buffers(common->buffhds, common->fsg_num_buffers);
@@ -3429,25 +3418,6 @@ void fsg_common_set_inquiry_string(struct fsg_common *common, const char *vn,
 }
 EXPORT_SYMBOL_GPL(fsg_common_set_inquiry_string);
 
-int fsg_common_run_thread(struct fsg_common *common)
-{
-	common->state = FSG_STATE_IDLE;
-	/* Tell the thread to start working */
-	common->thread_task =
-		kthread_create(fsg_main_thread, common, "file-storage");
-	if (IS_ERR(common->thread_task)) {
-		common->state = FSG_STATE_TERMINATED;
-		return PTR_ERR(common->thread_task);
-	}
-
-	DBG(common, "I/O thread pid: %d\n", task_pid_nr(common->thread_task));
-
-	wake_up_process(common->thread_task);
-
-	return 0;
-}
-EXPORT_SYMBOL_GPL(fsg_common_run_thread);
-
 static void fsg_common_release(struct kref *ref)
 {
 	struct fsg_common *common = container_of(ref, struct fsg_common, ref);
@@ -3456,6 +3426,7 @@ static void fsg_common_release(struct kref *ref)
 	if (common->state != FSG_STATE_TERMINATED) {
 		raise_exception(common, FSG_STATE_EXIT);
 		wait_for_completion(&common->thread_notifier);
+		common->thread_task = NULL;
 	}
 
 	if (likely(common->luns)) {
@@ -3540,9 +3511,21 @@ static int fsg_bind(struct usb_configuration *c, struct usb_function *f)
 		if (ret)
 			return ret;
 		fsg_common_set_inquiry_string(fsg->common, NULL, NULL);
-		ret = fsg_common_run_thread(fsg->common);
-		if (ret)
+	}
+
+	if (!fsg->common->thread_task) {
+		fsg->common->state = FSG_STATE_IDLE;
+		fsg->common->thread_task =
+			kthread_create(fsg_main_thread, fsg->common, "file-storage");
+		if (IS_ERR(fsg->common->thread_task)) {
+			int ret = PTR_ERR(fsg->common->thread_task);
+			fsg->common->thread_task = NULL;
+			fsg->common->state = FSG_STATE_TERMINATED;
 			return ret;
+		}
+		DBG(fsg->common, "I/O thread pid: %d\n",
+		    task_pid_nr(fsg->common->thread_task));
+		wake_up_process(fsg->common->thread_task);
 	}
 
 	fsg->gadget = gadget;
@@ -3775,6 +3758,7 @@ static struct config_group *fsg_lun_make(struct config_group *group,
 	fsg_opts = to_fsg_opts(&group->cg_item);
 	if (num >= FSG_MAX_LUNS)
 		return ERR_PTR(-ERANGE);
+	num = array_index_nospec(num, FSG_MAX_LUNS);
 
 	mutex_lock(&fsg_opts->lock);
 	if (fsg_opts->refcnt || fsg_opts->common->luns[num]) {

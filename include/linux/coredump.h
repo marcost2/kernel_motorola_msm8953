@@ -16,6 +16,7 @@ extern int dump_finish(struct coredump_params *cprm);
 extern int dump_skip(struct coredump_params *cprm, size_t nr);
 extern int dump_emit(struct coredump_params *cprm, const void *addr, int nr);
 extern int dump_align(struct coredump_params *cprm, int align);
+extern void dump_truncate(struct coredump_params *cprm);
 #ifdef CONFIG_COREDUMP
 extern void do_coredump(const siginfo_t *siginfo);
 #else

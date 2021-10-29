@@ -702,7 +702,9 @@ static int __seccomp_filter(int this_syscall, const struct seccomp_data *sd,
 int __secure_computing(const struct seccomp_data *sd)
 {
 	int mode = current->seccomp.mode;
-	int this_syscall = sd ? sd->nr :
+	int this_syscall;
+
+	this_syscall = sd ? sd->nr :
 		syscall_get_nr(current, task_pt_regs(current));
 
 	switch (mode) {
@@ -715,7 +717,6 @@ int __secure_computing(const struct seccomp_data *sd)
 		BUG();
 	}
 }
-
 #endif /* CONFIG_HAVE_ARCH_SECCOMP_FILTER */
 
 long prctl_get_seccomp(void)

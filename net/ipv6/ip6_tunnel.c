@@ -157,7 +157,7 @@ EXPORT_SYMBOL_GPL(ip6_tnl_dst_reset);
 void ip6_tnl_dst_store(struct ip6_tnl *t, struct dst_entry *dst)
 {
 	struct rt6_info *rt = (struct rt6_info *) dst;
-	t->dst_cookie = rt->rt6i_node ? rt->rt6i_node->fn_sernum : 0;
+	t->dst_cookie = rt6_get_cookie(rt);
 	dst_release(t->dst_cache);
 	t->dst_cache = dst;
 }
@@ -1093,6 +1093,8 @@ ip4ip6_tnl_xmit(struct sk_buff *skb, struct net_device *dev)
 	/* ensure we can access the full inner ip header */
 	if (!pskb_may_pull(skb, sizeof(struct iphdr)))
 		return -1;
+
+	memset(&(IPCB(skb)->opt), 0, sizeof(IPCB(skb)->opt));
 
 	iph = ip_hdr(skb);
 

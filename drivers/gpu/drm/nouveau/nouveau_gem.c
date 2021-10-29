@@ -370,7 +370,7 @@ validate_init(struct nouveau_channel *chan, struct drm_file *file_priv,
 	struct nouveau_cli *cli = nouveau_cli(file_priv);
 	struct drm_device *dev = chan->drm->dev;
 	int trycnt = 0;
-	int ret, i;
+	int ret = -EINVAL, i;
 	struct nouveau_bo *res_bo = NULL;
 	LIST_HEAD(gart_list);
 	LIST_HEAD(vram_list);
@@ -614,6 +614,7 @@ nouveau_gem_pushbuf_reloc_apply(struct nouveau_cli *cli,
 
 		if (unlikely(r->reloc_bo_index > req->nr_buffers)) {
 			NV_PRINTK(err, cli, "reloc container bo index invalid\n");
+
 			ret = -EINVAL;
 			break;
 		}
